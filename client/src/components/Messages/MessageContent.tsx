@@ -41,7 +41,7 @@ export default function MessageContent(props: TMessageProps) {
     return null;
   }
 
-  console.log(11,'哈哈哈哈', showSibling);
+  console.log('showSibling', showSibling);
   const { children, messageId = null } = message;
 
   return (
