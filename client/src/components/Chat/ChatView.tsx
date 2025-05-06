@@ -37,7 +37,7 @@ function ChatView({ index = 0 }: { index?: number }) {
     ),
     enabled: !!fileMap,
   });
-
+  console.log('messagesTree', messagesTree);
   const chatHelpers = useChatHelpers(index, conversationId);
   const addedChatHelpers = useAddedResponse({ rootIndex: index });
 
@@ -76,6 +76,7 @@ function ChatView({ index = 0 }: { index?: number }) {
               {!isLoading && <Header />}
               <>
                 <div
+                  id={'items-center11sdfsd'}
                   className={cn(
                     'flex flex-col',
                     isLandingPage
