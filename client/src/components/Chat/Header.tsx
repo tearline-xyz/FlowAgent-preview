@@ -10,7 +10,7 @@ import { useMediaQuery, useHasAccess } from '~/hooks';
 import BookmarkMenu from './Menus/BookmarkMenu';
 import { TemporaryChat } from './TemporaryChat';
 import AddMultiConvo from './AddMultiConvo';
-import { useAppKit } from "@reown/appkit/react";
+import useCustomWeb3Modal, {ConnectEvm} from '~/components/Account/hooks/useCustomWeb3Modal';
 const defaultInterface = getConfigDefaults().interface;
 
 export default function Header() {
@@ -20,7 +20,8 @@ export default function Header() {
     () => startupConfig?.interface ?? defaultInterface,
     [startupConfig],
   );
-  const { open:openWallet } = useAppKit();
+  const { openModal, isConnected, address, disconnect}=useCustomWeb3Modal()
+
 
   const hasAccessToBookmarks = useHasAccess({
     permissionType: PermissionTypes.BOOKMARKS,
@@ -55,12 +56,25 @@ export default function Header() {
         </div>
         {!isSmallScreen && (
           <div className="flex items-center gap-2">
-            <div onClick={()=>{
-              console.log(1);
-              openWallet()
-            }}>
-              链接钱包
+            {
+              !isConnected && <div onClick={()=>{
+                console.log(1);
+                openModal(ConnectEvm)
+              }}>
+                Connect Wallet
+              </div>
+            }
+            <div>
+              Wallet Address：{!isConnected ? '未连接' : (address as string+'').substring(0,6)}
             </div>
+            {
+              isConnected &&   <div onClick={()=>{
+                disconnect()
+              }}>
+                Disconnect
+              </div>
+            }
+
             <ExportAndShareMenu
               isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false}
             />
