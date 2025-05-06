@@ -21,6 +21,11 @@ export default defineConfig({
         target: 'http://localhost:3080',
         changeOrigin: true,
       },
+      '/okx/api': {
+        target: 'https://www1.test.tearline.io/api',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/okx\/api/, ''),
+      },
     },
   },
   // Set the directory where environment variables are loaded from and restrict prefixes

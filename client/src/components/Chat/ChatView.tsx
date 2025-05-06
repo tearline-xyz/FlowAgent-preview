@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
@@ -18,6 +18,7 @@ import Landing from './Landing';
 import Header from './Header';
 import Footer from './Footer';
 import store from '~/store';
+import { axiosSupportedChain } from '~/swap/serve';
 
 function ChatView({ index = 0 }: { index?: number }) {
   const { conversationId } = useParams();
@@ -66,6 +67,15 @@ function ChatView({ index = 0 }: { index?: number }) {
   } else {
     content = <Landing centerFormOnLanding={centerFormOnLanding} />;
   }
+  useEffect(()=>{
+    axiosSupportedChain().then(res=>{
+      console.log('axiosSupportedChain', res);
+    })
+
+    return ()=>{
+
+    }
+  },[])
 
   return (
     <ChatFormProvider {...methods}>
