@@ -156,6 +156,8 @@ export default defineConfig({
     alias: {
       '~': path.join(__dirname, 'src/'),
       $fonts: resolve('public/fonts'),
+      '@tanstack/react-query': path.resolve(__dirname, 'node_modules/react-query-v4'),
+      '@tanstack/react-query-v5': path.resolve(__dirname, 'node_modules/react-query-v5'),
     },
   },
 });

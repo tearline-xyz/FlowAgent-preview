@@ -10,7 +10,7 @@ import { useMediaQuery, useHasAccess } from '~/hooks';
 import BookmarkMenu from './Menus/BookmarkMenu';
 import { TemporaryChat } from './TemporaryChat';
 import AddMultiConvo from './AddMultiConvo';
-
+import { useAppKit } from "@reown/appkit/react";
 const defaultInterface = getConfigDefaults().interface;
 
 export default function Header() {
@@ -20,6 +20,7 @@ export default function Header() {
     () => startupConfig?.interface ?? defaultInterface,
     [startupConfig],
   );
+  const { open:openWallet } = useAppKit();
 
   const hasAccessToBookmarks = useHasAccess({
     permissionType: PermissionTypes.BOOKMARKS,
@@ -54,6 +55,12 @@ export default function Header() {
         </div>
         {!isSmallScreen && (
           <div className="flex items-center gap-2">
+            <div onClick={()=>{
+              console.log(1);
+              openWallet()
+            }}>
+              链接钱包
+            </div>
             <ExportAndShareMenu
               isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false}
             />
