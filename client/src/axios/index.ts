@@ -59,8 +59,8 @@ request.interceptors.request.use(
     }
     // console.log('config.url', config.url);
     if (process.env.NODE_ENV !== 'development') {
-
-      config.url = 'https://www1.test.tearline.io' + config.url.replace('/okx/api','/api'); // import.meta.env.VITE_APP_BASE_API + config.url;
+      // config.url = 'https://www1.test.tearline.io' + config.url.replace('/okx/api','/api'); // import.meta.env.VITE_APP_BASE_API + config.url;
+      config.url = 'https://tlib.test.tearline.io' + config.url.replace('/okx/api','/api'); // import.meta.env.VITE_APP_BASE_API + config.url;
     }
     // const localAuth: AuthInfo | undefined = getLocalAuthState();
     // if (

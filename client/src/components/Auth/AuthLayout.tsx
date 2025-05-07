@@ -65,7 +65,7 @@ function AuthLayout({
           <img
             src="/assets/favicon.ico"
             className="h-full w-full object-contain"
-            alt={localize('com_ui_logo', { 0: startupConfig?.appTitle ?? 'LibreChat' })}
+            alt={localize('com_ui_logo', { 0: startupConfig?.appTitle ?? 'Tearline' })}
           />
         </div>
       </BlinkAnimation>
