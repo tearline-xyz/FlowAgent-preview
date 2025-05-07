@@ -70,9 +70,9 @@ function AuthLayout({
         </div>
       </BlinkAnimation>
       <DisplayError />
-      <div className="absolute bottom-0 left-0 md:m-4">
+      {/* <div className="absolute bottom-0 left-0 md:m-4">
         <ThemeSelector />
-      </div>
+      </div> */}
 
       <div className="flex flex-grow items-center justify-center">
         <div className="w-authPageWidth overflow-hidden bg-white px-6 py-4 dark:bg-gray-900 sm:max-w-md sm:rounded-lg">

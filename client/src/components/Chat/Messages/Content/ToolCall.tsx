@@ -1,4 +1,4 @@
-import { useMemo,useEffect } from 'react';
+import { useMemo, useEffect } from 'react';
 import * as Popover from '@radix-ui/react-popover';
 import { ShieldCheck, TriangleAlert } from 'lucide-react';
 import { actionDelimiter, actionDomainSeparator, Constants } from 'librechat-data-provider';
@@ -37,7 +37,6 @@ export default function ToolCall({
   auth?: string;
   expires_at?: number;
 }) {
-
   const localize = useLocalize();
   const { function_name, domain, isMCPToolCall } = useMemo(() => {
     if (typeof name !== 'string') {
@@ -151,13 +150,12 @@ export default function ToolCall({
     return localize('com_assistants_completed_function', { 0: function_name });
   };
 
-
   return (
     <Popover.Root>
       <div id={'ToolcallBox111'} className="my-2.5 flex flex-wrap items-center gap-2.5">
         <div className="flex w-full items-center gap-2.5">
           <div className="relative h-5 w-5 shrink-0">{renderIcon()}</div>
-          <div id='flowchart-container'></div>
+          <div id="flowchart-container"></div>
 
           <ProgressText
             progress={cancelled ? 1 : progress}

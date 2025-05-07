@@ -104,16 +104,17 @@ const Part = memo(
       } else if (isToolCall) {
         console.log('else');
         return (
-          <ToolCall
-            args={toolCall.args ?? ''}
-            name={toolCall.name || ''}
-            output={toolCall.output ?? ''}
-            initialProgress={toolCall.progress ?? 0.1}
-            isSubmitting={isSubmitting}
-            attachments={attachments}
-            auth={toolCall.auth}
-            expires_at={toolCall.expires_at}
-          />
+          <div>a</div>
+          // <ToolCall
+          //   args={toolCall.args ?? ''}
+          //   name={toolCall.name || ''}
+          //   output={toolCall.output ?? ''}
+          //   initialProgress={toolCall.progress ?? 0.1}
+          //   isSubmitting={isSubmitting}
+          //   attachments={attachments}
+          //   auth={toolCall.auth}
+          //   expires_at={toolCall.expires_at}
+          // />
         );
       } else if (toolCall.type === ToolCallTypes.CODE_INTERPRETER) {
         const code_interpreter = toolCall[ToolCallTypes.CODE_INTERPRETER];
