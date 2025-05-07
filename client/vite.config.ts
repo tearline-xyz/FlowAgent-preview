@@ -44,7 +44,7 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*'],
         globIgnores: ['images/**/*'],
-        maximumFileSizeToCacheInBytes: 7 * 1024 * 1024,
+        maximumFileSizeToCacheInBytes: 20 * 1024 * 1024,
         navigateFallbackDenylist: [/^\/oauth/],
       },
       includeAssets: ['**/*'],
