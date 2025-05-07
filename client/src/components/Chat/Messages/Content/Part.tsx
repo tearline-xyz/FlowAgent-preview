@@ -103,18 +103,28 @@ const Part = memo(
         );
       } else if (isToolCall) {
         console.log('else');
+
+        // 使用更具体的类型而不是通用的 object
+        const outputObj = JSON.parse(toolCall.output ?? '{}');
+
         return (
           // <div>a</div>
-          <ToolCall
-            args={toolCall.args ?? ''}
-            name={toolCall.name || ''}
-            output={toolCall.output ?? ''}
-            initialProgress={toolCall.progress ?? 0.1}
-            isSubmitting={isSubmitting}
-            attachments={attachments}
-            auth={toolCall.auth}
-            expires_at={toolCall.expires_at}
-          />
+          <div>
+            {outputObj?.action === 'okx_swap_v1' ? (
+              <button>abcde</button>
+            ) : (
+              <ToolCall
+                args={toolCall.args ?? ''}
+                name={toolCall.name || ''}
+                output={toolCall.output ?? ''}
+                initialProgress={toolCall.progress ?? 0.1}
+                isSubmitting={isSubmitting}
+                attachments={attachments}
+                auth={toolCall.auth}
+                expires_at={toolCall.expires_at}
+              />
+            )}
+          </div>
         );
       } else if (toolCall.type === ToolCallTypes.CODE_INTERPRETER) {
         const code_interpreter = toolCall[ToolCallTypes.CODE_INTERPRETER];
