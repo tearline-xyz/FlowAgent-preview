@@ -125,21 +125,21 @@ export default defineConfig({
               return 'headlessui';
             }
             // Start
-            if (id.includes('@reown')) {
-              return 'reown-vendor';
-            }
-            if (id.includes('@wagmi')) {
-              return 'wagmi-vendor';
-            }
-            if (id.includes('axios')) {
-              return 'axios-vendor';
-            }
-            if (id.includes('react-query-v4')) {
-              return 'react-query-v4-vendor';
-            }
-            if (id.includes('react-query-v5')) {
-              return 'react-query-v5-vendorv5';
-            }
+            // if (id.includes('@reown')) {
+            //   return 'reown-vendor';
+            // }
+            // if (id.includes('@wagmi')) {
+            //   return 'wagmi-vendor';
+            // }
+            // if (id.includes('axios')) {
+            //   return 'axios-vendor';
+            // }
+            // if (id.includes('react-query-v4')) {
+            //   return 'react-query-v4-vendor';
+            // }
+            // if (id.includes('react-query-v5')) {
+            //   return 'react-query-v5-vendorv5';
+            // }
             // End
 
             // Everything else falls into a generic vendor chunk.
