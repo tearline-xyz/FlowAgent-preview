@@ -24,6 +24,7 @@ interface IProps {
   currentChain: AllChainData | null;
 
   userAddress: string | undefined;
+  slippage:string
 }
 
 export default function useOkxSwap({
@@ -31,8 +32,8 @@ export default function useOkxSwap({
                                      outputJetton,
                                      inputAmount,
                                      currentChain,
-
                                      userAddress,
+                                     slippage
                                    }: IProps) {
   // console.log('inputJetton', inputJetton)
   // console.log('outputJetton', outputJetton)
@@ -210,7 +211,7 @@ export default function useOkxSwap({
       amount: inputAmount1,
       from_token_address: inputJetton.tokenContractAddress,
       to_token_address: outputJetton.tokenContractAddress,
-      slippage: 20 / 100 + '',
+      slippage: Number(slippage) / 100 + '',
       user_wallet_address: userAddress,
     };
     if (ids) {

@@ -7,6 +7,7 @@ interface IProps {
   inputAmount: string;
   currentChain: AllChainData | null;
   userAddress: string | undefined;
+  slippage:string;
 }
 
 export default function useSwapStation({
@@ -15,6 +16,7 @@ export default function useSwapStation({
                                          inputAmount,
                                          currentChain,
                                          userAddress,
+                                         slippage
                                        }: IProps) {
   const {
     toTradeAmount,
@@ -29,6 +31,7 @@ export default function useSwapStation({
     inputAmount,
     currentChain,
     userAddress,
+    slippage
   });
 
   return {

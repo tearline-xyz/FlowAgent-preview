@@ -100,11 +100,11 @@ export const Api = {
     approveTransaction: '/okx/api/v1/dex/approve/transaction', // 授权
     quote: '/okx/api/v1/dex/aggregator/quote', // 获取价格
     swap: '/okx/api/v1/dex/aggregator/swap', // swap
-    walletAllTokenBalances: '/api/v1/dex/asset/token_balance_by_address', // 获取所在链所有token余额
-    realTimePrice: '/api/v1/dex/token/real_time_price',
-    tokenDetail: '/api/v1/dex/token/token_detail',
-    tokenList: '/api/v1/dex/token/list',
-    tokenSearch: '/api/v1/dex/token/search',
+    walletAllTokenBalances: '/okx/api/v1/dex/asset/token_balance_by_address', // 获取所在链所有token余额
+    realTimePrice: '/okx/api/v1/dex/token/real_time_price',
+    tokenDetail: '/okx/api/v1/dex/token/token_detail',
+    tokenList: '/okx/api/v1/dex/token/list',
+    tokenSearch: '/okx/api/v1/dex/token/search',
 
 
     priceChart: '/api/v1/dex/price/chart',

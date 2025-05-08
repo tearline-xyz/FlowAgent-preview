@@ -270,7 +270,7 @@ export const logoList: AllChainData[] = [
   },
 ].map(d => ({
   ...d,
-  imgUrl: `${import.meta.env.VITE_APP_STATIC}/chain/${d.imgUrl}`,
+  imgUrl: `https://www.tearline.xyz/statics/image1/chain/${d.imgUrl}`,
 }));
 
 export function getChainLogo(chainId: number | undefined | any) {

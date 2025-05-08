@@ -118,3 +118,16 @@ export interface LiquidityInterface {
   logo: string;
   checked: boolean;
 }
+
+export interface ChatTransaction {
+  chain_id: number;
+  chain_name: string;
+  from_amount: string;
+  from_coin: string;
+  from_decimal: number;
+  from_symbol: string;
+  to_amount: string;
+  to_coin: string;
+  to_decimal: number;
+  to_symbol: string;
+}

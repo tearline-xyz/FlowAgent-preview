@@ -8,8 +8,10 @@ import {
   useAppKitState,
   useAppKitProvider,
 } from '@reown/appkit/react';
-
+import { useAppKitConnection } from '@reown/appkit-adapter-solana/react';
+import type { Provider } from '@reown/appkit-adapter-solana/react';
 const useCustomWeb3Modal = () => {
+  const { connection } = useAppKitConnection();
   const { open, close } = useAppKit();
   const {
     address: currAddress,
@@ -25,6 +27,7 @@ const useCustomWeb3Modal = () => {
   // console.log('walletInfo', walletInfo);
   const { switchNetwork, chainId } = useAppKitNetwork();
   const { walletProvider } = useAppKitProvider('eip155');
+  const { walletProvider: walletProviderSol } = useAppKitProvider<Provider>('solana');
   const [account, setAccount] = useState<string | undefined>('');
   let evmChain =
     isConnected &&
@@ -70,6 +73,8 @@ const useCustomWeb3Modal = () => {
     solChain,
     embeddedWalletInfo,
     disconnect,
+    connection,
+    walletProviderSol
   };
 };
 

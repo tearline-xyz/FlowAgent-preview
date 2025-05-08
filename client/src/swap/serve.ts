@@ -2,7 +2,7 @@
 import request from '~/axios';
 import { Api } from '~/axios/api';
 
-import { DefaultTokenAddr } from '~/swap/contract';
+import { DefaultTokenAddr } from '~/swap/const/contract';
 
 export const FILE_BASE_URL = 'https://static.tearline.xyz';
 export function getJettonImgUrl(path: string): string {
