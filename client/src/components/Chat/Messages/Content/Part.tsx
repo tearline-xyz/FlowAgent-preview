@@ -19,6 +19,8 @@ import ToolCall from './ToolCall';
 import ImageGen from './ImageGen';
 import Text from './Parts/Text';
 import Image from './Image';
+import SolButton from '../../Swap/SolButton';
+import SwapWarp from '../../Swap/SwapWarp';
 
 type PartProps = {
   part?: TMessageContentParts;
@@ -106,12 +108,14 @@ const Part = memo(
 
         // 使用更具体的类型而不是通用的 object
         const outputObj = JSON.parse(toolCall.output ?? '{}');
+        console.log('outputObj', outputObj);
+        console.log('data.acton', outputObj?.data?.action);
 
         return (
           // <div>a</div>
           <div>
-            {outputObj?.action === 'okx_swap_v1' ? (
-              <button>abcde</button>
+            {outputObj?.data?.acton === 'okx_swap_v1' ? (
+              <SwapWarp data={outputObj.data} />
             ) : (
               <ToolCall
                 args={toolCall.args ?? ''}

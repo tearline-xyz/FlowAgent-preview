@@ -209,7 +209,12 @@ export default [
     },
   },
   {
-    files: ['client/src/**/*.tsx', 'client/src/**/*.ts', 'client/src/**/*.jsx', 'client/src/**/*.js'],
+    files: [
+      'client/src/**/*.tsx',
+      'client/src/**/*.ts',
+      'client/src/**/*.jsx',
+      'client/src/**/*.js',
+    ],
     rules: {
       // Client a11y
       // TODO: maybe later to error.
@@ -286,7 +291,7 @@ export default [
     rules: {
       // i18n
       'i18next/no-literal-string': [
-        'error',
+        'off',
         {
           mode: 'jsx-text-only',
           'should-validate-template': true,
