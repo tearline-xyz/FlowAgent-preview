@@ -145,57 +145,7 @@ export default function SwapWarp({ data }: ISwapWarp) {
   }, 2000);
 
   const isMainChain = (tokenAddr: string) => Object.values(DefaultTokenAddr).some(i => i.toLocaleLowerCase() === tokenAddr.toLocaleLowerCase());
-
-  // const getTokenBalance = async () => {
-  //   if (!isConnected || !address) {
-  //     return;
-  //   }
-  //   if (evmChain) {
-  //     const sdk = new EtherInitApi(address, walletProvider, chainId);
-  //     if (inputJetton?.tokenContractAddress) {
-  //       let balanceFrom = '0';
-  //       if (isMainChain(inputJetton?.tokenContractAddress as string)) {
-  //         balanceFrom = await sdk.getBalance(address);
-  //       } else {
-  //         balanceFrom = await sdk.tokenBalance(inputJetton?.tokenContractAddress as string, address);
-  //       }
-  //       setInputJetton(prev => prev ? { ...prev, balance: balanceFrom } : null);
-  //     }
-  //     if (outputJetton?.tokenContractAddress) {
-  //       let balanceTo = '0';
-  //       if (isMainChain(outputJetton?.tokenContractAddress as string)) {
-  //         balanceTo = await sdk.getBalance(address);
-  //       } else {
-  //         balanceTo = await sdk.tokenBalance(outputJetton?.tokenContractAddress as string, address);
-  //       }
-  //       setOutputJetton(prev => prev ? { ...prev, balance: balanceTo } : null);
-  //     }
-  //   }
-  //   if (solChain) {
-  //     const sdkSol = new SolApi(address, connection, walletProviderSol);
-  //     if (inputJetton?.tokenContractAddress) {
-  //       let balanceSolFrom = '0';
-  //       if (isMainChain(inputJetton?.tokenContractAddress as string)) {
-  //         balanceSolFrom = await sdkSol.getBalance()
-  //       }else {
-  //         const tokenAccount= await sdkSol.getTokenAccount(inputJetton?.tokenContractAddress as string)
-  //         balanceSolFrom = await sdkSol.getTokenBalance(tokenAccount)
-  //       }
-  //       setInputJetton(prev => prev ? { ...prev, balance: balanceSolFrom } : null);
-  //     }
-  //     if (outputJetton?.tokenContractAddress) {
-  //       let balanceSolTo = '0';
-  //       if (isMainChain(outputJetton?.tokenContractAddress as string)) {
-  //         balanceSolTo = await sdkSol.getBalance()
-  //       }else {
-  //         const tokenAccount= await sdkSol.getTokenAccount(outputJetton?.tokenContractAddress as string)
-  //         balanceSolTo = await sdkSol.getTokenBalance(tokenAccount)
-  //       }
-  //       setOutputJetton(prev => prev ? { ...prev, balance: balanceSolTo } : null);
-  //     }
-  //   }
-  // };
-
+  
   const getTokenBalance = async () => {
     if (!isConnected || !address) return;
 
