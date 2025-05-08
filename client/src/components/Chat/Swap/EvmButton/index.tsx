@@ -2,7 +2,8 @@
 import {DisabledSwap, ErrorSwapOKXCode } from '~/swap/const/error-code';
 
 import {DefaultTokenAddr} from '~/swap/const/contract';
-import {Button} from '~/components/ui';
+// import {Button} from '~/components/ui';
+import Button from '~/components/Mui/Button';
 import { AllChainData, IServerJetton } from '~/swap/interface';
 import { EtherInitApi } from '~/swap/const/erher-api';
 import React, { useState } from 'react';
@@ -133,8 +134,6 @@ export default function EvmButton({
       setSwapStatus('swap');
       const id_s = getIds;
       const etherApi = new EtherInitApi(address, walletProvider);
-      // @ts-ignore
-      window.gtag('event', `swap_evm_chain`);
       swapERC20(id_s, async (data: any) => {
         if (Number(data.code) === 0) {
           const swapData = data.data;

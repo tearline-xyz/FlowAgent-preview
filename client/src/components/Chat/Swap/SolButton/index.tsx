@@ -1,5 +1,5 @@
 import { DisabledSwap, ErrorSwapOKXCode } from '~/swap/const/error-code';
-import { Button } from '~/components/ui';
+import Button from '~/components/Mui/Button';
 import { AllChainData, IServerJetton } from '~/swap/interface';
 // import { EtherInitApi } from '~/swap/const/erher-api';
 
@@ -111,8 +111,7 @@ export default function SolButton({
       // setLoading(true)
       // const response = await getSwap(params);
       // const response = await axiosSwap(params);
-      // @ts-ignore
-      window.gtag('event', `swap_sol_chain`);
+
       swapERC20(getIds, async (response: any) => {
         // console.log('Full API Response:', response);
         // setLoading(false)

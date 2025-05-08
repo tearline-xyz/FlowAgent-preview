@@ -37,14 +37,14 @@ export const SwapHeaderRightWalletBox = styled(Box)(({ theme }) => ({
   },
 }));
 export const SwapHeaderRowAccount = styled(Box)(({ theme }) => ({
-  height: '3.9rem',
+  height: '2.5rem',
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
   background: '#191B1F',
   borderRadius: '12px',
   [theme.breakpoints.down('sm')]:{
-    height: '3rem',
+    height: '30px',
   }
 }));
 
@@ -54,7 +54,7 @@ export const SwapHeaderAccountBox = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   color: 'white',
-  fontSize: '1.5rem',
+  fontSize: '0.9rem',
   fontFamily: 'Helvetica',
   fontWeight: 700,
   wordWrap: 'break-word',
@@ -64,19 +64,19 @@ export const SwapHeaderAccountBox = styled(Box)(({ theme }) => ({
   height: '100%',
   cursor: 'pointer',
   '& .SelectChatPng': {
-    height: '0.5rem',
+    height: '0.3rem',
     marginLeft: '7px',
   },
   '& .AccountPng': {
-    height: '2.4rem',
-    width: '2.4rem',
+    height: '1.5rem',
+    width: '1.5rem',
     marginRight: '7px',
   },
   [theme.breakpoints.down('sm')]:{
     fontSize: '1.1rem',
     '& .AccountPng': {
-      height: '1.7rem',
-      width: '1.7rem',
+      height: '1rem',
+      width: '1rem',
       marginRight: '3px',
     },
   }

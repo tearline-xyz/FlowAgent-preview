@@ -1,6 +1,6 @@
 
 
-import { Button } from '~/components/ui';
+import Button from '~/components/Mui/Button';
 import React, { useEffect } from 'react';
 import {ConnectSol, ConnectEvm} from '~/components/Account/hooks/useCustomWeb3Modal';
 import useCustomWeb3Modal from '~/components/Account/hooks/useCustomWeb3Modal';
