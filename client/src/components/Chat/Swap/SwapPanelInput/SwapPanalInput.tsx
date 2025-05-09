@@ -16,7 +16,7 @@ import { useEffect, useState } from 'react';
 import { filterNumberPipe, getAssetsInfo } from '~/swap/util';
 import { ToFixedPipe } from '~/swap/const/bignumber';
 import { getChainLogo } from '~/swap/const/contract';
-
+import BigNumber from 'bignumber.js';
 interface SwapPanelInputBoxProps {
   inputValue: string;
   disabled: boolean;

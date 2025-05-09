@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import {
   axiosSupportedChain,
   axiosLiquidity,
@@ -66,8 +66,8 @@ interface ISwapWarp {
   };
 }
 
-export default function SwapWarp({ data }: ISwapWarp) {
-  console.log('SwapWarp', data);
+const SwapWarp = memo(({ data }: ISwapWarp)=>{
+  // console.log('SwapWarp', data);
   const [slippage, setSlippage] = useState<string>('0.5');
   const [inputValue, setInputValue] = useState<string>('');
   const [liquidityList, setLiquidityList] = useState<LiquidityInterface[]>([]);
@@ -99,7 +99,7 @@ export default function SwapWarp({ data }: ISwapWarp) {
       userAddress: address,
       slippage,
     });
-  console.log('toTradeAmount', toTradeAmount);
+  // console.log('toTradeAmount', toTradeAmount);
 
   useEffect(() => {
     getTokenBalance();
@@ -147,7 +147,7 @@ export default function SwapWarp({ data }: ISwapWarp) {
   }, []);
   useInterval(() => {
     getTokenBalance();
-  }, 2000);
+  }, 5000);
 
   const isMainChain = (tokenAddr: string) =>
     Object.values(DefaultTokenAddr).some(
@@ -168,12 +168,18 @@ export default function SwapWarp({ data }: ISwapWarp) {
       let balance = '0';
 
       if (evmChain) {
-        const sdk = new EtherInitApi(address, walletProvider, chainId);
+        let sdk = null;
+        if (!sdk){
+          sdk = new EtherInitApi(address, walletProvider, chainId);
+        }
         balance = isMainChain(jetton.tokenContractAddress)
           ? await sdk.getBalance(address)
           : await sdk.tokenBalance(jetton.tokenContractAddress, address);
       } else if (solChain) {
-        const sdkSol = new SolApi(address, connection, walletProviderSol);
+        let sdkSol = null;
+        if (!sdkSol){
+          sdkSol = new SolApi(address, connection, walletProviderSol);
+        }
         if (isMainChain(jetton.tokenContractAddress)) {
           balance = await sdkSol.getBalance();
         } else {
@@ -316,8 +322,8 @@ export default function SwapWarp({ data }: ISwapWarp) {
           inputValue={
             inputValue
               ? toTradeAmount
-                ? ToFixedPipe(toTradeAmount, Number(toTradeAmount) > 10 ? 4 : 8, 1)
-                : ''
+              ? ToFixedPipe(toTradeAmount, Number(toTradeAmount) > 10 ? 4 : 8, 1)
+              : ''
               : ''
           }
           jettonData={outputJetton}
@@ -385,4 +391,5 @@ export default function SwapWarp({ data }: ISwapWarp) {
       <CheckNetwork setChainNumber={setChainNumber} chainNumber={chainNumber} />
     </DivSwapPanel>
   );
-}
+})
+export default SwapWarp;

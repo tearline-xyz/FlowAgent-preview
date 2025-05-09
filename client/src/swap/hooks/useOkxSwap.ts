@@ -234,10 +234,13 @@ export default function useOkxSwap({
     });
   };
   useEffect(() => {
+    // console.log('inputJetton', inputJetton);
+    // console.log('outputJetton', outputJetton);
+    // console.log('inputAmount', inputAmount);
     getSwapQuote();
     return () => {
     };
-  }, [inputJetton, outputJetton, inputAmount]);
+  }, [inputJetton?.tokenContractAddress, outputJetton?.tokenContractAddress, inputAmount]);
   useEffect(() => {
     setDealy(null);
     if (inputAmount) {

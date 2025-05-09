@@ -60,10 +60,10 @@ export class SolApi {
     try {
       const balance = await this.connection.getTokenAccountBalance(new PublicKey(tokenAccount));
       if (balance.value.uiAmount !== null) {
-        console.log(`PYTH Balance: ${balance.value.uiAmount}`);
+        // console.log(`PYTH Balance: ${balance.value.uiAmount}`);
         return balance.value.uiAmount+'';
       } else {
-        console.log('No PYTH tokens found in this wallet.');
+        console.log('No tokens found in this wallet.');
         return '0';
       }
     } catch (error) {

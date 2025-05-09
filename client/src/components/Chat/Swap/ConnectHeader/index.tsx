@@ -59,7 +59,7 @@ export default function ConnectHeader() {
     }
   };
   return (
-    <SwapHeaderRight id={'SwapHeaderRight'}>
+    <SwapHeaderRight id={'SwapHeaderRight'} className='mr-3'>
       <SwapHeaderRightWalletBox className={classNames(
         isConnected ? 'ConnectSuccess' : 'NotConnect',
       )}>
