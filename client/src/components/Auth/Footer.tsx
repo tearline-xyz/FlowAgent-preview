@@ -1,5 +1,6 @@
 import { useLocalize } from '~/hooks';
 import { TStartupConfig } from 'librechat-data-provider';
+import { LinkOpen } from '~/swap/const/link';
 
 function Footer({ startupConfig }: { startupConfig: TStartupConfig | null | undefined }) {
   const localize = useLocalize();
@@ -12,7 +13,7 @@ function Footer({ startupConfig }: { startupConfig: TStartupConfig | null | unde
   const privacyPolicyRender = privacyPolicy?.externalUrl && (
     <a
       className="text-sm text-green-500"
-      href={'https://www.tearline.io/privacy'}
+      href={LinkOpen.privacy}
       target={privacyPolicy.openNewTab ? '_blank' : undefined}
       rel="noreferrer"
     >
@@ -23,7 +24,7 @@ function Footer({ startupConfig }: { startupConfig: TStartupConfig | null | unde
   const termsOfServiceRender = termsOfService?.externalUrl && (
     <a
       className="text-sm text-green-500"
-      href={'https://www.tearline.io/terms'}
+      href={LinkOpen.terms}
       target={termsOfService.openNewTab ? '_blank' : undefined}
       rel="noreferrer"
     >
