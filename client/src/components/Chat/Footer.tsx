@@ -15,7 +15,7 @@ export default function Footer({ className }: { className?: string }) {
   const privacyPolicyRender = privacyPolicy?.externalUrl != null && (
     <a
       className="text-text-secondary underline"
-      href={privacyPolicy.externalUrl}
+      href={'https://www.tearline.io/privacy'}
       target={privacyPolicy.openNewTab === true ? '_blank' : undefined}
       rel="noreferrer"
     >
@@ -26,7 +26,7 @@ export default function Footer({ className }: { className?: string }) {
   const termsOfServiceRender = termsOfService?.externalUrl != null && (
     <a
       className="text-text-secondary underline"
-      href={termsOfService.externalUrl}
+      href={'https://www.tearline.io/terms'}
       target={termsOfService.openNewTab === true ? '_blank' : undefined}
       rel="noreferrer"
     >
@@ -35,12 +35,9 @@ export default function Footer({ className }: { className?: string }) {
   );
 
   const mainContentParts = (
-    typeof config?.customFooter === 'string'
-      ? config.customFooter
-      : '[LibreChat ' +
-        Constants.VERSION +
-        '](https://librechat.ai) - ' +
-        localize('com_ui_latest_footer')
+    '[tearline.io ' +
+    '](https://www.tearline.io/) - ' +
+    localize('com_ui_latest_footer')
   ).split('|');
 
   useEffect(() => {

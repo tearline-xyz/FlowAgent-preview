@@ -78,13 +78,13 @@ function AccountSettings() {
         {startupConfig?.balance?.enabled === true &&
           balanceQuery.data != null &&
           !isNaN(parseFloat(balanceQuery.data)) && (
-          <>
-            <div className="text-token-text-secondary ml-3 mr-2 py-2 text-sm" role="note">
-              {localize('com_nav_balance')}: {parseFloat(balanceQuery.data).toFixed(2)}
-            </div>
-            <DropdownMenuSeparator />
-          </>
-        )}
+            <>
+              <div className="text-token-text-secondary ml-3 mr-2 py-2 text-sm" role="note">
+                {localize('com_nav_balance')}: {parseFloat(balanceQuery.data).toFixed(2)}
+              </div>
+              <DropdownMenuSeparator />
+            </>
+          )}
         <Select.SelectItem
           value=""
           onClick={() => setShowFiles(true)}
@@ -93,7 +93,7 @@ function AccountSettings() {
           <FileText className="icon-md" aria-hidden="true" />
           {localize('com_nav_my_files')}
         </Select.SelectItem>
-        {startupConfig?.helpAndFaqURL !== '/' && (
+        {/* {startupConfig?.helpAndFaqURL !== '/' && (
           <Select.SelectItem
             value=""
             onClick={() => window.open(startupConfig?.helpAndFaqURL, '_blank')}
@@ -102,7 +102,7 @@ function AccountSettings() {
             <LinkIcon aria-hidden="true" />
             {localize('com_nav_help_faq')}
           </Select.SelectItem>
-        )}
+        )} */}
         <Select.SelectItem
           value=""
           onClick={() => setShowSettings(true)}
