@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { filterNumberPipe } from '~/swap/util';
 import {
   CustomTextField,
@@ -8,9 +8,14 @@ import {
   SwapSlippageSetRow,
 } from './useSwapSlippageStyle';
 import { InputAdornment } from '@mui/material';
+interface ISwapSlippage{
+  slippage:string;
+  setSlippage:React.Dispatch<React.SetStateAction<string>>
+}
 
-export default function SwapSlippage() {
-  const [value, setValue] = useState<string>('');
+
+export default function SwapSlippage({setSlippage,slippage}:ISwapSlippage) {
+  // const [value, setValue] = useState<string>('');
 
   const inputChange = async (e) => {
     const val: string = filterNumberPipe(
@@ -18,7 +23,7 @@ export default function SwapSlippage() {
       8,
       true,
     );
-    setValue(val);
+    setSlippage(val);
   };
 
   //   useEffect(() => {
@@ -36,18 +41,18 @@ export default function SwapSlippage() {
       value: 1,
     },
   ];
-  console.log('list', list);
+  // console.log('list', list);
 
   return (
     <SwapSlippageRoot>
-      <SwapSlippageRow>Swap Slippage: {value}%</SwapSlippageRow>
+      <SwapSlippageRow>Swap Slippage: {slippage}%</SwapSlippageRow>
       <SwapSlippageSetRow>
         {list.map((d: { value: number }, index) => {
           return (
             <SwapSlippageItem
               key={index}
               onClick={() => {
-                setValue(d.value + '');
+                setSlippage(d.value + '');
               }}
             >
               {d.value}%
@@ -64,7 +69,7 @@ export default function SwapSlippage() {
         {/*  1%*/}
         {/*</SwapSlippageItem>*/}
         <CustomTextField
-          value={value}
+          value={slippage}
           onChange={inputChange}
           //   onBlur={onBlur}
           placeholder={'0.1-50'}

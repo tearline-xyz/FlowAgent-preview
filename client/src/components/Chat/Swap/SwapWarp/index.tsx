@@ -335,7 +335,7 @@ const SwapWarp = memo(({ data }: ISwapWarp) => {
           currentChainInfo={currentChainInfo}
         />
       </DivSwapPanelBox>
-      <SwapSlippage />
+      <SwapSlippage setSlippage={setSlippage} slippage={slippage}/>
       {!isConnected ? (
         <ConnectWallet
           isSwitch={isSwitch}

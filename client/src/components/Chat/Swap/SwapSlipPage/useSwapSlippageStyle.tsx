@@ -1,12 +1,12 @@
 import { Box, styled } from '@mui/system';
 import TextField from '@mui/material/TextField';
-
+export const calculateRem=(d: number)=>d*10/16;
 export const SwapSlippageRoot = styled(Box)(({ theme }) => ({
-  marginBottom: '2.9rem',
+  marginBottom: `${calculateRem(2.9)}rem`,
 }));
 export const SwapSlippageRow = styled(Box)(({ theme }) => ({
   color: '#FAFAFA',
-  fontSize: '1.4rem',
+  fontSize: `${calculateRem(1.4)}rem`,
   fontFamily: 'Helvetica',
   fontWeight: 400,
   wordWrap: 'break-word',
@@ -19,8 +19,8 @@ export const SwapSlippageSetRow = styled(Box)(({ theme }) => ({
   gap: '6px',
 }));
 export const SwapSlippageItem = styled(Box)(({ theme }) => ({
-  color: 'rgba(255;255;255;0.92)',
-  fontSize: '1.4rem',
+  color: 'rgba(255,255,255,0.92)',
+  fontSize: `${calculateRem(1.4)}rem`,
   fontFamily: 'Helvetica',
   fontWeight: 400,
   wordWrap: 'break-word',
@@ -29,9 +29,9 @@ export const SwapSlippageItem = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   borderRadius: '6px',
-  height: '60px',
+  height: `${calculateRem(4)}rem`,
   padding: '0 8px',
-  minWidth: '4rem',
+  minWidth: `${calculateRem(4)}rem`,
   cursor: 'pointer',
 }));
 export const CustomTextField = styled(TextField)(({ theme }) => ({
@@ -42,16 +42,16 @@ export const CustomTextField = styled(TextField)(({ theme }) => ({
 
   '& .MuiInputBase-root': {
     padding: 0,
-    width: '12rem',
-    height: '60px',
-    borderRadius: '1.2rem',
+    width: `${calculateRem(12)}rem`,
+    height: `${calculateRem(4)}rem`,
+    borderRadius: '10px',
     letterSpacing: '-0.45px',
     border: 'none',
 
     background: `#151515`,
 
     color: '#FAFAFA',
-    fontSize: '1.4rem',
+    fontSize: `${calculateRem(1.4)}rem`,
     fontFamily: 'Helvetica',
     fontWeight: 400,
     wordWrap: 'break-word',
@@ -71,7 +71,7 @@ export const CustomTextField = styled(TextField)(({ theme }) => ({
       // color: `${theme.palette.text.primary}`,
     },
     '& .MuiTypography-root': {
-      fontSize: '1.4rem',
+      fontSize: `${calculateRem(1.4)}rem`,
       // padding: '0 2rem',
       // fontFamily: 'Inter',
       // fontWeight: 400,

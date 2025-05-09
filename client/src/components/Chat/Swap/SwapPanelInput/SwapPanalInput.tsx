@@ -89,7 +89,7 @@ export default function SwapPanelInputBox({
           placeholder="0"
           value={inputValue}
           onChange={inputChange}
-          //   disabled={disabled}
+          disabled={disabled}
         />
       </SwapPanelRow>
       <RateBox>

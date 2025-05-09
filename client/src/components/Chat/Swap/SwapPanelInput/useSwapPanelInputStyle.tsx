@@ -1,40 +1,39 @@
 import { Box, styled } from '@mui/system';
 import { InputBase } from '@mui/material';
-// import SelectChatPng from '@src/assets/image/swap/select-swap.png';
 import { getImageUrl } from '~/swap/util/image-url';
-
+import { calculateRem } from '~/components/Chat/Swap/SwapSlipPage/useSwapSlippageStyle';
 export const SwapPanelInputBoxRoot = styled(Box)(({ theme }) => ({
   width: '100%',
   height: '100%',
   background: '#141619',
-  padding: '1.6rem',
+  padding: `0.77rem`,
   borderRadius: '12px',
 }));
 export const SwapPanelRow = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  padding: '0.5rem 0',
+  padding: `${calculateRem(0.5)}rem 0`,
 }));
 export const SwapPanelFlexCenter = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   cursor: 'pointer',
   '& .logo': {
-    width: '1.4rem',
-    height: '1.4rem',
-    marginRight: '0.4rem',
+    width: `${calculateRem(1.4)}rem`,
+    height: `${calculateRem(1.4)}rem`,
+    marginRight: `${calculateRem(0.4)}rem`,
   },
   '& .logoBig': {
-    width: '2rem',
-    height: '2rem',
+    width: `${calculateRem(2)}rem`,
+    height: `${calculateRem(2)}rem`,
     borderRadius: '50%',
-    marginRight: '0.5rem',
+    marginRight: '0.3rem',
   },
 }));
 export const SwapPanelFlexCenterBg = styled(SwapPanelFlexCenter)(({ theme }) => ({
   backgroundColor: '#222429',
-  padding: '0.8rem 4rem 0.8rem 1rem',
+  padding: '0.5rem 3.3rem 0.5rem 0.7rem',
   borderRadius: '10px',
   position: 'relative',
   transaction: 'all 2s',
@@ -57,7 +56,7 @@ export const SwapPanelFlexCenterBg = styled(SwapPanelFlexCenter)(({ theme }) => 
 
 export const SwapPanelLabel = styled(Box)(({ theme }) => ({
   color: '#A2A2A2',
-  fontSize: '1.4rem',
+  fontSize:`${calculateRem(1.4)}rem`,
   fontFamily: 'Helvetica',
   fontWeight: 400,
   wordWrap: 'break-word',
@@ -65,7 +64,7 @@ export const SwapPanelLabel = styled(Box)(({ theme }) => ({
 }));
 export const SwapPanelChain = styled(Box)(({ theme }) => ({
   color: 'white',
-  fontSize: '1.4rem',
+  fontSize: `${calculateRem(1.4)}rem`,
   fontFamily: 'Helvetica',
   fontWeight: 400,
   wordWrap: 'break-word',
@@ -73,7 +72,7 @@ export const SwapPanelChain = styled(Box)(({ theme }) => ({
 }));
 export const SwapPanelToken = styled(Box)(({ theme }) => ({
   color: 'white',
-  fontSize: '1.6rem',
+  fontSize: `${calculateRem(1.6)}rem`,
   fontFamily: 'Helvetica',
   fontWeight: 400,
   wordWrap: 'break-word',
@@ -81,14 +80,14 @@ export const SwapPanelToken = styled(Box)(({ theme }) => ({
 }));
 export const BalanceBox = styled(Box)(({ theme }) => ({
   color: '#A2A2A2',
-  fontSize: '14px',
+  fontSize: `${calculateRem(1.4)}rem`,
   fontFamily: 'Helvetica',
   fontWeight: 400,
   wordWrap: 'break-word',
   paddingRight: '0.5rem',
 }));
 export const MaxBox = styled(Box)(({ theme }) => ({
-  fontSize: '1.4rem',
+  fontSize: `${calculateRem(1.4)}rem`,
   fontFamily: 'Helvetica',
   fontWeight: 400,
   color: '#ffffff',
@@ -100,7 +99,7 @@ export const RateBox = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'flex-end',
   color: '#A2A2A2',
-  fontSize: '1.37rem',
+  fontSize: `${calculateRem(1.37)}rem`,
   fontFamily: 'Helvetica',
   fontWeight: 300,
   wordWrap: 'break-word',
@@ -110,12 +109,16 @@ export const DivSwapPanelInputBox = styled(InputBase)(({ theme }) => ({
   '& > input': {
     textAlign: 'right',
     color: 'white',
-    fontSize: '3.6rem',
+    fontSize: `${calculateRem(3.6)}rem`,
     fontFamily: 'Helvetica',
     fontWeight: 400,
-    lineHeight: '3.6rem',
-    height: '3.1rem',
+    lineHeight:`${calculateRem(3.6)}rem`,
+    height: `${calculateRem(3.1)}rem`,
     padding: 0,
     wordWrap: 'break-word',
+    '&.Mui-disabled':{
+      '-webkit-text-fill-color':'rgba(245, 244, 240, 0.5)',
+      cursor: 'default'
+    }
   },
 }));
