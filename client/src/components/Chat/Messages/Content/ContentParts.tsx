@@ -9,6 +9,7 @@ import { mapAttachments } from '~/utils/map';
 import { MessageContext } from '~/Providers';
 import store from '~/store';
 import Part from './Part';
+import SwapWarp from '../../Swap/SwapWarp';
 
 type ContentPartsProps = {
   content: Array<TMessageContentParts | undefined> | undefined;
@@ -72,10 +73,26 @@ const ContentParts = memo(
       return null;
     }
 
-    console.log('edit === true && enterEdit && setSiblingIdx', edit === true && enterEdit && setSiblingIdx);
-    console.log('enterEdit', enterEdit);
-    console.log('setSiblingIdx', setSiblingIdx);
-    console.log('hasReasoningParts', hasReasoningParts);
+    // 检查是否有 okx_swap_v1 类型的工具调用
+    const swapToolPart = content.find((p) => {
+      if (p?.type === ContentTypes.TOOL_CALL) {
+        const toolCall = p[ContentTypes.TOOL_CALL];
+        if (toolCall && 'args' in toolCall) {
+          try {
+            const output = JSON.parse(toolCall.output ?? '{}');
+            return output?.data?.acton === 'okx_swap_v1';
+          } catch (e) {
+            return false;
+          }
+        }
+      }
+      return false;
+    });
+
+    const swapData =
+      swapToolPart && swapToolPart.type === ContentTypes.TOOL_CALL
+        ? JSON.parse(swapToolPart[ContentTypes.TOOL_CALL]?.output ?? '{}').data
+        : null;
     if (edit === true && enterEdit && setSiblingIdx) {
       return (
         <>
@@ -127,6 +144,21 @@ const ContentParts = memo(
               (part?.[ContentTypes.TOOL_CALL] as Agents.ToolCall | undefined)?.id ?? '';
             const attachments = attachmentMap[toolCallId];
 
+            // 如果是 okx_swap_v1 类型的工具调用，则不渲染
+            if (part?.type === ContentTypes.TOOL_CALL) {
+              const toolCall = part[ContentTypes.TOOL_CALL];
+              if (toolCall && 'args' in toolCall) {
+                try {
+                  const output = JSON.parse(toolCall.output ?? '{}');
+                  if (output?.data?.acton === 'okx_swap_v1') {
+                    return null;
+                  }
+                } catch (e) {
+                  // 解析错误，继续正常渲染
+                }
+              }
+            }
+
             return (
               <MessageContext.Provider
                 key={`provider-${messageId}-${idx}`}
@@ -150,6 +182,7 @@ const ContentParts = memo(
               </MessageContext.Provider>
             );
           })}
+        {swapData && <SwapWarp data={swapData} />}
       </>
     );
   },
