@@ -29,7 +29,7 @@ export const SwapSlippageItem = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   borderRadius: '6px',
-  height: '32px',
+  height: '60px',
   padding: '0 8px',
   minWidth: '4rem',
   cursor: 'pointer',
@@ -43,7 +43,7 @@ export const CustomTextField = styled(TextField)(({ theme }) => ({
   '& .MuiInputBase-root': {
     padding: 0,
     width: '12rem',
-    height: '32px',
+    height: '60px',
     borderRadius: '1.2rem',
     letterSpacing: '-0.45px',
     border: 'none',

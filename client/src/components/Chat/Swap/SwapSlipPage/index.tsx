@@ -36,14 +36,16 @@ export default function SwapSlippage() {
       value: 1,
     },
   ];
+  console.log('list', list);
+
   return (
     <SwapSlippageRoot>
-      <SwapSlippageRow>Swap Slippage: {50}%</SwapSlippageRow>
+      <SwapSlippageRow>Swap Slippage: {value}%</SwapSlippageRow>
       <SwapSlippageSetRow>
-        {list.map((d: { value: number }) => {
+        {list.map((d: { value: number }, index) => {
           return (
             <SwapSlippageItem
-              key={value}
+              key={index}
               onClick={() => {
                 setValue(d.value + '');
               }}

@@ -66,7 +66,7 @@ interface ISwapWarp {
   };
 }
 
-const SwapWarp = memo(({ data }: ISwapWarp)=>{
+const SwapWarp = memo(({ data }: ISwapWarp) => {
   // console.log('SwapWarp', data);
   const [slippage, setSlippage] = useState<string>('0.5');
   const [inputValue, setInputValue] = useState<string>('');
@@ -169,7 +169,7 @@ const SwapWarp = memo(({ data }: ISwapWarp)=>{
 
       if (evmChain) {
         let sdk = null;
-        if (!sdk){
+        if (!sdk) {
           sdk = new EtherInitApi(address, walletProvider, chainId);
         }
         balance = isMainChain(jetton.tokenContractAddress)
@@ -177,7 +177,7 @@ const SwapWarp = memo(({ data }: ISwapWarp)=>{
           : await sdk.tokenBalance(jetton.tokenContractAddress, address);
       } else if (solChain) {
         let sdkSol = null;
-        if (!sdkSol){
+        if (!sdkSol) {
           sdkSol = new SolApi(address, connection, walletProviderSol);
         }
         if (isMainChain(jetton.tokenContractAddress)) {
@@ -322,8 +322,8 @@ const SwapWarp = memo(({ data }: ISwapWarp)=>{
           inputValue={
             inputValue
               ? toTradeAmount
-              ? ToFixedPipe(toTradeAmount, Number(toTradeAmount) > 10 ? 4 : 8, 1)
-              : ''
+                ? ToFixedPipe(toTradeAmount, Number(toTradeAmount) > 10 ? 4 : 8, 1)
+                : ''
               : ''
           }
           jettonData={outputJetton}
@@ -335,7 +335,7 @@ const SwapWarp = memo(({ data }: ISwapWarp)=>{
           currentChainInfo={currentChainInfo}
         />
       </DivSwapPanelBox>
-      {/* <SwapSlippage /> */}
+      <SwapSlippage />
       {!isConnected ? (
         <ConnectWallet
           isSwitch={isSwitch}
@@ -391,5 +391,5 @@ const SwapWarp = memo(({ data }: ISwapWarp)=>{
       <CheckNetwork setChainNumber={setChainNumber} chainNumber={chainNumber} />
     </DivSwapPanel>
   );
-})
+});
 export default SwapWarp;
