@@ -48,7 +48,7 @@ import { SolanaAdapter } from '@reown/appkit-adapter-solana/react';
 // } from '@solana/wallet-adapter-wallets';
 
 // Get projectId from https://cloud.reown.com
-export const projectId = '9a10921ec64f1100d1b307ce3ad706d5';
+export const projectId = '4a6d177c3d32e2e96adc6710de8bc875';
 if (!projectId) {
   throw new Error('Project ID is not defined');
 }
