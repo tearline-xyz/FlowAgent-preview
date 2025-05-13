@@ -131,3 +131,11 @@ export interface ChatTransaction {
   to_decimal: number;
   to_symbol: string;
 }
+
+export interface ChatDeposit {
+  amount_a: number;
+  amount_b: number;
+  pool_address: string;
+  tick_lower: number;
+  tick_upper: number;
+}

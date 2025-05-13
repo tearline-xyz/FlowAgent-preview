@@ -18,6 +18,7 @@ import { SolApi } from '~/swap/const/sol-api';
 import { ToFixedPipe } from '~/swap/const/bignumber';
 import ConnectUserInfo from '~/components/Chat/Swap/ConnectHeader/components/ConnectUserInfo';
 import ConnectWalletList from '~/components/Chat/Swap/ConnectHeader/components/ConnectWalletList';
+import { ConnectButton } from '@suiet/wallet-kit';
 export default function ConnectHeader() {
   const {
     isConnected,
@@ -34,8 +35,7 @@ export default function ConnectHeader() {
   useEffect(() => {
     let tokenName = getChainInfo(chainId, 'symbol');
     setSymbol(tokenName);
-    return () => {
-    };
+    return () => {};
   }, [chainId, isConnected]);
   useEffect(() => {
     loadData().then();
@@ -59,16 +59,16 @@ export default function ConnectHeader() {
     }
   };
   return (
-    <SwapHeaderRight id={'SwapHeaderRight'} className='mr-3'>
-      <SwapHeaderRightWalletBox className={classNames(
-        isConnected ? 'ConnectSuccess' : 'NotConnect',
-      )}>
+    <SwapHeaderRight id={'SwapHeaderRight'} className="mr-3">
+      <SwapHeaderRightWalletBox
+        className={classNames(isConnected ? 'ConnectSuccess' : 'NotConnect')}
+      >
         {isConnected ? (
           <SwapHeaderRowAccount>
             <SwapHeaderAccountBox>
-              <img className={'AccountPng'} src={getChainLogo(chainId)} alt='' />
+              <img className={'AccountPng'} src={getChainLogo(chainId)} alt="" />
               {isConnected ? truncateWalletAddr(address) : ''}
-              <img className={'SelectChatPng'} src={getImageUrl('swap/select-swap.png')} alt='' />
+              <img className={'SelectChatPng'} src={getImageUrl('swap/select-swap.png')} alt="" />
             </SwapHeaderAccountBox>
           </SwapHeaderRowAccount>
         ) : (
@@ -82,12 +82,9 @@ export default function ConnectHeader() {
           </Button>
         )}
         <ConnectWalletList className={'Header'} />
-        <ConnectUserInfo
-          balance={balance}
-          symbol={symbol}
-          userAdder={address}
-        />
+        <ConnectUserInfo balance={balance} symbol={symbol} userAdder={address} />
       </SwapHeaderRightWalletBox>
+      <ConnectButton />
     </SwapHeaderRight>
   );
 }

@@ -9,7 +9,9 @@ import { mapAttachments } from '~/utils/map';
 import { MessageContext } from '~/Providers';
 import store from '~/store';
 import Part from './Part';
+import BN from 'bignumber.js';
 import SwapWarp from '../../Swap/SwapWarp';
+import DepositWrap from '../../deposit/depositeWrap';
 
 type ContentPartsProps = {
   content: Array<TMessageContentParts | undefined> | undefined;
@@ -73,26 +75,41 @@ const ContentParts = memo(
       return null;
     }
 
-    // 检查是否有 okx_swap_v1 类型的工具调用
-    const swapToolPart = content.find((p) => {
+    let swapToolPart;
+    let depositToolPart;
+
+    // 检查是否有 okx_swap_v1 与 cetus_deposit_v1 类型的工具调用
+    content.forEach((p) => {
       if (p?.type === ContentTypes.TOOL_CALL) {
         const toolCall = p[ContentTypes.TOOL_CALL];
         if (toolCall && 'args' in toolCall) {
           try {
             const output = JSON.parse(toolCall.output ?? '{}');
-            return output?.data?.acton === 'okx_swap_v1';
+            const outputAction = output?.data?.action;
+            const outputActon = output?.data?.acton;
+
+            if (outputAction === 'okx_swap_v1' || outputActon === 'okx_swap_v1') {
+              swapToolPart = p;
+            } else if (outputAction === 'cetus_deposit_v1' || outputActon === 'cetus_deposit_v1') {
+              depositToolPart = p;
+            }
           } catch (e) {
-            return false;
+            // 解析错误，继续检查下一个
           }
         }
       }
-      return false;
     });
 
     const swapData =
       swapToolPart && swapToolPart.type === ContentTypes.TOOL_CALL
         ? JSON.parse(swapToolPart[ContentTypes.TOOL_CALL]?.output ?? '{}').data
         : null;
+    const depositeData =
+      depositToolPart && depositToolPart.type === ContentTypes.TOOL_CALL
+        ? JSON.parse(depositToolPart[ContentTypes.TOOL_CALL]?.output ?? '{}').data
+        : null;
+    console.log('depositeData::', depositeData);
+
     if (edit === true && enterEdit && setSiblingIdx) {
       return (
         <>
@@ -144,13 +161,22 @@ const ContentParts = memo(
               (part?.[ContentTypes.TOOL_CALL] as Agents.ToolCall | undefined)?.id ?? '';
             const attachments = attachmentMap[toolCallId];
 
-            // 如果是 okx_swap_v1 类型的工具调用，则不渲染
+            // 如果是 okx_swap_v1 或 cetus_deposit_v1 类型的工具调用，则不渲染
             if (part?.type === ContentTypes.TOOL_CALL) {
               const toolCall = part[ContentTypes.TOOL_CALL];
               if (toolCall && 'args' in toolCall) {
                 try {
                   const output = JSON.parse(toolCall.output ?? '{}');
-                  if (output?.data?.acton === 'okx_swap_v1') {
+                  const outputAction = output?.data?.action;
+                  const outputActon = output?.data?.acton;
+
+                  const isHidden =
+                    outputAction === 'okx_swap_v1' ||
+                    outputActon === 'okx_swap_v1' ||
+                    outputAction === 'cetus_deposit_v1' ||
+                    outputActon === 'cetus_deposit_v1';
+
+                  if (isHidden) {
                     return null;
                   }
                 } catch (e) {
@@ -183,6 +209,7 @@ const ContentParts = memo(
             );
           })}
         {swapData && <SwapWarp data={swapData} />}
+        {depositeData && <DepositWrap data={depositeData} />}
       </>
     );
   },
