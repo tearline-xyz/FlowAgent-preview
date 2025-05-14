@@ -10,7 +10,7 @@ export default function CheckNetwork({ chainNumber,setChainNumber }: ICheckNetwo
   const { chainId, isConnected, checkSwitchNetwork } = useCustomWeb3Modal();
   useEffect(() => {
     const load = async () => {
-      if (chainNumber === -1) return;
+      if (chainNumber === -1 || chainNumber===784) return;
       if (isConnected && chainId && chainId !== chainNumber) {
         if (chainNumber === 501) {
           if (chainId !== 501) {

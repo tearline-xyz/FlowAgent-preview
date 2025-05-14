@@ -1,18 +1,11 @@
 import { memo, useEffect, useState } from 'react';
-import {
-  axiosSupportedChain,
-  axiosLiquidity,
-  getTokenDetail,
-  axiosAggregatorQuote,
-} from '~/swap/serve';
-import { LiquidityInterface, AllChainData } from '~/swap/interface';
+import { axiosAggregatorQuote, axiosLiquidity, axiosSupportedChain, getTokenDetail } from '~/swap/serve';
 // import { logoList } from '~/swap/const/contract';
-import { IServerJetton } from '~/swap/interface';
+import { AllChainData, ChatTransaction, IServerJetton, LiquidityInterface } from '~/swap/interface';
 import useCustomWeb3Modal from '~/components/Account/hooks/useCustomWeb3Modal';
 import useSwapStation from '~/swap/hooks/useSwapStation';
-import { ChatTransaction } from '~/swap/interface';
 import { shiftedBy } from '~/swap/hooks/useOkxSwap';
-import { getChainInfo, getChainLogo } from '~/swap/const/contract';
+import { DefaultTokenAddr, getChainInfo } from '~/swap/const/contract';
 import ConnectWallet from '~/components/Chat/Swap/ConnectWalet';
 import CheckNetwork from '~/components/Chat/Swap/CheckNetwork';
 import EvmButton from '~/components/Chat/Swap/EvmButton';
@@ -20,17 +13,30 @@ import SolButton from '~/components/Chat/Swap/SolButton';
 import { EtherInitApi } from '~/swap/const/erher-api';
 import { SolApi } from '~/swap/const/sol-api';
 import { useInterval } from '~/swap/hooks/useInterval';
-import { DefaultTokenAddr } from '~/swap/const/contract';
 import SwapPanelInputBox from '../SwapPanelInput/SwapPanalInput';
 import { DivExChangeBox, DivSwapPanel, DivSwapPanelBox } from './useSwapWrapStyle';
 import { getImageUrl } from '~/swap/util/image-url';
 import { ToFixedPipe } from '~/swap/const/bignumber';
 import CurrentChainBox from '../CurrentChainBox';
 import SwapSlippage from '../SwapSlipPage';
+import SuiButton from '~/components/Chat/Swap/SuiButton';
+import useSuiWeb3 from '~/components/Account/hooks/useSuiWeb3';
 
 export const transferData = {
   acton: 'okx_swap_v1',
   data: [
+    {
+      from_coin: '0x2::sui::SUI',
+      from_decimal: 6,
+      from_symbol: 'Sui',
+      to_coin: '0x06864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b::cetus::CETUS',
+      to_decimal: 18,
+      to_symbol: 'CETUS',
+      from_amount: '0.1',
+      to_amount: '0',
+      chain_name: 'Sui',
+      chain_id: 784,
+    },
     {
       from_coin: '11111111111111111111111111111111',
       from_decimal: 18,
@@ -44,18 +50,7 @@ export const transferData = {
       chain_name: 'SOL',
       chain_id: 501,
     },
-    {
-      from_coin: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-      from_decimal: 6,
-      from_symbol: 'USDT',
-      to_coin: '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
-      to_decimal: 18,
-      to_symbol: 'BNB',
-      from_amount: '1000.0',
-      to_amount: '0',
-      chain_name: 'Ethereum',
-      chain_id: 1,
-    },
+
   ],
 };
 
@@ -84,12 +79,14 @@ const SwapWarp = memo(({ data }: ISwapWarp) => {
     address,
     evmChain,
     solChain,
+    suiChain,
     walletProvider,
     chainId,
     connection,
     walletProviderSol,
     // openModal
   } = useCustomWeb3Modal();
+  const { suiBalance, fetchSuiBalance, getTokenBalanceSimple } = useSuiWeb3();
   const { toTradeAmount, swapTokenInfo, approve, swapERC20, quoteCode, reloadSwap } =
     useSwapStation({
       inputJetton,
@@ -143,7 +140,8 @@ const SwapWarp = memo(({ data }: ISwapWarp) => {
         }
       }
     });
-    return () => {};
+    return () => {
+    };
   }, []);
   useInterval(() => {
     getTokenBalance();
@@ -155,7 +153,9 @@ const SwapWarp = memo(({ data }: ISwapWarp) => {
     );
 
   const getTokenBalance = async () => {
+    console.log('suiBalance', suiBalance, isConnected, address);
     if (!isConnected || !address) return;
+    console.log('s');
 
     // Common function to update jetton balance
     const updateJettonBalance = async (
@@ -167,24 +167,27 @@ const SwapWarp = memo(({ data }: ISwapWarp) => {
 
       let balance = '0';
 
+
       if (evmChain) {
-        let sdk = null;
-        if (!sdk) {
-          sdk = new EtherInitApi(address, walletProvider, chainId);
-        }
+        let sdk = new EtherInitApi(address, walletProvider, chainId);
         balance = isMainChain(jetton.tokenContractAddress)
           ? await sdk.getBalance(address)
           : await sdk.tokenBalance(jetton.tokenContractAddress, address);
       } else if (solChain) {
-        let sdkSol = null;
-        if (!sdkSol) {
-          sdkSol = new SolApi(address, connection, walletProviderSol);
-        }
+        let sdkSol = new SolApi(address, connection, walletProviderSol);
         if (isMainChain(jetton.tokenContractAddress)) {
           balance = await sdkSol.getBalance();
         } else {
           const tokenAccount = await sdkSol.getTokenAccount(jetton.tokenContractAddress);
           balance = await sdkSol.getTokenBalance(tokenAccount);
+        }
+      } else if (suiChain) {
+        if (isMainChain(jetton.tokenContractAddress)) {
+          await fetchSuiBalance();
+          balance = suiBalance;
+          // console.log('suiBalance', balance);
+        } else {
+          balance = await getTokenBalanceSimple(jetton.tokenContractAddress);
         }
       }
 
@@ -224,7 +227,8 @@ const SwapWarp = memo(({ data }: ISwapWarp) => {
         setLiquidityList(res.data);
       }
     });
-    return () => {};
+    return () => {
+    };
   }, [currentChainInfo?.chainId]);
 
   const initParams = async (dataChat: ChatTransaction) => {
@@ -300,7 +304,7 @@ const SwapWarp = memo(({ data }: ISwapWarp) => {
       <CurrentChainBox currentChainInfo={currentChainInfo} />
       <DivSwapPanelBox>
         <SwapPanelInputBox
-          type="input"
+          type='input'
           showMax={true}
           inputValue={inputValue}
           jettonData={inputJetton}
@@ -312,18 +316,18 @@ const SwapWarp = memo(({ data }: ISwapWarp) => {
           currentChainInfo={currentChainInfo}
         />
         <DivExChangeBox onClick={onExchangeInOut}>
-          <img src={getImageUrl('swap/exchange.png')} alt="" />
+          <img src={getImageUrl('swap/exchange.png')} alt='' />
         </DivExChangeBox>
       </DivSwapPanelBox>
       <DivSwapPanelBox>
         <SwapPanelInputBox
-          type="output"
+          type='output'
           showMax={false}
           inputValue={
             inputValue
               ? toTradeAmount
-                ? ToFixedPipe(toTradeAmount, Number(toTradeAmount) > 10 ? 4 : 8, 1)
-                : ''
+              ? ToFixedPipe(toTradeAmount, Number(toTradeAmount) > 10 ? 4 : 8, 1)
+              : ''
               : ''
           }
           jettonData={outputJetton}
@@ -345,7 +349,7 @@ const SwapWarp = memo(({ data }: ISwapWarp) => {
         />
       ) : (
         <>
-          {evmChain ? (
+          {evmChain ?
             <EvmButton
               inputValue={inputValue}
               getIds={getIds()}
@@ -362,30 +366,45 @@ const SwapWarp = memo(({ data }: ISwapWarp) => {
               }}
               currentChainInfo={currentChainInfo}
             />
-          ) : solChain ? (
-            <SolButton
-              inputValue={inputValue}
-              getIds={getIds()}
-              inputJetton={inputJetton}
-              outputJetton={outputJetton}
-              quoteCode={quoteCode}
-              swapERC20={swapERC20}
-              setTransactonSuccess={setTransactonSuccess}
-              setHash={setHash}
-              currentTokenBalance={inputJetton?.balance as string}
-              connect={() => {
-                setIsSwitch(true);
-              }}
-              currentChainInfo={currentChainInfo}
-            />
-          ) : (
-            <ConnectWallet
-              isSwitch={isSwitch}
-              setIsSwitch={setIsSwitch}
-              chainId={currentChainInfo?.chainId as number}
-              setChainNumber={setChainNumber}
-            />
-          )}
+            : solChain ?
+              <SolButton
+                inputValue={inputValue}
+                getIds={getIds()}
+                inputJetton={inputJetton}
+                outputJetton={outputJetton}
+                quoteCode={quoteCode}
+                swapERC20={swapERC20}
+                setTransactonSuccess={setTransactonSuccess}
+                setHash={setHash}
+                currentTokenBalance={inputJetton?.balance as string}
+                connect={() => {
+                  setIsSwitch(true);
+                }}
+                currentChainInfo={currentChainInfo}
+              />
+              : suiChain ?
+                <SuiButton
+                  inputValue={inputValue}
+                  getIds={getIds()}
+                  inputJetton={inputJetton}
+                  outputJetton={outputJetton}
+                  quoteCode={quoteCode}
+                  swapERC20={swapERC20}
+                  setTransactonSuccess={setTransactonSuccess}
+                  setHash={setHash}
+                  currentTokenBalance={inputJetton?.balance as string}
+                  connect={() => {
+                    setIsSwitch(true);
+                  }}
+                  currentChainInfo={currentChainInfo}
+                /> :
+                <ConnectWallet
+                  isSwitch={isSwitch}
+                  setIsSwitch={setIsSwitch}
+                  chainId={currentChainInfo?.chainId as number}
+                  setChainNumber={setChainNumber}
+                />
+          }
         </>
       )}
       <CheckNetwork setChainNumber={setChainNumber} chainNumber={chainNumber} />

@@ -21,6 +21,7 @@ import CheckNetwork from '~/components/Chat/Swap/CheckNetwork';
 import { useState } from 'react';
 import { getImageUrl } from '~/swap/util/image-url';
 import SuiWalletModal from '~/components/Chat/Swap/ConnectHeader/components/SuiWalletModal';
+import { ChainIdEnum } from '~/swap/enum';
 
 interface ConnectWalletListProps {
   className: string;
@@ -49,7 +50,7 @@ export default function ConnectWalletList({ className, setVisibleMobal }: Connec
     <NotConnectAbsolute className={classNames('NotConnectAbsolute', className)}>
       <CheckNetwork chainNumber={chainNumber} setChainNumber={setChainNumber} />
       <NotTitle className={'NotTitle'}>Connect Wallet</NotTitle>
-      <WalletBox onClick={() => connectClick('EVM', 56)}>
+      <WalletBox onClick={() => connectClick('EVM', ChainIdEnum.BSC)}>
         <WalletChainBox className={'BscBox'}>
           <img
             className={'BscPng'}
@@ -76,7 +77,7 @@ export default function ConnectWalletList({ className, setVisibleMobal }: Connec
         <div className='right' />
       </OtherChain>
 
-      <WalletBox className={'SolBox'} onClick={() => connectClick('EVM', 1)} key={'evm'}>
+      <WalletBox className={'SolBox'} onClick={() => connectClick('EVM', ChainIdEnum.Ethereum)} key={'evm'}>
         <WalletChainBox>
           <img className={'EvmPng'} src={getImageUrl('swap/evm-chain-logo.png')} alt='' />
         </WalletChainBox>
@@ -96,7 +97,7 @@ export default function ConnectWalletList({ className, setVisibleMobal }: Connec
         </WalletTypeBox>
       </WalletBox>
 
-      <WalletBox className={'SolBox'} onClick={() => connectClick('SOL', 501)} key={'sol'}>
+      <WalletBox className={'SolBox'} onClick={() => connectClick('SOL', ChainIdEnum.Sol)} key={'sol'}>
         <WalletChainBox className={'SolChainBox'}>
           <img className={'SolPng'} src={getImageUrl('swap/sol-chain-logo.png')} alt='' />
         </WalletChainBox>
@@ -115,9 +116,9 @@ export default function ConnectWalletList({ className, setVisibleMobal }: Connec
       </WalletBox>
 
 
-      <WalletBox className={'SolBox'} onClick={() => connectClick('SUI', 501)} key={'sui'}>
+      <WalletBox className={'SolBox'} onClick={() => connectClick('SUI', ChainIdEnum.Sui)} key={'sui'}>
         <WalletChainBox className={'SolChainBox'}>
-          <img className={'SolPng'} src={getImageUrl('swap/sol-chain-logo.png')} alt='' />
+          <img className={'SolPng'} src={'https://web3.okx.com/cdn/wallet/logo/sui_17700.png'} alt='' />
         </WalletChainBox>
         <WalletTypeBox>
           <WalletTypeBoxLeft>

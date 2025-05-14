@@ -12,6 +12,12 @@ export default function SuiWalletModal({ setShowModal, showModal }: ISuiWalletMo
     <ConnectModal
       open={showModal}
       onOpenChange={(open) => setShowModal(open)}
+      onConnectSuccess={(walletName:string)=>{
+        console.log('sui walletName', walletName);
+        if (walletName){
+          setShowModal(false)
+        }
+      }}
     />
   );
 }

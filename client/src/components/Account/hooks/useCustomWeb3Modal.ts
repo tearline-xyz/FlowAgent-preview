@@ -10,7 +10,11 @@ import {
 } from '@reown/appkit/react';
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react';
 import type { Provider } from '@reown/appkit-adapter-solana/react';
+import useSuiWeb3 from '~/components/Account/hooks/useSuiWeb3';
+
 const useCustomWeb3Modal = () => {
+
+  const { suiConnected, suiChainId, suiAddress, suiDisconnect } = useSuiWeb3();
   const { connection } = useAppKitConnection();
   const { open, close } = useAppKit();
   const {
@@ -34,6 +38,7 @@ const useCustomWeb3Modal = () => {
     chainId !== '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' &&
     chainId !== 607;
   let solChain = isConnected && chainId === '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+  let suiChain = suiConnected && suiAddress && !isConnected;
   useEffect(() => {
     if (currAddress) {
       setAccount(currAddress);
@@ -50,8 +55,13 @@ const useCustomWeb3Modal = () => {
   const closeModal = () => {
     close();
   };
-  const disconnectConnect = () => {
-    disconnect();
+  const disconnectConnect = async () => {
+
+    if (suiChain) {
+      await suiDisconnect();
+    } else {
+      disconnect();
+    }
   };
   const checkSwitchNetwork = (chainId: any) => {
     switchNetwork(chainId);
@@ -64,17 +74,18 @@ const useCustomWeb3Modal = () => {
     checkSwitchNetwork,
     walletInfo,
     account,
-    address: account,
-    chainId: chainId === '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' ? 501 : chainId, // TODO sol 501; 其余的按照EVM 后面解决 SUI TON
-    isConnected,
+    address: suiConnected && suiAddress ? suiAddress : account,
+    chainId: suiConnected && suiAddress ? suiChainId : chainId === '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' ? 501 : chainId, // TODO sol 501; 其余的按照EVM 后面解决 SUI TON
+    isConnected: suiConnected ? suiConnected : isConnected,
     state: state.selectedNetworkId?.toString(),
     walletProvider,
     evmChain,
     solChain,
+    suiChain,
     embeddedWalletInfo,
     disconnect,
     connection,
-    walletProviderSol
+    walletProviderSol,
   };
 };
 

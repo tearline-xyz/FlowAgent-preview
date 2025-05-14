@@ -62,6 +62,7 @@ export const DefaultTokenAddr = {
   TON: 'EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c',
   APT: '0x1::aptos_coin::AptosCoin',
   BNB: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+  SUI: '0x2::sui::SUI'
 };
 
 export const logoList: AllChainData[] = [

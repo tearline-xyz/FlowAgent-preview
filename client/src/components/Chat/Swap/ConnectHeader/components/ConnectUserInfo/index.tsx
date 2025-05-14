@@ -55,10 +55,10 @@ export default function ConnectUserInfo({
 }: ConnectUserInfoProps) {
   const {
     disconnectConnect,
-    openModal
+    // openModal
   } = useCustomWeb3Modal();
-  const disconnectClick = () => {
-    disconnectConnect();
+  const disconnectClick = async () => {
+    await disconnectConnect();
   };
   return (
     <ConnectUserInfoRoot className={classNames('ConnectSuccessAb')}>
@@ -66,7 +66,7 @@ export default function ConnectUserInfo({
         <img src={getImageUrl('swap/user-ar.png')} alt="" />
       </UserBox>
       <UserAddressBox onClick={()=>{
-        openModal()
+        // openModal()
       }}>
         {userAdder ? truncateWalletAddr(userAdder) : ''}
       </UserAddressBox>

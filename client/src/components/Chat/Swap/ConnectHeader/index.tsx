@@ -18,6 +18,7 @@ import { SolApi } from '~/swap/const/sol-api';
 import { ToFixedPipe } from '~/swap/const/bignumber';
 import ConnectUserInfo from '~/components/Chat/Swap/ConnectHeader/components/ConnectUserInfo';
 import ConnectWalletList from '~/components/Chat/Swap/ConnectHeader/components/ConnectWalletList';
+import useSuiWeb3 from '~/components/Account/hooks/useSuiWeb3';
 
 export default function ConnectHeader() {
   const {
@@ -30,13 +31,16 @@ export default function ConnectHeader() {
     connection,
     walletProviderSol,
   } = useCustomWeb3Modal();
+  const { suiConnected, suiAddress, suiBalance, fetchSuiBalance } = useSuiWeb3();
+
 
   const [symbol, setSymbol] = useState<string>('');
   const [balance, setBalance] = useState<number>(0);
   useEffect(() => {
     let tokenName = getChainInfo(chainId, 'symbol');
     setSymbol(tokenName);
-    return () => {};
+    return () => {
+    };
   }, [chainId, isConnected]);
   useEffect(() => {
     loadData().then();
@@ -58,18 +62,24 @@ export default function ConnectHeader() {
       const balance = await solSdk.getBalance();
       setBalance(Number(ToFixedPipe(balance, 6, 1, true)));
     }
+    if (suiConnected && suiAddress) {
+      await fetchSuiBalance(() => {
+        setBalance(Number(ToFixedPipe(suiBalance, 6, 1, true)));
+      });
+
+    }
   };
   return (
-    <SwapHeaderRight id={'SwapHeaderRight'} className="mr-3">
+    <SwapHeaderRight id={'SwapHeaderRight'} className='mr-3'>
       <SwapHeaderRightWalletBox
         className={classNames(isConnected ? 'ConnectSuccess' : 'NotConnect')}
       >
         {isConnected ? (
           <SwapHeaderRowAccount>
             <SwapHeaderAccountBox>
-              <img className={'AccountPng'} src={getChainLogo(chainId)} alt="" />
+              <img className={'AccountPng'} src={getChainLogo(chainId)} alt='' />
               {isConnected ? truncateWalletAddr(address) : ''}
-              <img className={'SelectChatPng'} src={getImageUrl('swap/select-swap.png')} alt="" />
+              <img className={'SelectChatPng'} src={getImageUrl('swap/select-swap.png')} alt='' />
             </SwapHeaderAccountBox>
           </SwapHeaderRowAccount>
         ) : (
