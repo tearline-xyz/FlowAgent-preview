@@ -1,0 +1,14 @@
+
+.wkit-dialog__content {
+    width: 360px !important;
+}
+
+.wkit-select-item {
+    font-weight: 400;
+    background: rgba(36, 37, 37,1);
+    margin-bottom: 8px;
+}
+
+.wkit-select-item:hover {
+    background: rgba(36, 37, 37,1)
+}

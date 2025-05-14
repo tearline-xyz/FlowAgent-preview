@@ -10,6 +10,12 @@ export default function SuiWalletModal({ setShowModal, showModal }: ISuiWalletMo
   // const [showModal, setShowModal] = useState(false);
   return (
     <ConnectModal
+      className={'ConnectModal-'}
+      style={
+        {
+          width:'360px'
+        }
+      }
       open={showModal}
       onOpenChange={(open) => setShowModal(open)}
       onConnectSuccess={(walletName:string)=>{

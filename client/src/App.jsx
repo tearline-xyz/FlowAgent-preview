@@ -13,8 +13,9 @@ import { router } from './routes';
 import WagmiGlobal from '~/components/Account/WagmiGlobal';
 import { WalletProvider } from '@suiet/wallet-kit';
 import '@suiet/wallet-kit/style.css';
-import { SuiDevnetChain, SuiTestnetChain, SuiMainnetChain, DefaultChains } from '@suiet/wallet-kit';
+import '../suiet-wallet-kit-custom.css';
 
+import { SuiDevnetChain, SuiTestnetChain, SuiMainnetChain, DefaultChains } from '@suiet/wallet-kit';
 const App = () => {
   const { setError } = useApiErrorBoundary();
 
