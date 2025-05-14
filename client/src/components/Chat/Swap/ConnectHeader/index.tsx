@@ -18,7 +18,7 @@ import { SolApi } from '~/swap/const/sol-api';
 import { ToFixedPipe } from '~/swap/const/bignumber';
 import ConnectUserInfo from '~/components/Chat/Swap/ConnectHeader/components/ConnectUserInfo';
 import ConnectWalletList from '~/components/Chat/Swap/ConnectHeader/components/ConnectWalletList';
-import { ConnectButton } from '@suiet/wallet-kit';
+
 export default function ConnectHeader() {
   const {
     isConnected,
@@ -30,6 +30,7 @@ export default function ConnectHeader() {
     connection,
     walletProviderSol,
   } = useCustomWeb3Modal();
+
   const [symbol, setSymbol] = useState<string>('');
   const [balance, setBalance] = useState<number>(0);
   useEffect(() => {
@@ -84,7 +85,7 @@ export default function ConnectHeader() {
         <ConnectWalletList className={'Header'} />
         <ConnectUserInfo balance={balance} symbol={symbol} userAdder={address} />
       </SwapHeaderRightWalletBox>
-      <ConnectButton />
+
     </SwapHeaderRight>
   );
 }

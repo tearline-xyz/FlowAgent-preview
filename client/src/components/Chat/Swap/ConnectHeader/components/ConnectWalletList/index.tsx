@@ -20,6 +20,7 @@ import useCustomWeb3Modal, {
 import CheckNetwork from '~/components/Chat/Swap/CheckNetwork';
 import { useState } from 'react';
 import { getImageUrl } from '~/swap/util/image-url';
+import SuiWalletModal from '~/components/Chat/Swap/ConnectHeader/components/SuiWalletModal';
 
 interface ConnectWalletListProps {
   className: string;
@@ -30,7 +31,7 @@ export default function ConnectWalletList({ className, setVisibleMobal }: Connec
   const [chainNumber, setChainNumber] = useState<number>(-1);
 
   const { openModal } = useCustomWeb3Modal();
-
+  const [showModal, setShowModal] = useState(false);
   const connectClick = async (type: string, chain: number) => {
     setChainNumber(chain);
     if (type === 'EVM') {
@@ -38,6 +39,9 @@ export default function ConnectWalletList({ className, setVisibleMobal }: Connec
     }
     if (type === 'SOL') {
       await openModal(ConnectSol);
+    }
+    if (type === 'SUI') {
+      setShowModal(true);
     }
     setVisibleMobal && setVisibleMobal();
   };
@@ -50,7 +54,7 @@ export default function ConnectWalletList({ className, setVisibleMobal }: Connec
           <img
             className={'BscPng'}
             src={'https://www.okx.com/cdn/wallet/logo/BNB-20220308.png'}
-            alt=""
+            alt=''
           />
         </WalletChainBox>
         <WalletTypeBox>
@@ -59,22 +63,22 @@ export default function ConnectWalletList({ className, setVisibleMobal }: Connec
             <WalletTypeFullName>BNB Smart Chain Mainnet</WalletTypeFullName>
           </WalletTypeBoxLeft>
           <WalletTypeBoxRight>
-            <div className="text">Connect</div>
+            <div className='text'>Connect</div>
             <ConnectArrow>
-              <img src={getImageUrl('swap/Connect-Arrow.png')} alt="" />
+              <img src={getImageUrl('swap/Connect-Arrow.png')} alt='' />
             </ConnectArrow>
           </WalletTypeBoxRight>
         </WalletTypeBox>
       </WalletBox>
       <OtherChain>
-        <div className="left"></div>
+        <div className='left' />
         Other Chain
-        <div className="right"></div>
+        <div className='right' />
       </OtherChain>
 
       <WalletBox className={'SolBox'} onClick={() => connectClick('EVM', 1)} key={'evm'}>
         <WalletChainBox>
-          <img className={'EvmPng'} src={getImageUrl('swap/evm-chain-logo.png')} alt="" />
+          <img className={'EvmPng'} src={getImageUrl('swap/evm-chain-logo.png')} alt='' />
         </WalletChainBox>
         <WalletTypeBox>
           <WalletTypeBoxLeft>
@@ -84,9 +88,9 @@ export default function ConnectWalletList({ className, setVisibleMobal }: Connec
             </WalletTypeFullName>
           </WalletTypeBoxLeft>
           <WalletTypeBoxRight className={'SolConnect'}>
-            <div className="text">Connect</div>
+            <div className='text'>Connect</div>
             <ConnectArrowSol>
-              <img src={getImageUrl('swap/bg-arrow.svg')} alt="" />
+              <img src={getImageUrl('swap/bg-arrow.svg')} alt='' />
             </ConnectArrowSol>
           </WalletTypeBoxRight>
         </WalletTypeBox>
@@ -94,7 +98,7 @@ export default function ConnectWalletList({ className, setVisibleMobal }: Connec
 
       <WalletBox className={'SolBox'} onClick={() => connectClick('SOL', 501)} key={'sol'}>
         <WalletChainBox className={'SolChainBox'}>
-          <img className={'SolPng'} src={getImageUrl('swap/sol-chain-logo.png')} alt="" />
+          <img className={'SolPng'} src={getImageUrl('swap/sol-chain-logo.png')} alt='' />
         </WalletChainBox>
         <WalletTypeBox>
           <WalletTypeBoxLeft>
@@ -102,13 +106,34 @@ export default function ConnectWalletList({ className, setVisibleMobal }: Connec
             <WalletTypeFullName className={'SolFullName'}>Solana</WalletTypeFullName>
           </WalletTypeBoxLeft>
           <WalletTypeBoxRight className={'SolConnect'}>
-            <div className="text">Connect</div>
+            <div className='text'>Connect</div>
             <ConnectArrowSol>
-              <img src={getImageUrl('swap/bg-arrow.svg')} alt="" />
+              <img src={getImageUrl('swap/bg-arrow.svg')} alt='' />
             </ConnectArrowSol>
           </WalletTypeBoxRight>
         </WalletTypeBox>
       </WalletBox>
+
+
+      <WalletBox className={'SolBox'} onClick={() => connectClick('SUI', 501)} key={'sui'}>
+        <WalletChainBox className={'SolChainBox'}>
+          <img className={'SolPng'} src={getImageUrl('swap/sol-chain-logo.png')} alt='' />
+        </WalletChainBox>
+        <WalletTypeBox>
+          <WalletTypeBoxLeft>
+            <WalletTypeName className={'SolName'}>Sui</WalletTypeName>
+            <WalletTypeFullName className={'SolFullName'}>Sui</WalletTypeFullName>
+          </WalletTypeBoxLeft>
+          <WalletTypeBoxRight className={'SolConnect'}>
+            <div className='text'>Connect</div>
+            <ConnectArrowSol>
+              <img src={getImageUrl('swap/bg-arrow.svg')} alt='' />
+            </ConnectArrowSol>
+          </WalletTypeBoxRight>
+        </WalletTypeBox>
+      </WalletBox>
+
+      <SuiWalletModal setShowModal={setShowModal} showModal={showModal} />
     </NotConnectAbsolute>
   );
 }

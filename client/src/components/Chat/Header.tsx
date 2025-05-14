@@ -12,6 +12,7 @@ import { TemporaryChat } from './TemporaryChat';
 import AddMultiConvo from './AddMultiConvo';
 import ConnectHeader from '~/components/Chat/Swap/ConnectHeader';
 const defaultInterface = getConfigDefaults().interface;
+
 export default function Header() {
   const { data: startupConfig } = useGetStartupConfig();
   const { navVisible, setNavVisible } = useOutletContext<ContextType>();
