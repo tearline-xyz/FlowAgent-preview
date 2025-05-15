@@ -73,7 +73,7 @@ const useCustomWeb3Modal = () => {
     disconnectConnect,
     checkSwitchNetwork,
     walletInfo,
-    account,
+    account:suiConnected && suiAddress ? suiAddress : account,
     address: suiConnected && suiAddress ? suiAddress : account,
     chainId: suiConnected && suiAddress ? suiChainId : chainId === '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' ? 501 : chainId, // TODO sol 501; 其余的按照EVM 后面解决 SUI TON
     isConnected: suiConnected ? suiConnected : isConnected,

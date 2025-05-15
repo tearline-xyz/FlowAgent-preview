@@ -22,7 +22,7 @@ interface ISuiButton {
   currentChainInfo: AllChainData | null
 }
 
-const MAX_RETRIES = 3;
+// const MAX_RETRIES = 3;
 export default function SuiButton({
                                     inputJetton,
                                     outputJetton,
@@ -57,27 +57,28 @@ export default function SuiButton({
       return;
     }
     try {
-      swapERC20(getIds, async (response: any) => {
+      swapERC20(getIds, async (res: any) => {
+        let response=res.data[0];
         console.log('Full API Response:', response);
-        let retryCount = 0;
-        while (retryCount < MAX_RETRIES) {
+        // let retryCount = 0;
+        // while (retryCount < MAX_RETRIES) {
           try {
             const txDigest = await executeSwap(response);
             if (txDigest) {
               setTransactonSuccess(true);
             }
             console.log('Transaction successful with digest:', txDigest);
-            break; // Exit retry loop on success
+            // break; // Exit retry loop on success
           } catch (error) {
-            retryCount++;
-            if (retryCount === MAX_RETRIES) {
-              console.error('Max retries reached, transaction failed');
-              setIsTransacting(false);
-              throw error;
-            }
-            await new Promise(resolve => setTimeout(resolve, 2000 * retryCount));
+            // retryCount++;
+            // if (retryCount === MAX_RETRIES) {
+            //   console.error('Max retries reached, transaction failed');
+            //   setIsTransacting(false);
+            //   throw error;
+            // }
+            // await new Promise(resolve => setTimeout(resolve, 2000 * retryCount));
           }
-        }
+        // }
 
       });
     } catch (e) {
@@ -88,13 +89,13 @@ export default function SuiButton({
   async function executeSwap(response: any) {
 
     try {
-      if (!response?.data?.unsignedTx) {
+      if (!response?.tx) {
         throw new Error('Invalid swap data - missing unsigned transaction');
       }
 
       // Parse the unsigned transaction data
-      const unsignedTx: any = JSON.parse(response.data.unsignedTx);
-      const txBytes = unsignedTx.txBytes;
+      const unsignedTx: any = response.tx.data;
+      const txBytes = unsignedTx;
 
       // Create transaction from the bytes
       const tx = Transaction.from(txBytes);
