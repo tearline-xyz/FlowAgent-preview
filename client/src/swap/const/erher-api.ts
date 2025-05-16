@@ -156,10 +156,11 @@ export class EtherInitApi {
   };
 
   getBalance = async (address: string) => {
+    // console.log('address', address);
     const provider: any = new ethers.BrowserProvider(this.providerInstance);
     const y = await provider.getBalance(address);
-    console.log('yyyuuuu', y);
-    console.log('formatEther', formatEther(y));
+    // console.log('yyyuuuu address', y);
+    // console.log('formatEther address', formatEther(y));
 
     return formatEther(y);
   };

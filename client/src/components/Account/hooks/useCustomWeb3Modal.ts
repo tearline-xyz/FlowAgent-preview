@@ -2,19 +2,23 @@ import { useEffect, useState } from 'react';
 import {
   useAppKit,
   useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitProvider,
+  useAppKitState,
   useDisconnect,
   useWalletInfo,
-  useAppKitNetwork,
-  useAppKitState,
-  useAppKitProvider,
 } from '@reown/appkit/react';
-import { useAppKitConnection } from '@reown/appkit-adapter-solana/react';
 import type { Provider } from '@reown/appkit-adapter-solana/react';
+import { useAppKitConnection } from '@reown/appkit-adapter-solana/react';
 import useSuiWeb3 from '~/components/Account/hooks/useSuiWeb3';
 import { EtherInitApi } from '~/swap/const/erher-api';
 import { DefaultTokenAddr } from '~/swap/const/contract';
 import { SolApi } from '~/swap/const/sol-api';
 
+export const isMainToken = (tokenAddr: string) =>
+  Object.values(DefaultTokenAddr).some(
+    (i) => i.toLocaleLowerCase() === tokenAddr.toLocaleLowerCase(),
+  );
 const useCustomWeb3Modal = () => {
   const {
     suiConnected,
@@ -38,7 +42,7 @@ const useCustomWeb3Modal = () => {
   const state = useAppKitState();
   const { disconnect } = useDisconnect();
   const { walletInfo } = useWalletInfo();
-  console.log('inConnected', isConnected);
+  // console.log('inConnected', isConnected);
   const { switchNetwork, chainId } = useAppKitNetwork();
 
   const { walletProvider } = useAppKitProvider('eip155');
@@ -76,20 +80,19 @@ const useCustomWeb3Modal = () => {
   };
   const address = suiConnected && suiAddress ? suiAddress : account;
 
-  const isMainToken = (tokenAddr: string) =>
-    Object.values(DefaultTokenAddr).some(
-      (i) => i.toLocaleLowerCase() === tokenAddr.toLocaleLowerCase(),
-    );
 
   const getTokenBalance = async (tokenAddress: string) => {
+    if (!evmChain && !solChain && !suiChain) {
+      return '0';
+    }
     let balance;
-    if (evmChain) {
-      walletProvider;
+    if (evmChain && walletProvider) {
       const sdk = new EtherInitApi(address, walletProvider, chainId);
       balance = isMainToken(tokenAddress)
-        ? await sdk.getBalance(tokenAddress)
+        ? await sdk.getBalance(currAddress)
         : await sdk.tokenBalance(tokenAddress, address);
-    } else if (solChain) {
+      return balance;
+    } else if (solChain && walletProviderSol) {
       const sdkSol = new SolApi(address, connection, walletProviderSol);
       if (isMainToken(tokenAddress)) {
         balance = await sdkSol.getBalance();
@@ -97,15 +100,16 @@ const useCustomWeb3Modal = () => {
         const tokenAccount = await sdkSol.getTokenAccount(tokenAddress);
         balance = await sdkSol.getTokenBalance(tokenAccount);
       }
+      return balance;
     } else if (suiChain) {
       if (isMainToken(tokenAddress)) {
-        const sBalance = await fetchSuiBalance();
-        balance = sBalance;
+        balance = await fetchSuiBalance();
       } else {
         balance = await getTokenBalanceSimple(tokenAddress);
       }
+      return balance;
     }
-    return balance;
+    // return balance;
   };
 
   return {
@@ -120,8 +124,8 @@ const useCustomWeb3Modal = () => {
       suiConnected && suiAddress
         ? suiChainId
         : chainId === '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
-          ? 501
-          : chainId, // TODO sol 501; 其余的按照EVM 后面解决 SUI TON
+        ? 501
+        : chainId, // TODO sol 501; 其余的按照EVM 后面解决 SUI TON
     isConnected: suiConnected ? suiConnected : isConnected,
     state: state.selectedNetworkId?.toString(),
     walletProvider,
