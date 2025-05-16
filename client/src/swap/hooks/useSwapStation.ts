@@ -1,4 +1,3 @@
-
 import { AllChainData, IServerJetton } from '~/swap/interface';
 import useOkxSwap from '~/swap/hooks/useOkxSwap';
 interface IProps {
@@ -7,31 +6,24 @@ interface IProps {
   inputAmount: string;
   currentChain: AllChainData | null;
   userAddress: string | undefined;
-  slippage:string;
+  slippage?: string;
 }
 
 export default function useSwapStation({
-                                         inputJetton,
-                                         outputJetton,
-                                         inputAmount,
-                                         currentChain,
-                                         userAddress,
-                                         slippage
-                                       }: IProps) {
-  const {
-    toTradeAmount,
-    swapTokenInfo,
-    approve,
-    reloadSwap,
-    swapERC20,
-    quoteCode,
-  } = useOkxSwap({
+  inputJetton,
+  outputJetton,
+  inputAmount,
+  currentChain,
+  userAddress,
+  slippage,
+}: IProps) {
+  const { toTradeAmount, swapTokenInfo, approve, reloadSwap, swapERC20, quoteCode } = useOkxSwap({
     inputJetton,
     outputJetton,
     inputAmount,
     currentChain,
     userAddress,
-    slippage
+    slippage,
   });
 
   return {

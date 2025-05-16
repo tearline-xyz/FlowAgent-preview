@@ -14,8 +14,9 @@ export default function useSuiWeb3() {
   const fetchSuiBalance = async (cb?: Function) => {
     if (!wallet?.address) return;
     setIsLoading(true);
+    let balanceData;
     try {
-      const balanceData = await suiClient.getBalance({
+      balanceData = await suiClient.getBalance({
         owner: wallet.address,
         coinType: '0x2::sui::SUI',
       });
@@ -27,10 +28,11 @@ export default function useSuiWeb3() {
     } finally {
       setIsLoading(false);
     }
+    return balanceData.totalBalance;
   };
-  async function getTokenBalanceSimple(TOKEN_TYPE:string) {
+  async function getTokenBalanceSimple(TOKEN_TYPE: string) {
     if (!wallet.connected || !wallet.address) {
-      throw new Error("Wallet not connected");
+      throw new Error('Wallet not connected');
     }
 
     const balance = await suiClient.getBalance({
@@ -54,6 +56,6 @@ export default function useSuiWeb3() {
     suiBalance: balance,
     assetsIsLoading: isLoading,
     fetchSuiBalance: fetchSuiBalance,
-    getTokenBalanceSimple
+    getTokenBalanceSimple,
   };
 }

@@ -1,4 +1,3 @@
-
 import { AllChainData } from '~/swap/interface';
 // https://github.com/okx/OKX-DEX-Aggregator-ABI
 export const ContractAddress = {
@@ -61,8 +60,8 @@ export const DefaultTokenAddr = {
   ETH: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
   TON: 'EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c',
   APT: '0x1::aptos_coin::AptosCoin',
-  BNB: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-  SUI: '0x2::sui::SUI'
+  // BNB: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+  SUI: '0x2::sui::SUI',
 };
 
 export const logoList: AllChainData[] = [
@@ -269,7 +268,7 @@ export const logoList: AllChainData[] = [
     dexTokenApproveAddress: '',
     imgUrl: 'BNB.png',
   },
-].map(d => ({
+].map((d) => ({
   ...d,
   imgUrl: `https://www.tearline.xyz/statics/image1/chain/${d.imgUrl}`,
 }));
@@ -283,10 +282,7 @@ export function getChainLogo(chainId: number | undefined | any) {
   }
 }
 
-export function getChainInfo(
-  chainId: number | undefined | any,
-  keyName: string,
-) {
+export function getChainInfo(chainId: number | undefined | any, keyName: string) {
   let info: AllChainData[] = logoList.filter(
     (d: AllChainData) => Number(d.chainId) === Number(chainId),
   );
@@ -295,9 +291,7 @@ export function getChainInfo(
   }
 }
 
-export function getChainDexTokenApproveAddress(
-  chainId: number | undefined | any,
-) {
+export function getChainDexTokenApproveAddress(chainId: number | undefined | any) {
   let info: AllChainData[] = logoList.filter(
     (d: AllChainData) => Number(d.chainId) === Number(chainId),
   );

@@ -1,4 +1,4 @@
-import { AllChainData, IServerJetton, SwapDataInfo, TokenAssetsInterface } from '~/swap/interface';
+import { IServerJetton, SwapDataInfo } from '~/swap/interface';
 import {
   BalanceBox,
   DivSwapPanelInputBox,
@@ -11,34 +11,38 @@ import {
   SwapPanelLabel,
   SwapPanelRow,
   SwapPanelToken,
-} from './useSwapPanelInputStyle';
+} from './useDepositPanelInputStyle';
 import { useEffect, useState } from 'react';
 import { filterNumberPipe, getAssetsInfo } from '~/swap/util';
 import { ToFixedPipe } from '~/swap/const/bignumber';
 import { getChainLogo } from '~/swap/const/contract';
 import BigNumber from 'bignumber.js';
-interface SwapPanelInputBoxProps {
+import { axiosAggregatorQuote } from '~/swap/serve';
+
+interface DepositPanelInputBoxProps {
   inputValue: string;
   disabled: boolean;
   onChangeValue: (val: any) => void;
   type: string;
   showMax: boolean;
   jettonData: IServerJetton | null;
-  swapTokenInfo: SwapDataInfo | undefined;
-  currentChainInfo: AllChainData | null;
+
+  // swapTokenInfo: SwapDataInfo | undefined;
+  //   currentChainInfo: AllChainData | null;
 }
 
-export default function SwapPanelInputBox({
+export default function DepositPanelInputBox({
   inputValue,
   disabled,
   onChangeValue,
   type,
   showMax,
   jettonData,
-  swapTokenInfo,
-  currentChainInfo,
-}: SwapPanelInputBoxProps) {
+  // swapTokenInfo,
+  //   currentChainInfo,
+}: DepositPanelInputBoxProps) {
   //   const swapStore: SwapDataStoreInterface = useAppSelector((state: RootState) => state.swapSlice);
+  const [visible, setVisible] = useState<boolean>(false);
 
   const inputChange = async (e) => {
     if (type === 'input') {
@@ -47,7 +51,7 @@ export default function SwapPanelInputBox({
     }
   };
   const openModalClick = () => {
-    // setVisible(true);
+    setVisible(true);
   };
 
   return (
@@ -56,12 +60,16 @@ export default function SwapPanelInputBox({
         <SwapPanelFlexCenter onClick={openModalClick}>
           <SwapPanelLabel>{type === 'input' ? 'From' : 'To'}</SwapPanelLabel>
           <SwapPanelFlexCenter>
-            <img className={'logo'} src={getChainLogo(currentChainInfo?.chainId)} alt="" />
-            <SwapPanelChain>{currentChainInfo?.chainName}</SwapPanelChain>
+            <img
+              className={'logo'}
+              src={'https://web3.okx.com/cdn/wallet/logo/sui_17700.png'}
+              alt=""
+            />
+            <SwapPanelChain>{'Sui'}</SwapPanelChain>
           </SwapPanelFlexCenter>
         </SwapPanelFlexCenter>
         <SwapPanelFlexCenter>
-          <BalanceBox>Balance:{ToFixedPipe(jettonData?.balance, 6, 1)}</BalanceBox>
+          <BalanceBox>Balance:{jettonData?.balance}</BalanceBox>
           {showMax && (
             <MaxBox
               onClick={() => {
@@ -93,16 +101,7 @@ export default function SwapPanelInputBox({
       </SwapPanelRow>
       <RateBox>
         ≈$
-        {inputValue
-          ? ToFixedPipe(
-              Number(inputValue) *
-                (type === 'input'
-                  ? (swapTokenInfo?.baseUsdtPrice as number)
-                  : (swapTokenInfo?.tokenUsdtPrice as number)),
-              4,
-              1,
-            )
-          : ''}
+        {inputValue ? ToFixedPipe(Number(inputValue) * Number(jettonData?.tokenPrice)) : ''}
       </RateBox>
     </SwapPanelInputBoxRoot>
   );

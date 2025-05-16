@@ -1,5 +1,10 @@
 import { memo, useEffect, useState } from 'react';
-import { axiosAggregatorQuote, axiosLiquidity, axiosSupportedChain, getTokenDetail } from '~/swap/serve';
+import {
+  axiosAggregatorQuote,
+  axiosLiquidity,
+  axiosSupportedChain,
+  getTokenDetail,
+} from '~/swap/serve';
 // import { logoList } from '~/swap/const/contract';
 import { AllChainData, ChatTransaction, IServerJetton, LiquidityInterface } from '~/swap/interface';
 import useCustomWeb3Modal from '~/components/Account/hooks/useCustomWeb3Modal';
@@ -50,7 +55,6 @@ export const transferData = {
       chain_name: 'SOL',
       chain_id: 501,
     },
-
   ],
 };
 
@@ -80,13 +84,11 @@ const SwapWarp = memo(({ data }: ISwapWarp) => {
     evmChain,
     solChain,
     suiChain,
-    walletProvider,
+    getTokenBalance,
     chainId,
-    connection,
-    walletProviderSol,
+    walletProvider,
     // openModal
   } = useCustomWeb3Modal();
-  const { suiBalance, fetchSuiBalance, getTokenBalanceSimple } = useSuiWeb3();
   const { toTradeAmount, swapTokenInfo, approve, swapERC20, quoteCode, reloadSwap } =
     useSwapStation({
       inputJetton,
@@ -99,7 +101,7 @@ const SwapWarp = memo(({ data }: ISwapWarp) => {
   // console.log('toTradeAmount', toTradeAmount);
 
   useEffect(() => {
-    getTokenBalance();
+    initTokenBalance();
     axiosSupportedChain().then((res: any) => {
       if (res.code === 0) {
         let chainAllData = res.data;
@@ -140,66 +142,19 @@ const SwapWarp = memo(({ data }: ISwapWarp) => {
         }
       }
     });
-    return () => {
-    };
+    return () => {};
   }, []);
+
+  const initTokenBalance = async () => {
+    const inputTokenBalance = await getTokenBalance(inputJetton?.tokenContractAddress ?? '');
+    const outputTokenBalance = await getTokenBalance(outputJetton?.tokenContractAddress ?? '');
+    setInputJetton((prev) => (prev ? { ...prev, balance: inputTokenBalance } : null));
+    setOutputJetton((prev) => (prev ? { ...prev, balance: outputTokenBalance } : null));
+  };
   useInterval(() => {
-    getTokenBalance();
+    initTokenBalance();
   }, 5000);
 
-  const isMainChain = (tokenAddr: string) =>
-    Object.values(DefaultTokenAddr).some(
-      (i) => i.toLocaleLowerCase() === tokenAddr.toLocaleLowerCase(),
-    );
-
-  const getTokenBalance = async () => {
-    console.log('suiBalance', suiBalance, isConnected, address);
-    if (!isConnected || !address) return;
-    console.log('s');
-
-    // Common function to update jetton balance
-    const updateJettonBalance = async (
-      jetton: typeof inputJetton | typeof outputJetton,
-      setJetton: typeof setInputJetton | typeof setOutputJetton,
-      isInput: boolean,
-    ) => {
-      if (!jetton?.tokenContractAddress) return;
-
-      let balance = '0';
-
-
-      if (evmChain) {
-        let sdk = new EtherInitApi(address, walletProvider, chainId);
-        balance = isMainChain(jetton.tokenContractAddress)
-          ? await sdk.getBalance(address)
-          : await sdk.tokenBalance(jetton.tokenContractAddress, address);
-      } else if (solChain) {
-        let sdkSol = new SolApi(address, connection, walletProviderSol);
-        if (isMainChain(jetton.tokenContractAddress)) {
-          balance = await sdkSol.getBalance();
-        } else {
-          const tokenAccount = await sdkSol.getTokenAccount(jetton.tokenContractAddress);
-          balance = await sdkSol.getTokenBalance(tokenAccount);
-        }
-      } else if (suiChain) {
-        if (isMainChain(jetton.tokenContractAddress)) {
-          await fetchSuiBalance();
-          balance = suiBalance;
-          // console.log('suiBalance', balance);
-        } else {
-          balance = await getTokenBalanceSimple(jetton.tokenContractAddress);
-        }
-      }
-
-      setJetton((prev) => (prev ? { ...prev, balance } : null));
-    };
-
-    // Process both input and output jettons in parallel
-    await Promise.all([
-      updateJettonBalance(inputJetton, setInputJetton, true),
-      updateJettonBalance(outputJetton, setOutputJetton, false),
-    ]);
-  };
   const onExchangeInOut = async () => {
     const temp = JSON.parse(JSON.stringify(inputJetton));
 
@@ -227,12 +182,11 @@ const SwapWarp = memo(({ data }: ISwapWarp) => {
         setLiquidityList(res.data);
       }
     });
-    return () => {
-    };
+    return () => {};
   }, [currentChainInfo?.chainId]);
 
   const initParams = async (dataChat: ChatTransaction) => {
-    let transactionParams = dataChat;
+    const transactionParams = dataChat;
     const inputJetton_ = transactionParams?.from_coin;
     const outputJetton_ = transactionParams?.to_coin;
     const inputChain_ = transactionParams?.chain_id;
@@ -242,7 +196,7 @@ const SwapWarp = memo(({ data }: ISwapWarp) => {
         token_address: inputJetton_,
       }).then((res: any) => {
         if (res.code === 0 && res.data.length) {
-          let arr: IServerJetton[] = res.data.map((d: any) => {
+          const arr: IServerJetton[] = res.data.map((d: any) => {
             return {
               decimals: d.decimals,
               tokenContractAddress: d.tokenAddress,
@@ -304,7 +258,7 @@ const SwapWarp = memo(({ data }: ISwapWarp) => {
       <CurrentChainBox currentChainInfo={currentChainInfo} />
       <DivSwapPanelBox>
         <SwapPanelInputBox
-          type='input'
+          type="input"
           showMax={true}
           inputValue={inputValue}
           jettonData={inputJetton}
@@ -316,18 +270,18 @@ const SwapWarp = memo(({ data }: ISwapWarp) => {
           currentChainInfo={currentChainInfo}
         />
         <DivExChangeBox onClick={onExchangeInOut}>
-          <img src={getImageUrl('swap/exchange.png')} alt='' />
+          <img src={getImageUrl('swap/exchange.png')} alt="" />
         </DivExChangeBox>
       </DivSwapPanelBox>
       <DivSwapPanelBox>
         <SwapPanelInputBox
-          type='output'
+          type="output"
           showMax={false}
           inputValue={
             inputValue
               ? toTradeAmount
-              ? ToFixedPipe(toTradeAmount, Number(toTradeAmount) > 10 ? 4 : 8, 1)
-              : ''
+                ? ToFixedPipe(toTradeAmount, Number(toTradeAmount) > 10 ? 4 : 8, 1)
+                : ''
               : ''
           }
           jettonData={outputJetton}
@@ -349,7 +303,7 @@ const SwapWarp = memo(({ data }: ISwapWarp) => {
         />
       ) : (
         <>
-          {evmChain ?
+          {evmChain ? (
             <EvmButton
               inputValue={inputValue}
               getIds={getIds()}
@@ -366,45 +320,46 @@ const SwapWarp = memo(({ data }: ISwapWarp) => {
               }}
               currentChainInfo={currentChainInfo}
             />
-            : solChain ?
-              <SolButton
-                inputValue={inputValue}
-                getIds={getIds()}
-                inputJetton={inputJetton}
-                outputJetton={outputJetton}
-                quoteCode={quoteCode}
-                swapERC20={swapERC20}
-                setTransactonSuccess={setTransactonSuccess}
-                setHash={setHash}
-                currentTokenBalance={inputJetton?.balance as string}
-                connect={() => {
-                  setIsSwitch(true);
-                }}
-                currentChainInfo={currentChainInfo}
-              />
-              : suiChain ?
-                <SuiButton
-                  inputValue={inputValue}
-                  getIds={getIds()}
-                  inputJetton={inputJetton}
-                  outputJetton={outputJetton}
-                  quoteCode={quoteCode}
-                  swapERC20={swapERC20}
-                  setTransactonSuccess={setTransactonSuccess}
-                  setHash={setHash}
-                  currentTokenBalance={inputJetton?.balance as string}
-                  connect={() => {
-                    setIsSwitch(true);
-                  }}
-                  currentChainInfo={currentChainInfo}
-                /> :
-                <ConnectWallet
-                  isSwitch={isSwitch}
-                  setIsSwitch={setIsSwitch}
-                  chainId={currentChainInfo?.chainId as number}
-                  setChainNumber={setChainNumber}
-                />
-          }
+          ) : solChain ? (
+            <SolButton
+              inputValue={inputValue}
+              getIds={getIds()}
+              inputJetton={inputJetton}
+              outputJetton={outputJetton}
+              quoteCode={quoteCode}
+              swapERC20={swapERC20}
+              setTransactonSuccess={setTransactonSuccess}
+              setHash={setHash}
+              currentTokenBalance={inputJetton?.balance as string}
+              connect={() => {
+                setIsSwitch(true);
+              }}
+              currentChainInfo={currentChainInfo}
+            />
+          ) : suiChain ? (
+            <SuiButton
+              inputValue={inputValue}
+              getIds={getIds()}
+              inputJetton={inputJetton}
+              outputJetton={outputJetton}
+              quoteCode={quoteCode}
+              swapERC20={swapERC20}
+              setTransactonSuccess={setTransactonSuccess}
+              setHash={setHash}
+              currentTokenBalance={inputJetton?.balance as string}
+              connect={() => {
+                setIsSwitch(true);
+              }}
+              currentChainInfo={currentChainInfo}
+            />
+          ) : (
+            <ConnectWallet
+              isSwitch={isSwitch}
+              setIsSwitch={setIsSwitch}
+              chainId={currentChainInfo?.chainId as number}
+              setChainNumber={setChainNumber}
+            />
+          )}
         </>
       )}
       <CheckNetwork setChainNumber={setChainNumber} chainNumber={chainNumber} />

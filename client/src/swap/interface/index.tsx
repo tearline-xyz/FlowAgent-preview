@@ -1,7 +1,7 @@
 export interface AllChainData {
   chainId: number;
   chainName: string;
-  dexTokenApproveAddress: string;
+  dexTokenApproveAddress?: string;
   imgUrl?: string;
   symbol?: string;
 }

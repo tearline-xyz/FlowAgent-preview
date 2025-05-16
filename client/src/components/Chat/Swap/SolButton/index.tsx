@@ -9,7 +9,6 @@ import useCustomWeb3Modal from '~/components/Account/hooks/useCustomWeb3Modal';
 import { ChainSwitch } from '~/components/Account/WagmiGlobal/config';
 import { ErrorCodeEnum } from '~/enum/error-code.enum';
 
-
 import {
   // SystemProgram,
   // PublicKey,
@@ -20,14 +19,11 @@ import {
   VersionedTransaction,
 } from '@solana/web3.js';
 
-
 import bs58 from 'bs58';
-
 
 import { useAppKitProvider } from '@reown/appkit/react';
 import type { Provider } from '@reown/appkit-adapter-solana/react';
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react';
-
 
 // import {delay} from "@src/utils/util";
 
@@ -42,24 +38,23 @@ interface ISolButton {
   setHash: React.Dispatch<React.SetStateAction<string>>;
   currentTokenBalance: string;
   connect: () => void;
-  currentChainInfo: AllChainData | null
+  currentChainInfo: AllChainData | null;
 }
 
 export default function SolButton({
-                                    inputJetton,
-                                    outputJetton,
-                                    inputValue,
-                                    getIds,
-                                    quoteCode,
-                                    swapERC20,
+  inputJetton,
+  outputJetton,
+  inputValue,
+  getIds,
+  quoteCode,
+  swapERC20,
 
-                                    setTransactonSuccess,
-                                    setHash,
-                                    currentTokenBalance,
-                                    connect,
-                                    currentChainInfo,
-                                  }: ISolButton) {
-
+  setTransactonSuccess,
+  setHash,
+  currentTokenBalance,
+  connect,
+  currentChainInfo,
+}: ISolButton) {
   const [isTransacting, setIsTransacting] = useState<boolean>(false); // sol
   const {
     isConnected,
@@ -87,21 +82,13 @@ export default function SolButton({
       }
       return;
     }
-    if (
-      !isConnected ||
-      !address ||
-      !inputJetton ||
-      !outputJetton ||
-      !connection
-    ) {
+    if (!isConnected || !address || !inputJetton || !outputJetton || !connection) {
       return;
     }
     try {
       setIsTransacting(true);
       // console.log('isTransacting', isTransacting);
-      const balance = await (connection as any).getBalance(
-        walletProvider.publicKey as any,
-      );
+      const balance = await (connection as any).getBalance(walletProvider.publicKey as any);
       console.log('balance', balance);
       const estimatedFee = 0.01 * LAMPORTS_PER_SOL;
       if (balance < Number(inputValue) + estimatedFee) {
@@ -141,7 +128,6 @@ export default function SolButton({
           console.log(`View on Solscan: https://solscan.io/tx/${signature}`);
           setTransactonSuccess(true);
 
-
           return signature;
         } catch (error: unknown) {
           // setLoading(false)
@@ -159,18 +145,14 @@ export default function SolButton({
       });
     } catch (error: unknown) {
       console.error('Swap failed:', error);
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error occurred';
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       alert(`Swap failed: ${errorMessage}`);
     } finally {
       setIsTransacting(false);
     }
   };
 
-  const signAndSendTransaction = async (
-    callData: string,
-    walletAddress: string,
-  ) => {
+  const signAndSendTransaction = async (callData: string, walletAddress: string) => {
     try {
       // 解码交易数据
       const decodedTx = bs58.decode(callData);
@@ -184,9 +166,8 @@ export default function SolButton({
         // console.log('Trying legacy Transaction format');
         tx = Transaction.from(decodedTx);
       }
-      const recentBlockhash: any = (
-        await (connection as any).getLatestBlockhash('confirmed')
-      )?.blockhash;
+      const recentBlockhash: any = (await (connection as any).getLatestBlockhash('confirmed'))
+        ?.blockhash;
       // console.log('a', a);
       // 获取最新的区块哈希
       // const {blockhash, lastValidBlockHeight} = await connection.getLatestBlockhash('confirmed');
@@ -199,15 +180,11 @@ export default function SolButton({
         tx.feePayer = walletProvider.publicKey; // new PublicKey(walletAddress);
       }
 
-      const signature = await walletProvider.sendTransaction(
-        tx,
-        connection as any,
-        {
-          skipPreflight: true,
-          preflightCommitment: 'processed',
-          maxRetries: 3,
-        },
-      );
+      const signature = await walletProvider.sendTransaction(tx, connection as any, {
+        skipPreflight: true,
+        preflightCommitment: 'processed',
+        maxRetries: 3,
+      });
       // // 使用钱包适配器发送交易
       // const signature = await sendTransaction(tx, connection, {
       //   skipPreflight: true,
@@ -244,14 +221,15 @@ export default function SolButton({
       onClick={solSwap}
       loading={isTransacting}
       disabled={
-        quoteCode === ErrorCodeEnum.NotApi ? true :
-          Number(501) !== Number(currentChainInfo?.chainId)
+        quoteCode === ErrorCodeEnum.NotApi
+          ? true
+          : Number(501) !== Number(currentChainInfo?.chainId)
             ? false
             : 501 !== Number(currentChainInfo?.chainId) ||
-            DisabledSwap.some(i => Number(i) === Number(quoteCode)) ||
-            Number(currentTokenBalance) < Number(inputValue) ||
-            Number(inputValue) <= 0 ||
-            inputValue === ''
+              DisabledSwap.some((i) => Number(i) === Number(quoteCode)) ||
+              Number(currentTokenBalance) < Number(inputValue) ||
+              Number(inputValue) <= 0 ||
+              inputValue === ''
       }
     >
       {Number(501) !== Number(currentChainInfo?.chainId)
@@ -260,7 +238,7 @@ export default function SolButton({
           ? 'Enter amount'
           : Number(currentTokenBalance) < Number(inputValue)
             ? 'Insufficient balance'
-            : DisabledSwap.some(i => Number(i) === Number(quoteCode))
+            : DisabledSwap.some((i) => Number(i) === Number(quoteCode))
               ? ErrorSwapOKXCode[quoteCode]
               : isTransacting
                 ? 'Preparing Transaction'

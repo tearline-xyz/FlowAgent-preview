@@ -11,7 +11,7 @@ import store from '~/store';
 import Part from './Part';
 import BN from 'bignumber.js';
 import SwapWarp from '../../Swap/SwapWarp';
-import DepositWrap from '../../deposit/depositeWrap';
+import DepositWrap from '../../deposit/depositWrap/depositWrap';
 
 type ContentPartsProps = {
   content: Array<TMessageContentParts | undefined> | undefined;

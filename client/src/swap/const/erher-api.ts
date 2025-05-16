@@ -16,7 +16,7 @@ import PancakeFactory from '~/swap/abi/pancake-factory.json';
 import PancakePair from '~/swap/abi/pancake-pair.json';
 
 import { shiftedBy } from '~/swap/hooks/useOkxSwap';
-import {ContractAddr, COIN_CONTRACT_ADDRESSES} from '~/swap/const/index';
+import { ContractAddr, COIN_CONTRACT_ADDRESSES } from '~/swap/const/index';
 import BigNumber from 'bignumber.js';
 
 const ABI = {
@@ -45,7 +45,6 @@ export class EtherInitApi {
     return await provider.getGasPrice();
   }
 
-
   getContractAddr = async (contractName: string) => {
     return import.meta.env.VITE_APP_BASE_ENV === 'production'
       ? ContractAddr['56'][contractName]
@@ -67,14 +66,9 @@ export class EtherInitApi {
     const provider: any = new ethers.BrowserProvider(this.providerInstance);
     const signer = await provider.getSigner();
 
-    const contract: any = new Contract(
-      address,
-      abi,
-      signer,
-    );
+    const contract: any = new Contract(address, abi, signer);
     return contract;
   }
-
 
   allowance = async (
     tokenContractAddr: string,
@@ -86,17 +80,13 @@ export class EtherInitApi {
       const signer = await provider.getSigner();
       const contract: any = new Contract(tokenContractAddr, ABI.ERC20, signer);
       const decimals: any = await contract.decimals();
-      const allowanceAmount = await contract.allowance(
-        ownerAddress,
-        spenderAddress,
-      );
+      const allowanceAmount = await contract.allowance(ownerAddress, spenderAddress);
       return shiftedBy(allowanceAmount, decimals.toString(), -1);
     } catch (error) {
       console.error('Error fetching allowance:', error);
       throw error;
     }
   };
-
 
   signExecuteContract = async (contractAddressTo, value, data) => {
     const provider: any = new ethers.BrowserProvider(this.providerInstance);
@@ -127,7 +117,7 @@ export class EtherInitApi {
     const provider: any = new ethers.BrowserProvider(this.providerInstance);
     provider
       .getTransactionReceipt(hash)
-      .then(receipt => {
+      .then((receipt) => {
         if (!receipt) {
           setTimeout(() => {
             this.transactionReceiptAsync(hash, resolve, reject);
@@ -153,11 +143,9 @@ export class EtherInitApi {
     gasPrice?: any;
     gas?: any;
   }) => {
-    return this.signExecuteContract(data.to, data.value, data.data).then(
-      (hash: any) => {
-        return this.awaitTransactionMined(hash.hash);
-      },
-    );
+    return this.signExecuteContract(data.to, data.value, data.data).then((hash: any) => {
+      return this.awaitTransactionMined(hash.hash);
+    });
   };
 
   getChainId = async () => {
@@ -169,7 +157,11 @@ export class EtherInitApi {
 
   getBalance = async (address: string) => {
     const provider: any = new ethers.BrowserProvider(this.providerInstance);
-    return formatEther(await provider.getBalance(address));
+    const y = await provider.getBalance(address);
+    console.log('yyyuuuu', y);
+    console.log('formatEther', formatEther(y));
+
+    return formatEther(y);
   };
 
   deposit = async (orderId: string, amount: string, cbSuccess: Function, cbError: Function) => {
@@ -180,11 +172,7 @@ export class EtherInitApi {
         import.meta.env.VITE_APP_BASE_ENV === 'production'
           ? ContractAddr['56'].recharge
           : ContractAddr['97'].recharge;
-      const contract: any = new Contract(
-        tokenContractAddr,
-        ABI.BidContract,
-        signer,
-      );
+      const contract: any = new Contract(tokenContractAddr, ABI.BidContract, signer);
       const amountInEther = amount.toString(); // Convert to string
       const amountInWei = ethers.parseEther(amountInEther);
       const tx = await contract.recharge(orderId, {
@@ -200,8 +188,12 @@ export class EtherInitApi {
     }
   };
 
-
-  checkin = async (userId: string, amount: string | number, cbSuccess: Function, cbError: Function) => {
+  checkin = async (
+    userId: string,
+    amount: string | number,
+    cbSuccess: Function,
+    cbError: Function,
+  ) => {
     console.log('userId:', userId);
     try {
       const provider: any = new ethers.BrowserProvider(this.providerInstance);
@@ -210,11 +202,7 @@ export class EtherInitApi {
         import.meta.env.VITE_APP_BASE_ENV === 'production'
           ? ContractAddr['56'].recharge
           : ContractAddr['97'].recharge;
-      const contract: any = new Contract(
-        tokenContractAddr,
-        ABI.BidContract,
-        signer,
-      );
+      const contract: any = new Contract(tokenContractAddr, ABI.BidContract, signer);
       const amountInEther = amount.toString(); // Convert to string
       const amountInWei = ethers.parseEther(amountInEther);
       const tx = await contract.checkIn(userId, {
@@ -233,22 +221,15 @@ export class EtherInitApi {
       const contract: any = await this.getContractByName('ERC20', address);
       const balance = await contract.balanceOf(account);
       return ethers.formatEther(balance);
-    } catch (e) {
-
-    }
+    } catch (e) {}
   };
 
-  approve = async (
-    poolAddress: string,
-    tokenContractAddr: string,
-    maxApproval: any,
-  ) => {
+  approve = async (poolAddress: string, tokenContractAddr: string, maxApproval: any) => {
     const contract: any = await this.getContractByName('CakeABI', tokenContractAddr);
     const maxApprovalVal = ethers.parseEther(maxApproval + '');
     const tx = await contract.approve(poolAddress, maxApprovalVal);
     return await tx.wait();
   };
-
 
   createLock = async (amount: string, duration: number) => {
     try {
@@ -265,7 +246,6 @@ export class EtherInitApi {
       console.log('createLock', e);
     }
   };
-
 
   veCakeBalanceOf = async (account: string) => {
     try {
@@ -294,7 +274,6 @@ export class EtherInitApi {
       const veCakePoolAddr: string = await this.getContractAddr('vecake');
       const contract: any = await this.getContractByName('VeCakeABI', veCakePoolAddr);
       return await contract.getUserInfo(account);
-
     } catch (e) {
       console.log('veCakeGetUserInfo', e);
     }
@@ -309,7 +288,6 @@ export class EtherInitApi {
       console.log('week', e);
     }
   };
-
 
   increaseLockAmount = async (amount: string) => {
     try {
@@ -326,7 +304,7 @@ export class EtherInitApi {
     try {
       const poolAddr: string = await this.getContractAddr('vecake');
       const contract: any = await this.getContractByName('VeCakeABI', poolAddr);
-      const unlock_time = Math.floor(Date.now() / 1000) + (Number(duration) * 7 * 24 * 60 * 60);
+      const unlock_time = Math.floor(Date.now() / 1000) + Number(duration) * 7 * 24 * 60 * 60;
       const tx = await contract.increaseUnlockTime(unlock_time);
       return await tx.wait();
     } catch (e) {
@@ -342,7 +320,10 @@ export class EtherInitApi {
     };
   };
   getPoolInfo = async (token0Addr: string, token1Addr: string) => {
-    const contract: any = await this.getContractByName('PancakeFactory', COIN_CONTRACT_ADDRESSES.factory);
+    const contract: any = await this.getContractByName(
+      'PancakeFactory',
+      COIN_CONTRACT_ADDRESSES.factory,
+    );
     const pairAddress = await contract.getPair(token0Addr, token1Addr);
     if (pairAddress === ZeroAddress) {
       throw new Error(token0Addr + '-' + token1Addr + ' Liquidity pool does not exist');
@@ -357,18 +338,18 @@ export class EtherInitApi {
     const { decimals: token1Decimals } = await this.erc20TokenInfo(token1Addr);
     return {
       pairAddress,
-      token0Amount: new BigNumber(token0Amount.toString()).shiftedBy(-1 * token0Decimals).toString(),
-      token1Amount: new BigNumber(token1Amount.toString()).shiftedBy(-1 * token1Decimals).toString(),
+      token0Amount: new BigNumber(token0Amount.toString())
+        .shiftedBy(-1 * token0Decimals)
+        .toString(),
+      token1Amount: new BigNumber(token1Amount.toString())
+        .shiftedBy(-1 * token1Decimals)
+        .toString(),
       token0Decimals: token0Decimals.toString(),
       token1Decimals: token1Decimals.toString(),
     };
-
   };
   getBscTokenPrice = async (token0Addr: string, token1Addr: string) => {
-    const {
-      token0Amount,
-      token1Amount,
-    } = await this.getPoolInfo(token0Addr, token1Addr);
+    const { token0Amount, token1Amount } = await this.getPoolInfo(token0Addr, token1Addr);
     return new BigNumber(token1Amount).dividedBy(token0Amount).toString();
   };
 }

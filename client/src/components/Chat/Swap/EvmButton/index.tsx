@@ -1,7 +1,6 @@
+import { DisabledSwap, ErrorSwapOKXCode } from '~/swap/const/error-code';
 
-import {DisabledSwap, ErrorSwapOKXCode } from '~/swap/const/error-code';
-
-import {DefaultTokenAddr} from '~/swap/const/contract';
+import { DefaultTokenAddr } from '~/swap/const/contract';
 // import {Button} from '~/components/ui';
 import Button from '~/components/Mui/Button';
 import { AllChainData, IServerJetton } from '~/swap/interface';
@@ -9,9 +8,8 @@ import { EtherInitApi } from '~/swap/const/erher-api';
 import React, { useState } from 'react';
 
 import useCustomWeb3Modal from '~/components/Account/hooks/useCustomWeb3Modal';
-import {ChainSwitch} from '~/components/Account/WagmiGlobal/config';
-import {ErrorCodeEnum} from '~/enum/error-code.enum';
-
+import { ChainSwitch } from '~/components/Account/WagmiGlobal/config';
+import { ErrorCodeEnum } from '~/enum/error-code.enum';
 
 interface IEvmButton {
   inputValue: string;
@@ -25,24 +23,23 @@ interface IEvmButton {
   setHash: React.Dispatch<React.SetStateAction<string>>;
   currentTokenBalance: string;
   connect: () => void;
-  currentChainInfo:AllChainData|null
+  currentChainInfo: AllChainData | null;
 }
 
 export default function EvmButton({
-                                    inputJetton,
-                                    outputJetton,
-                                    inputValue,
-                                    getIds,
-                                    quoteCode,
-                                    swapERC20,
-                                    approve,
-                                    setTransactonSuccess,
-                                    setHash,
-                                    currentTokenBalance,
-                                    connect,
-                                    currentChainInfo
-                                  }: IEvmButton) {
-
+  inputJetton,
+  outputJetton,
+  inputValue,
+  getIds,
+  quoteCode,
+  swapERC20,
+  approve,
+  setTransactonSuccess,
+  setHash,
+  currentTokenBalance,
+  connect,
+  currentChainInfo,
+}: IEvmButton) {
   const {
     chainId,
     isConnected,
@@ -60,11 +57,7 @@ export default function EvmButton({
   const evmSwap = async () => {
     let currChainId = Number(currentChainInfo?.chainId);
     if (Number(chainId) !== currChainId) {
-      if (
-        currentChainInfo?.chainId &&
-        ChainSwitch &&
-        ChainSwitch[currChainId]
-      ) {
+      if (currentChainInfo?.chainId && ChainSwitch && ChainSwitch[currChainId]) {
         if (currChainId === 501 || currChainId === 607) {
           // checkSwitchNetwork(ChainSwitch[currChainId])
           disconnectConnect();
@@ -85,7 +78,7 @@ export default function EvmButton({
       return;
     }
     let isEvm: boolean = Object.values(DefaultTokenAddr).some(
-      i => i.toLowerCase() === inputJetton.tokenContractAddress.toLowerCase(),
+      (i) => i.toLowerCase() === inputJetton.tokenContractAddress.toLowerCase(),
     );
     if (isEvm) {
       evmSendSwap();
@@ -154,7 +147,6 @@ export default function EvmButton({
               setSwapStatus('');
               setLoading(false);
               setTransactonSuccess(true);
-
             } catch (e) {
               console.log(e, e);
               setSwapStatus('');
@@ -181,27 +173,24 @@ export default function EvmButton({
       hiddenLoadingText={true}
       onClick={evmSwap}
       disabled={
-        quoteCode===ErrorCodeEnum.NotApi?true:
-          isConnected &&
-          address &&
-          Number(chainId) !== Number(currentChainInfo?.chainId)
+        quoteCode === ErrorCodeEnum.NotApi
+          ? true
+          : isConnected && address && Number(chainId) !== Number(currentChainInfo?.chainId)
             ? false
-            : DisabledSwap.some(i => Number(i) === Number(quoteCode)) ||
-            Number(currentTokenBalance) < Number(inputValue) ||
-            Number(inputValue) <= 0 ||
-            inputValue === ''
+            : DisabledSwap.some((i) => Number(i) === Number(quoteCode)) ||
+              Number(currentTokenBalance) < Number(inputValue) ||
+              Number(inputValue) <= 0 ||
+              inputValue === ''
       }
       loading={loading}
     >
-      { isConnected &&
-      address &&
-      Number(chainId) !== Number(currentChainInfo?.chainId)
+      {isConnected && address && Number(chainId) !== Number(currentChainInfo?.chainId)
         ? 'Switch Network'
         : Number(inputValue) <= 0 || inputValue === ''
           ? 'Enter amount'
           : Number(currentTokenBalance) < Number(inputValue)
             ? 'Insufficient balance'
-            : DisabledSwap.some(i => Number(i) === Number(quoteCode))
+            : DisabledSwap.some((i) => Number(i) === Number(quoteCode))
               ? ErrorSwapOKXCode[quoteCode]
               : swapStatus === 'approve'
                 ? 'Approve'

@@ -16,7 +16,6 @@ export function shiftedBy(allowance: any, decimals: any, direction: number) {
   return new BigNumber(allowance).shiftedBy(direction * decimals).toFixed();
 }
 
-
 interface IProps {
   inputJetton: IServerJetton | null;
   outputJetton: IServerJetton | null;
@@ -24,17 +23,17 @@ interface IProps {
   currentChain: AllChainData | null;
 
   userAddress: string | undefined;
-  slippage: string
+  slippage: string;
 }
 
 export default function useOkxSwap({
-                                     inputJetton,
-                                     outputJetton,
-                                     inputAmount,
-                                     currentChain,
-                                     userAddress,
-                                     slippage,
-                                   }: IProps) {
+  inputJetton,
+  outputJetton,
+  inputAmount,
+  currentChain,
+  userAddress,
+  slippage,
+}: IProps) {
   // console.log('inputJetton', inputJetton)
   // console.log('outputJetton', outputJetton)
   // console.log('inputAmount', inputAmount)
@@ -54,21 +53,11 @@ export default function useOkxSwap({
   }, dealy);
 
   const getSwapQuote = async () => {
-    if (
-      !inputJetton ||
-      !outputJetton ||
-      !currentChain ||
-      !inputAmount ||
-      +inputAmount <= 0
-    ) {
+    if (!inputJetton || !outputJetton || !currentChain || !inputAmount || +inputAmount <= 0) {
       return;
     }
 
-    const inputAmount1: string = shiftedBy(
-      inputAmount,
-      inputJetton.decimals,
-      1,
-    );
+    const inputAmount1: string = shiftedBy(inputAmount, inputJetton.decimals, 1);
     setLoadingQuote(true);
     // dispatch(swapSlice.actions.setLoadingQuote(true));
     axiosAggregatorQuote({
@@ -97,12 +86,12 @@ export default function useOkxSwap({
           let toAmount = shiftedBy(toTokenAmount, Number(toToken?.decimal), -1);
 
           let amountOut = quoteCompareList.length
-            ? Math.min(...quoteCompareList.map(d => d.amountOut))
+            ? Math.min(...quoteCompareList.map((d) => d.amountOut))
             : Number(toAmount) * 0.95;
           let maxQuoteObject = quoteCompareList.length
             ? quoteCompareList.reduce((max, current) => {
-              return current.amountOut > max.amountOut ? current : max;
-            })
+                return current.amountOut > max.amountOut ? current : max;
+              })
             : {};
 
           setToTradeAmount(toAmount);
@@ -150,22 +139,12 @@ export default function useOkxSwap({
   };
 
   const approve = (cb: Function) => {
-    if (
-      !inputJetton ||
-      !outputJetton ||
-      !currentChain ||
-      !inputAmount ||
-      +inputAmount <= 0
-    ) {
+    if (!inputJetton || !outputJetton || !currentChain || !inputAmount || +inputAmount <= 0) {
       return;
     }
     // console.log('inputAmount', inputAmount);
     // const inputAmount1: string = shiftedBy(new BigNumber(inputAmount).plus(0.1).minus(0.000001).toString(), inputJetton.decimals, 1)
-    const inputAmount1: string = shiftedBy(
-      inputAmount,
-      inputJetton.decimals,
-      1,
-    );
+    const inputAmount1: string = shiftedBy(inputAmount, inputJetton.decimals, 1);
     // console.log('inputAmount1', inputAmount1);
     axiosApproveTransaction({
       chain_id: currentChain?.chainId as number,
@@ -184,13 +163,7 @@ export default function useOkxSwap({
   };
 
   const swapERC20 = (ids: string = '', cb: Function) => {
-    if (
-      !inputJetton ||
-      !outputJetton ||
-      !currentChain ||
-      !inputAmount ||
-      +inputAmount <= 0
-    ) {
+    if (!inputJetton || !outputJetton || !currentChain || !inputAmount || +inputAmount <= 0) {
       return;
     }
     const inputAmount1: string = shiftedBy(
@@ -258,8 +231,7 @@ export default function useOkxSwap({
     // console.log('outputJetton', outputJetton);
     // console.log('inputAmount', inputAmount);
     getSwapQuote();
-    return () => {
-    };
+    return () => {};
   }, [inputJetton?.tokenContractAddress, outputJetton?.tokenContractAddress, inputAmount]);
   useEffect(() => {
     setDealy(null);
@@ -269,8 +241,7 @@ export default function useOkxSwap({
       setToTradeAmount('');
       setDealy(null);
     }
-    return () => {
-    };
+    return () => {};
   }, [inputAmount]);
 
   const reloadSwap = async () => {

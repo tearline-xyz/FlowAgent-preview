@@ -11,10 +11,20 @@ import {
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react';
 import type { Provider } from '@reown/appkit-adapter-solana/react';
 import useSuiWeb3 from '~/components/Account/hooks/useSuiWeb3';
+import { EtherInitApi } from '~/swap/const/erher-api';
+import { DefaultTokenAddr } from '~/swap/const/contract';
+import { SolApi } from '~/swap/const/sol-api';
 
 const useCustomWeb3Modal = () => {
-
-  const { suiConnected, suiChainId, suiAddress, suiDisconnect } = useSuiWeb3();
+  const {
+    suiConnected,
+    suiChainId,
+    suiAddress,
+    suiDisconnect,
+    fetchSuiBalance,
+    getTokenBalanceSimple,
+    wallet,
+  } = useSuiWeb3();
   const { connection } = useAppKitConnection();
   const { open, close } = useAppKit();
   const {
@@ -28,17 +38,16 @@ const useCustomWeb3Modal = () => {
   const state = useAppKitState();
   const { disconnect } = useDisconnect();
   const { walletInfo } = useWalletInfo();
-  // console.log('walletInfo', walletInfo);
+  console.log('inConnected', isConnected);
   const { switchNetwork, chainId } = useAppKitNetwork();
+
   const { walletProvider } = useAppKitProvider('eip155');
   const { walletProvider: walletProviderSol } = useAppKitProvider<Provider>('solana');
   const [account, setAccount] = useState<string | undefined>('');
-  let evmChain =
-    isConnected &&
-    chainId !== '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' &&
-    chainId !== 607;
-  let solChain = isConnected && chainId === '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
-  let suiChain = suiConnected && suiAddress && !isConnected;
+
+  const evmChain = isConnected && chainId !== '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' && chainId !== 607;
+  const solChain = isConnected && chainId === '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+  const suiChain = suiConnected && suiAddress && !isConnected;
   useEffect(() => {
     if (currAddress) {
       setAccount(currAddress);
@@ -56,7 +65,6 @@ const useCustomWeb3Modal = () => {
     close();
   };
   const disconnectConnect = async () => {
-
     if (suiChain) {
       await suiDisconnect();
     } else {
@@ -66,6 +74,39 @@ const useCustomWeb3Modal = () => {
   const checkSwitchNetwork = (chainId: any) => {
     switchNetwork(chainId);
   };
+  const address = suiConnected && suiAddress ? suiAddress : account;
+
+  const isMainToken = (tokenAddr: string) =>
+    Object.values(DefaultTokenAddr).some(
+      (i) => i.toLocaleLowerCase() === tokenAddr.toLocaleLowerCase(),
+    );
+
+  const getTokenBalance = async (tokenAddress: string) => {
+    let balance;
+    if (evmChain) {
+      walletProvider;
+      const sdk = new EtherInitApi(address, walletProvider, chainId);
+      balance = isMainToken(tokenAddress)
+        ? await sdk.getBalance(tokenAddress)
+        : await sdk.tokenBalance(tokenAddress, address);
+    } else if (solChain) {
+      const sdkSol = new SolApi(address, connection, walletProviderSol);
+      if (isMainToken(tokenAddress)) {
+        balance = await sdkSol.getBalance();
+      } else {
+        const tokenAccount = await sdkSol.getTokenAccount(tokenAddress);
+        balance = await sdkSol.getTokenBalance(tokenAccount);
+      }
+    } else if (suiChain) {
+      if (isMainToken(tokenAddress)) {
+        const sBalance = await fetchSuiBalance();
+        balance = sBalance;
+      } else {
+        balance = await getTokenBalanceSimple(tokenAddress);
+      }
+    }
+    return balance;
+  };
 
   return {
     openModal,
@@ -73,9 +114,14 @@ const useCustomWeb3Modal = () => {
     disconnectConnect,
     checkSwitchNetwork,
     walletInfo,
-    account:suiConnected && suiAddress ? suiAddress : account,
-    address: suiConnected && suiAddress ? suiAddress : account,
-    chainId: suiConnected && suiAddress ? suiChainId : chainId === '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' ? 501 : chainId, // TODO sol 501; 其余的按照EVM 后面解决 SUI TON
+    account,
+    address,
+    chainId:
+      suiConnected && suiAddress
+        ? suiChainId
+        : chainId === '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+          ? 501
+          : chainId, // TODO sol 501; 其余的按照EVM 后面解决 SUI TON
     isConnected: suiConnected ? suiConnected : isConnected,
     state: state.selectedNetworkId?.toString(),
     walletProvider,
@@ -86,6 +132,8 @@ const useCustomWeb3Modal = () => {
     disconnect,
     connection,
     walletProviderSol,
+    getTokenBalance,
+    suiWallet: wallet,
   };
 };
 
