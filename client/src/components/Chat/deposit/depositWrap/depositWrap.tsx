@@ -75,7 +75,7 @@ const DepositWrap = ({ data }: ISwapWarp) => {
   useEffect(() => {
     const timerId = setInterval(() => {
       initPool();
-    }, 1000);
+    }, 5000);
     return () => {
       clearInterval(timerId);
     };
