@@ -544,10 +544,10 @@ const DepositWrap = ({ data }: ISwapWarp) => {
           onClick={buttonClick}
           loading={isTransacting}
           disabled={
-            Number(501) !== Number(currentChainInfo?.chainId)
+            !suiChain
               ? false
-              : 501 !== Number(currentChainInfo?.chainId) ||
-                Number(inputJetton?.balance) < Number(inputValue) ||
+              : Number(inputJetton?.balance) < Number(inputValue) ||
+                Number(outputJetton?.balance) < Number(outputValue) ||
                 Number(inputValue) <= 0 ||
                 inputValue === ''
           }
