@@ -44,7 +44,7 @@ export default function useSuiWeb3() {
     // console.log(`Token Balance: ${balance.totalBalance}`);
     const formattedBalance = Number(balance.totalBalance) / Math.pow(10, decimals);
 
-    return formattedBalanc+'';
+    return formattedBalance+'';
   }
 
   useEffect(() => {
