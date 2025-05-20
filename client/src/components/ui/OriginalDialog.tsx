@@ -8,7 +8,8 @@ interface OGDialogProps extends DialogPrimitive.DialogProps {
 }
 
 const Dialog = React.forwardRef<HTMLDivElement, OGDialogProps>(
-  ({ children, triggerRef, onOpenChange, ...props }) => {
+  ({ children, triggerRef, onOpenChange, ...props }, ref) => {
+    // 添加 ref 参数
     const handleOpenChange = (open: boolean) => {
       if (!open && triggerRef?.current) {
         setTimeout(() => {
@@ -20,11 +21,16 @@ const Dialog = React.forwardRef<HTMLDivElement, OGDialogProps>(
 
     return (
       <DialogPrimitive.Root {...props} onOpenChange={handleOpenChange}>
-        {children}
+        <div ref={ref}>
+          {' '}
+          {/* 使用 ref */}
+          {children}
+        </div>
       </DialogPrimitive.Root>
     );
   },
 );
+Dialog.displayName = 'Dialog'; // 添加 displayName
 
 const DialogTrigger = DialogPrimitive.Trigger;
 

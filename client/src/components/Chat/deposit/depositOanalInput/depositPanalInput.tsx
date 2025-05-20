@@ -57,7 +57,7 @@ export default function DepositPanelInputBox({
   return (
     <SwapPanelInputBoxRoot>
       <SwapPanelRow>
-        <SwapPanelFlexCenter onClick={openModalClick}>
+        {/* <SwapPanelFlexCenter onClick={openModalClick}>
           <SwapPanelLabel>{type === 'input' ? 'From' : 'To'}</SwapPanelLabel>
           <SwapPanelFlexCenter>
             <img
@@ -67,7 +67,7 @@ export default function DepositPanelInputBox({
             />
             <SwapPanelChain>{'Sui'}</SwapPanelChain>
           </SwapPanelFlexCenter>
-        </SwapPanelFlexCenter>
+        </SwapPanelFlexCenter> */}
         <SwapPanelFlexCenter>
           <BalanceBox>Balance:{jettonData?.balance}</BalanceBox>
           {showMax && (

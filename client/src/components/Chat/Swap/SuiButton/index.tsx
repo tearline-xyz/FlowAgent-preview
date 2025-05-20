@@ -19,29 +19,24 @@ interface ISuiButton {
   setHash: React.Dispatch<React.SetStateAction<string>>;
   currentTokenBalance: string;
   connect: () => void;
-  currentChainInfo: AllChainData | null
+  currentChainInfo: AllChainData | null;
 }
 
 // const MAX_RETRIES = 3;
 export default function SuiButton({
-                                    inputJetton,
-                                    outputJetton,
-                                    inputValue,
-                                    getIds,
-                                    quoteCode,
-                                    swapERC20,
-                                    setTransactonSuccess,
-                                    setHash,
-                                    currentTokenBalance,
-                                    connect,
-                                    currentChainInfo,
-                                  }: ISuiButton) {
-
-  const {
-    chainId,
-    disconnectConnect,
-    suiChain,
-  } = useCustomWeb3Modal();
+  inputJetton,
+  outputJetton,
+  inputValue,
+  getIds,
+  quoteCode,
+  swapERC20,
+  setTransactonSuccess,
+  setHash,
+  currentTokenBalance,
+  connect,
+  currentChainInfo,
+}: ISuiButton) {
+  const { chainId, disconnectConnect, suiChain } = useCustomWeb3Modal();
   const { wallet } = useSuiWeb3();
   const [isTransacting, setIsTransacting] = useState<boolean>(false);
   const suiSwap = async () => {
@@ -58,36 +53,32 @@ export default function SuiButton({
     }
     try {
       swapERC20(getIds, async (res: any) => {
-        let response=res.data[0];
+        let response = res.data[0];
         console.log('Full API Response:', response);
         // let retryCount = 0;
         // while (retryCount < MAX_RETRIES) {
-          try {
-            const txDigest = await executeSwap(response);
-            if (txDigest) {
-              setTransactonSuccess(true);
-            }
-            console.log('Transaction successful with digest:', txDigest);
-            // break; // Exit retry loop on success
-          } catch (error) {
-            // retryCount++;
-            // if (retryCount === MAX_RETRIES) {
-            //   console.error('Max retries reached, transaction failed');
-            //   setIsTransacting(false);
-            //   throw error;
-            // }
-            // await new Promise(resolve => setTimeout(resolve, 2000 * retryCount));
+        try {
+          const txDigest = await executeSwap(response);
+          if (txDigest) {
+            setTransactonSuccess(true);
           }
+          console.log('Transaction successful with digest:', txDigest);
+          // break; // Exit retry loop on success
+        } catch (error) {
+          // retryCount++;
+          // if (retryCount === MAX_RETRIES) {
+          //   console.error('Max retries reached, transaction failed');
+          //   setIsTransacting(false);
+          //   throw error;
+          // }
+          // await new Promise(resolve => setTimeout(resolve, 2000 * retryCount));
+        }
         // }
-
       });
-    } catch (e) {
-
-    }
+    } catch (e) {}
   };
 
   async function executeSwap(response: any) {
-
     try {
       if (!response?.tx) {
         throw new Error('Invalid swap data - missing unsigned transaction');
@@ -129,14 +120,15 @@ export default function SuiButton({
       onClick={suiSwap}
       loading={isTransacting}
       disabled={
-        quoteCode === ErrorCodeEnum.NotApi ? true :
-          ChainIdEnum.Sui !== Number(currentChainInfo?.chainId)
+        quoteCode === ErrorCodeEnum.NotApi
+          ? true
+          : ChainIdEnum.Sui !== Number(currentChainInfo?.chainId)
             ? false
             : ChainIdEnum.Sui !== Number(currentChainInfo?.chainId) ||
-            DisabledSwap.some(i => Number(i) === Number(quoteCode)) ||
-            Number(currentTokenBalance) < Number(inputValue) ||
-            Number(inputValue) <= 0 ||
-            inputValue === ''
+              DisabledSwap.some((i) => Number(i) === Number(quoteCode)) ||
+              Number(currentTokenBalance) < Number(inputValue) ||
+              Number(inputValue) <= 0 ||
+              inputValue === ''
       }
     >
       {ChainIdEnum.Sui !== Number(currentChainInfo?.chainId)
@@ -145,7 +137,7 @@ export default function SuiButton({
           ? 'Enter amount'
           : Number(currentTokenBalance) < Number(inputValue)
             ? 'Insufficient balance'
-            : DisabledSwap.some(i => Number(i) === Number(quoteCode))
+            : DisabledSwap.some((i) => Number(i) === Number(quoteCode))
               ? ErrorSwapOKXCode[quoteCode]
               : isTransacting
                 ? 'Preparing Transaction'
