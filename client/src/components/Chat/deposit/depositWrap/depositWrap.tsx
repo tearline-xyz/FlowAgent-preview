@@ -73,7 +73,12 @@ const DepositWrap = ({ data }: ISwapWarp) => {
     console.log('pool', pool);
   };
   useEffect(() => {
-    initPool();
+    const timerId = setInterval(() => {
+      initPool();
+    }, 5000);
+    return () => {
+      clearInterval(timerId);
+    };
   }, []);
 
   const initJettonInfo = async () => {
