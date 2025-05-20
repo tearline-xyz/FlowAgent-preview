@@ -129,8 +129,8 @@ const DepositWrap = ({ data }: ISwapWarp) => {
     _outputJetton.tokenPrice = toTokenRes.data[0].fromToken.tokenUnitPrice;
 
     // init token balance
-    const inputBalance = await getTokenBalance(inputAddress);
-    const outputBalance = await getTokenBalance(outputAddress);
+    const inputBalance = await getTokenBalance(inputAddress, _inputJetton?.decimals as number);
+    const outputBalance = await getTokenBalance(outputAddress, _outputJetton?.decimals as number);
     console.log('inputBalance', inputBalance);
     console.log('outputBalance', outputBalance);
 

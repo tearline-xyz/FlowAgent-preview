@@ -30,7 +30,8 @@ export default function useSuiWeb3() {
     }
     return balanceData.totalBalance;
   };
-  async function getTokenBalanceSimple(TOKEN_TYPE: string) {
+  async function getTokenBalanceSimple(TOKEN_TYPE: string,decimals:number) {
+    console.log('decimals', decimals);
     if (!wallet.connected || !wallet.address) {
       throw new Error('Wallet not connected');
     }
@@ -41,7 +42,9 @@ export default function useSuiWeb3() {
     });
 
     // console.log(`Token Balance: ${balance.totalBalance}`);
-    return balance.totalBalance;
+    const formattedBalance = Number(balance.totalBalance) / Math.pow(10, decimals);
+
+    return formattedBalanc+'';
   }
 
   useEffect(() => {

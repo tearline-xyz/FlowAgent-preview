@@ -14,6 +14,7 @@ import useSuiWeb3 from '~/components/Account/hooks/useSuiWeb3';
 import { EtherInitApi } from '~/swap/const/erher-api';
 import { DefaultTokenAddr } from '~/swap/const/contract';
 import { SolApi } from '~/swap/const/sol-api';
+import { shiftedBy } from '~/swap/hooks/useOkxSwap';
 
 export const isMainToken = (tokenAddr: string) =>
   Object.values(DefaultTokenAddr).some(
@@ -28,6 +29,7 @@ const useCustomWeb3Modal = () => {
     fetchSuiBalance,
     getTokenBalanceSimple,
     wallet,
+    suiBalance
   } = useSuiWeb3();
   const { connection } = useAppKitConnection();
   const { open, close } = useAppKit();
@@ -81,7 +83,7 @@ const useCustomWeb3Modal = () => {
   const address = suiConnected && suiAddress ? suiAddress : account;
 
 
-  const getTokenBalance = async (tokenAddress: string) => {
+  const getTokenBalance = async (tokenAddress: string, tokenDecimals?: number) => {
     if (!evmChain && !solChain && !suiChain) {
       return '0';
     }
@@ -102,11 +104,19 @@ const useCustomWeb3Modal = () => {
       }
       return balance;
     } else if (suiChain) {
+
+      // console.log('suiChain tokenAddress', tokenAddress);
       if (isMainToken(tokenAddress)) {
-        balance = await fetchSuiBalance();
+         await fetchSuiBalance(()=>{
+           balance=suiBalance;
+        });
+        console.log('suiChain sui', balance);
       } else {
-        balance = await getTokenBalanceSimple(tokenAddress);
+        balance  = await getTokenBalanceSimple(tokenAddress, tokenDecimals as number);
+        // balance=shiftedBy(balanceToken,6,-1)
+        // console.log('suiChain usdc', balance);
       }
+      // console.log('suiChain',balance);
       return balance;
     }
     // return balance;
