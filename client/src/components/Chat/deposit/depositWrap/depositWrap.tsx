@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ChatDeposit, IServerJetton, LiquidityInterface } from '~/swap/interface';
 import BN from 'bn.js';
+import BigNumber from 'bignumber.js';
 import { useWallet } from '@suiet/wallet-kit';
 import { initCetusSDK, Pool, ClmmPoolUtil, TickMath } from '@cetusprotocol/cetus-sui-clmm-sdk';
 import { DivExChangeBox, DivSwapPanel, DivSwapPanelBox } from './useDepositWrapStyle';
@@ -75,7 +76,7 @@ const DepositWrap = ({ data }: ISwapWarp) => {
   useEffect(() => {
     const timerId = setInterval(() => {
       initPool();
-    }, 5000);
+    }, 6000);
     return () => {
       clearInterval(timerId);
     };
@@ -376,7 +377,7 @@ const DepositWrap = ({ data }: ISwapWarp) => {
         console.log('最新池子信息:', freshPool);
 
         // 获取头寸详情，以确认tick范围
-        const positionDetails = await sdk.Position.getPositionById(positionInfo.positionId);
+        const positionDetails = await sdk.Position.getPositionById(positionInfo?.positionId);
         console.log('头寸详情:', positionDetails);
 
         if (!positionDetails) {
@@ -396,8 +397,14 @@ const DepositWrap = ({ data }: ISwapWarp) => {
           inRange: tickLower <= currentTickIndex && currentTickIndex <= tickUpper,
         });
 
+        console.log('here is inputValue', inputValue);
+
         // 使用ClmmPoolUtil计算合适的流动性和币种数量
-        const coinAmount = new BN(inputValue);
+        const coinAmount = new BN(
+          Number(inputValue) * Math.pow(10, Number(inputJetton?.decimals ?? '6')),
+        );
+        console.log('here is coinAmount', coinAmount, coinAmount.toString());
+
         const fix_amount_a = true; // 固定币种A的数量
 
         // 计算流动性和代币数量
@@ -422,11 +429,11 @@ const DepositWrap = ({ data }: ISwapWarp) => {
           tick_lower: tickLower.toString(),
           tick_upper: tickUpper.toString(),
           fix_amount_a: true,
-          amount_a: Number(inputValue),
+          amount_a: Number(inputValue) * Math.pow(10, Number(inputJetton?.decimals ?? '6')),
           amount_b: liquidityInput.tokenMaxB.toNumber(),
           slippage,
           is_open: false,
-          pos_id: positionInfo.positionId,
+          pos_id: positionInfo!.positionId,
           rewarder_coin_types: [],
           collect_fee: true,
         };
@@ -468,6 +475,12 @@ const DepositWrap = ({ data }: ISwapWarp) => {
           // 捕获钱包特定的错误
           console.error('钱包交易执行错误:', walletError);
         }
+      } else {
+        showToast({
+          status: 'error',
+          message: 'open position transaction failed',
+        });
+        setIsTransacting(false);
       }
     } catch (error) {
       console.log('error: ', error);
