@@ -399,12 +399,13 @@ export default function SelectRange({
             <button onClick={priceHandlers.lower_price_decrement} className={styles.button}>
               -
             </button>
-            <label className={styles.priceLabel}>
+            <div className={styles.priceLabel}>
               {formatPriceLabel(lowerPrice, liquidityDist)}
               <span className={styles.priceLabelUnit}>
                 {pool?.coinA.symbol ? ` ${pool?.coinA.symbol} per ${pool?.coinB.symbol}` : ''}
               </span>
-            </label>
+            </div>
+
             <button onClick={priceHandlers.lower_price_increment} className={styles.button}>
               +
             </button>

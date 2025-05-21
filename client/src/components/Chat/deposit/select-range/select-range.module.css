@@ -73,10 +73,10 @@
 
 .priceLabel {
   display: flex;
-  flex-direction: row;
-  align-items: baseline;
+  flex-direction: column;
+  align-items: center;
   min-width: 90px;
-  padding: 4px 8px;
+  padding: 8px 30px;
   background: #23262f;
   border: none;
   border-radius: 6px;
