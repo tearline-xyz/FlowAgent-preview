@@ -16,6 +16,7 @@ import CheckNetwork from '../../Swap/CheckNetwork';
 import { ChainIdEnum } from '~/swap/enum';
 import { useToastContext } from '~/Providers';
 import { info } from 'console';
+import SelectRange from '../select-range/select-range';
 
 function tickToPrice(
   tick: number,
@@ -48,10 +49,10 @@ const DepositWrap = ({ data }: ISwapWarp) => {
 
   const [inputJetton, setInputJetton] = useState<IServerJetton | null>(null);
   const [outputJetton, setOutputJetton] = useState<IServerJetton | null>(null);
-  const [inputValue, setInputValue] = useState(d.amount_a.toString());
-  const [outputValue, setOutputValue] = useState(d.amount_b.toString());
-  const [tick_lower, setTick_lower] = useState(d.tick_lower);
-  const [tick_upper, setTick_upper] = useState(d.tick_upper);
+  const [inputValue, setInputValue] = useState(d.amount_a?.toString() ?? 0);
+  const [outputValue, setOutputValue] = useState(d.amount_b?.toString() ?? 0);
+  const [lowerTick, setLowerTick] = useState(d.tick_lower);
+  const [upperTick, setUpperTick] = useState(d.tick_upper);
   const { showToast } = useToastContext();
   const [isSwitch, setIsSwitch] = useState<boolean>(false);
   const [pool, setPool] = useState<Pool | null>(null);
@@ -68,104 +69,113 @@ const DepositWrap = ({ data }: ISwapWarp) => {
     chainName: 'Sui',
     // dexTokenApproveAddress: '',
   };
+
   const initPool = async () => {
     const pool = await sdk.Pool.getPool(data.data.pool_address);
-    setPool(pool);
+    setPool(() => pool);
     console.log('pool', pool);
+    return pool;
+  };
+  const initJettonInfo = async (poolData?: Pool) => {
+    if (!inputJetton || !outputJetton) {
+      const _inputJetton = {} as IServerJetton;
+      const _outputJetton = {} as IServerJetton;
+      const _pool = poolData ?? pool;
+
+      //init token info
+      const inputAddress = _pool?.coinTypeA ?? '';
+      const outputAddress = _pool?.coinTypeB ?? '';
+
+      const outputDetail = await getTokenDetail({
+        chain_index: 784,
+        token_address: outputAddress ?? '',
+      });
+      if (outputDetail.data.length) {
+        _outputJetton.tokenContractAddress = outputAddress ?? '';
+        _outputJetton.decimals = outputDetail.data[0].decimals.toString();
+        _outputJetton.tokenName = outputDetail.data[0].name;
+        _outputJetton.tokenSymbol = outputDetail.data[0].symbol;
+        _outputJetton.tokenLogoUrl = outputDetail.data[0].logoUrl;
+      }
+      const inputDetail = await getTokenDetail({
+        chain_index: 784,
+        token_address: inputAddress ?? '',
+      });
+      if (inputDetail.data.length) {
+        console.log('inputDetail', inputDetail);
+
+        _inputJetton.tokenContractAddress = inputAddress ?? '';
+        _inputJetton.decimals = inputDetail.data[0].decimals.toString();
+        _inputJetton.tokenName = inputDetail.data[0].name;
+        _inputJetton.tokenSymbol = inputDetail.data[0].symbol;
+        _inputJetton.tokenLogoUrl = inputDetail.data[0].logoUrl;
+      }
+
+      const fromTokenRes: any = await axiosAggregatorQuote({
+        chain_id: 784,
+        amount: 10 ** Number(_inputJetton.decimals),
+        from_token_address: inputAddress,
+        to_token_address:
+          '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN',
+      });
+
+      const toTokenRes: any = await axiosAggregatorQuote({
+        chain_id: 784,
+        amount: 10 ** Number(_outputJetton.decimals),
+        from_token_address: outputAddress,
+        to_token_address:
+          '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN',
+      });
+
+      _inputJetton.tokenPrice = fromTokenRes.data[0]?.fromToken.tokenUnitPrice;
+      _outputJetton.tokenPrice = toTokenRes.data[0]?.fromToken.tokenUnitPrice;
+      const _inputDecimals = _inputJetton.decimals
+        ? Number(_inputJetton.decimals)
+        : inputJetton?.decimals
+          ? Number(inputJetton?.decimals)
+          : 6;
+      const _outputDecimals = _outputJetton.decimals
+        ? Number(_outputJetton.decimals)
+        : outputJetton?.decimals
+          ? Number(outputJetton?.decimals)
+          : 6;
+      // init token balance
+      const inputBalance = await getTokenBalance(inputAddress, _inputDecimals);
+      console.log('inputBalance', inputBalance);
+
+      const outputBalance = await getTokenBalance(outputAddress, _outputDecimals);
+
+      _inputJetton.balance = inputBalance;
+      _outputJetton.balance = outputBalance;
+      console.log('_inputJetton', _inputJetton);
+      console.log('_outputJetton', _outputJetton);
+
+      setInputJetton(_inputJetton);
+      setOutputJetton(_outputJetton);
+    }
+  };
+  const initData = async () => {
+    const poolData = await initPool();
+    await initJettonInfo(poolData);
   };
   useEffect(() => {
+    initData();
     const timerId = setInterval(() => {
       initPool();
-    }, 6000);
+    }, 5000);
     return () => {
       clearInterval(timerId);
     };
   }, []);
 
-  const initJettonInfo = async () => {
-    const _inputJetton = {} as IServerJetton;
-    const _outputJetton = {} as IServerJetton;
-
-    //init token info
-    const inputAddress = pool?.coinTypeA ?? '';
-    const outputAddress = pool?.coinTypeB ?? '';
-    const outputDetail = await getTokenDetail({
-      chain_index: 784,
-      token_address: outputAddress ?? '',
-    });
-    if (outputDetail.data.length) {
-      console.log('outputDetail', outputDetail);
-      _outputJetton.tokenContractAddress = outputAddress ?? '';
-      _outputJetton.decimals = outputDetail.data[0].decimals.toString();
-      _outputJetton.tokenName = outputDetail.data[0].name;
-      _outputJetton.tokenSymbol = outputDetail.data[0].symbol;
-      _outputJetton.tokenLogoUrl = outputDetail.data[0].logoUrl;
-    }
-    const inputDetail = await getTokenDetail({
-      chain_index: 784,
-      token_address: inputAddress ?? '',
-    });
-    if (inputDetail.data.length) {
-      console.log('inputDetail', inputDetail);
-
-      _inputJetton.tokenContractAddress = inputAddress ?? '';
-      _inputJetton.decimals = inputDetail.data[0].decimals.toString();
-      _inputJetton.tokenName = inputDetail.data[0].name;
-      _inputJetton.tokenSymbol = inputDetail.data[0].symbol;
-      _inputJetton.tokenLogoUrl = inputDetail.data[0].logoUrl;
-    }
-
-    const fromTokenRes: any = await axiosAggregatorQuote({
-      chain_id: 784,
-      amount: 10 ** Number(_inputJetton.decimals),
-      from_token_address: inputAddress,
-      to_token_address:
-        '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN',
-    });
-
-    const toTokenRes: any = await axiosAggregatorQuote({
-      chain_id: 784,
-      amount: 10 ** Number(_outputJetton.decimals),
-      from_token_address: outputAddress,
-      to_token_address:
-        '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN',
-    });
-
-    _inputJetton.tokenPrice = fromTokenRes.data[0]?.fromToken.tokenUnitPrice;
-    _outputJetton.tokenPrice = toTokenRes.data[0]?.fromToken.tokenUnitPrice;
-
-    // init token balance
-    const inputBalance = await getTokenBalance(inputAddress, Number(_inputJetton?.decimals));
-    const outputBalance = await getTokenBalance(outputAddress, Number(_outputJetton?.decimals));
-    console.log('inputBalance', inputBalance);
-    console.log('outputBalance', outputBalance);
-
-    _inputJetton.balance = inputBalance;
-    _outputJetton.balance = outputBalance;
-    console.log('_inputJetton', _inputJetton);
-    console.log('_outputJetton', _outputJetton);
-
-    setInputJetton(_inputJetton);
-    setOutputJetton(_outputJetton);
-  };
-
   useEffect(() => {
     if (pool) {
       initJettonInfo();
     }
-  }, [pool, isConnected, suiWallet]);
+  }, [isConnected, suiWallet, pool]);
 
-  const cur_tick_upper = TickMath.getNextInitializableTickIndex(
-    new BN(pool?.current_tick_index ?? '').toNumber(),
-    new BN(pool?.tickSpacing ?? '').toNumber(),
-  );
-  const cur_tick_lower = TickMath.getPrevInitializableTickIndex(
-    new BN(pool?.current_tick_index ?? '').toNumber(),
-    new BN(pool?.tickSpacing ?? '').toNumber(),
-  );
-  console.log('cur_tick_upper', cur_tick_upper);
   const [upperEffAdjPriceAtoB] = tickToPrice(
-    cur_tick_upper,
+    upperTick,
     Number(pool?.tickSpacing),
     Number(inputJetton?.decimals),
     Number(outputJetton?.decimals),
@@ -173,7 +183,7 @@ const DepositWrap = ({ data }: ISwapWarp) => {
   console.log('upperEffAdjPriceAtoB', upperEffAdjPriceAtoB);
 
   const [lowerEffAdjPriceAtoB] = tickToPrice(
-    cur_tick_lower,
+    lowerTick,
     Number(pool?.tickSpacing),
     Number(inputJetton?.decimals),
     // open_position  add_
@@ -182,15 +192,18 @@ const DepositWrap = ({ data }: ISwapWarp) => {
   console.log('lowerEffAdjPriceAtoB', lowerEffAdjPriceAtoB);
 
   const fromAmountAToAmountB = async (newVal) => {
+    console.log('amountAToB lowerTick', lowerTick);
+    console.log('amountAToB upperTick', upperTick);
     const liquidityInput = ClmmPoolUtil.estLiquidityAndcoinAmountFromOneAmounts(
-      cur_tick_lower,
-      cur_tick_upper,
+      lowerTick,
+      upperTick,
       new BN(Number(newVal) * Math.pow(10, Number(inputJetton?.decimals ?? '6'))),
       true,
       true,
       slippage,
       new BN(pool?.current_sqrt_price ?? 0),
     );
+
     console.log('liquidityInput', liquidityInput);
     const amount_b = liquidityInput.tokenMaxB.toNumber();
     console.log('amount_b', amount_b);
@@ -198,15 +211,18 @@ const DepositWrap = ({ data }: ISwapWarp) => {
   };
 
   const fromAmountBToAmountA = async (newVal) => {
+    console.log('amountBToA lowerTick', lowerTick);
+    console.log('amountBToA upperTick', upperTick);
     const liquidityInput = ClmmPoolUtil.estLiquidityAndcoinAmountFromOneAmounts(
-      cur_tick_lower,
-      cur_tick_upper,
+      lowerTick,
+      upperTick,
       new BN(Number(newVal) * Math.pow(10, Number(outputJetton?.decimals ?? '6'))),
       false,
       true,
       slippage,
       new BN(pool?.current_sqrt_price ?? 0),
     );
+
     console.log('liquidityInput', liquidityInput);
     const amount_a = liquidityInput.tokenMaxA.toNumber();
     console.log('amount_a', amount_a);
@@ -340,7 +356,6 @@ const DepositWrap = ({ data }: ISwapWarp) => {
 
       attempt++;
     }
-
     // 如果所有尝试都失败，返回失败
     return null;
   };
@@ -351,8 +366,8 @@ const DepositWrap = ({ data }: ISwapWarp) => {
     const openPositionTransactionPayload = sdk.Position.openPositionTransactionPayload({
       coinTypeA: pool?.coinTypeA ?? '',
       coinTypeB: pool?.coinTypeB ?? '',
-      tick_lower: cur_tick_lower.toString(),
-      tick_upper: cur_tick_upper.toString(),
+      tick_lower: lowerTick.toString(),
+      tick_upper: upperTick.toString(),
       pool_id: d.pool_address,
     });
     openPositionTransactionPayload.setGasBudget(100000000);
@@ -510,79 +525,91 @@ const DepositWrap = ({ data }: ISwapWarp) => {
   };
 
   return (
-    <DivSwapPanel>
-      <CurrentChainBox
-        currentChainInfo={{
-          chainId: 784,
-          chainName: 'Sui',
-          imgUrl: 'https://web3.okx.com/cdn/wallet/logo/sui_17700.png',
-          symbol: 'SUI',
-          // dexTokenApproveAddress: '',
-        }}
+    <div className="flex items-center gap-3">
+      <SelectRange
+        lowerTick={lowerTick}
+        upperTick={upperTick}
+        poolAddress={d.pool_address}
+        setLowerTick={setLowerTick}
+        setUpperTcik={setUpperTick}
       />
-      <DivSwapPanelBox>
-        <DepositPanelInputBox
-          type="input"
-          showMax={true}
-          jettonData={inputJetton}
-          inputValue={inputValue}
-          disabled={false}
-          onChangeValue={(val) => {
-            setInputValue(val);
-            fromAmountAToAmountB(val);
+      <DivSwapPanel className="space-y-6">
+        <CurrentChainBox
+          currentChainInfo={{
+            chainId: 784,
+            chainName: 'Sui',
+            imgUrl: 'https://web3.okx.com/cdn/wallet/logo/sui_17700.png',
+            symbol: 'SUI',
+            // dexTokenApproveAddress: '',
           }}
         />
-        <DivExChangeBox onClick={onExchangeInOut}>
-          <img src={getImageUrl('swap/exchange.png')} alt="" />
-        </DivExChangeBox>
-      </DivSwapPanelBox>
-      <DivSwapPanelBox>
-        <DepositPanelInputBox
-          type="input"
-          showMax={false}
-          inputValue={outputValue}
-          jettonData={outputJetton}
-          disabled={false}
-          onChangeValue={(val) => {
-            setOutputValue(val);
-            fromAmountBToAmountA(val);
-          }}
-        />
-      </DivSwapPanelBox>
-      {!isConnected ? (
-        <ConnectWallet
-          isSwitch={isSwitch}
-          setIsSwitch={setIsSwitch}
-          chainId={784}
-          setChainNumber={setChainNumber}
-        />
-      ) : (
-        <Button
-          className={'swapButton'}
-          onClick={buttonClick}
-          loading={isTransacting}
-          disabled={
-            !suiChain
-              ? false
-              : Number(inputJetton?.balance) < Number(inputValue) ||
-                Number(outputJetton?.balance) < Number(outputValue) ||
-                Number(inputValue) <= 0 ||
-                inputValue === ''
-          }
-        >
-          {!suiChain
-            ? 'Switch Network'
-            : Number(inputValue) <= 0 || inputValue === ''
-              ? 'Enter amount'
-              : Number(inputJetton?.balance) < Number(inputValue)
-                ? `Insufficient ${inputJetton?.tokenSymbol} balance`
-                : Number(outputJetton?.balance) < Number(inputValue)
-                  ? `Insufficient ${outputJetton?.tokenSymbol} balance`
-                  : 'Deposit'}
-        </Button>
-      )}
-      <CheckNetwork setChainNumber={setChainNumber} chainNumber={chainNumber} />
-    </DivSwapPanel>
+        <div>
+          <DivSwapPanelBox className="">
+            <DepositPanelInputBox
+              type="input"
+              showMax={true}
+              jettonData={inputJetton}
+              inputValue={inputValue}
+              disabled={false}
+              onChangeValue={(val) => {
+                setInputValue(val);
+                fromAmountAToAmountB(val);
+              }}
+            />
+            <DivExChangeBox onClick={onExchangeInOut}>
+              <img src={getImageUrl('swap/exchange.png')} alt="" />
+            </DivExChangeBox>
+          </DivSwapPanelBox>
+          <DivSwapPanelBox>
+            <DepositPanelInputBox
+              type="input"
+              showMax={false}
+              inputValue={outputValue}
+              jettonData={outputJetton}
+              disabled={false}
+              onChangeValue={(val) => {
+                setOutputValue(val);
+                fromAmountBToAmountA(val);
+              }}
+            />
+          </DivSwapPanelBox>
+        </div>
+        {!isConnected ? (
+          <ConnectWallet
+            isSwitch={isSwitch}
+            setIsSwitch={setIsSwitch}
+            chainId={784}
+            setChainNumber={setChainNumber}
+          />
+        ) : (
+          <Button
+            className={'swapButton mt-10'}
+            onClick={buttonClick}
+            loading={isTransacting}
+            disabled={
+              !suiChain
+                ? false
+                : Number(inputJetton?.balance) < Number(inputValue) ||
+                  Number(outputJetton?.balance) < Number(outputValue) ||
+                  Number(inputValue) <= 0 ||
+                  inputValue === ''
+            }
+          >
+            {!suiChain
+              ? 'Switch Network'
+              : Number(inputValue) <= 0 || inputValue === ''
+                ? 'Enter amount'
+                : Number(inputJetton?.balance) < Number(inputValue)
+                  ? `Insufficient ${inputJetton?.tokenSymbol} balance`
+                  : Number(outputJetton?.balance) < Number(inputValue)
+                    ? `Insufficient ${outputJetton?.tokenSymbol} balance`
+                    : 'Deposit'}
+          </Button>
+        )}
+        <CheckNetwork setChainNumber={setChainNumber} chainNumber={chainNumber} />
+      </DivSwapPanel>
+    </div>
+
     // <div>aa</div>
   );
 };

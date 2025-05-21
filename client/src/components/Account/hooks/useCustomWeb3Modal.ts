@@ -29,8 +29,10 @@ const useCustomWeb3Modal = () => {
     fetchSuiBalance,
     getTokenBalanceSimple,
     wallet,
-    suiBalance
+    suiBalance,
   } = useSuiWeb3();
+  console.log('outterSuiBalance', suiBalance);
+
   const { connection } = useAppKitConnection();
   const { open, close } = useAppKit();
   const {
@@ -82,7 +84,6 @@ const useCustomWeb3Modal = () => {
   };
   const address = suiConnected && suiAddress ? suiAddress : account;
 
-
   const getTokenBalance = async (tokenAddress: string, tokenDecimals?: number) => {
     if (!evmChain && !solChain && !suiChain) {
       return '0';
@@ -91,7 +92,7 @@ const useCustomWeb3Modal = () => {
     if (evmChain && walletProvider) {
       const sdk = new EtherInitApi(address, walletProvider, chainId);
       balance = isMainToken(tokenAddress)
-        ? await sdk.getBalance(currAddress)
+        ? await sdk.getBalance(currAddress ?? '')
         : await sdk.tokenBalance(tokenAddress, address);
       return balance;
     } else if (solChain && walletProviderSol) {
@@ -104,15 +105,12 @@ const useCustomWeb3Modal = () => {
       }
       return balance;
     } else if (suiChain) {
-
       // console.log('suiChain tokenAddress', tokenAddress);
       if (isMainToken(tokenAddress)) {
-         await fetchSuiBalance(()=>{
-           balance=suiBalance;
-        });
-        console.log('suiChain sui', balance);
+        const innerBalance = await fetchSuiBalance();
+        balance = innerBalance;
       } else {
-        balance  = await getTokenBalanceSimple(tokenAddress, tokenDecimals as number);
+        balance = await getTokenBalanceSimple(tokenAddress, tokenDecimals as number);
         // balance=shiftedBy(balanceToken,6,-1)
         // console.log('suiChain usdc', balance);
       }
@@ -134,8 +132,8 @@ const useCustomWeb3Modal = () => {
       suiConnected && suiAddress
         ? suiChainId
         : chainId === '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
-        ? 501
-        : chainId, // TODO sol 501; 其余的按照EVM 后面解决 SUI TON
+          ? 501
+          : chainId, // TODO sol 501; 其余的按照EVM 后面解决 SUI TON
     isConnected: suiConnected ? suiConnected : isConnected,
     state: state.selectedNetworkId?.toString(),
     walletProvider,

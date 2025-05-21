@@ -4,11 +4,12 @@ import { calculateRem } from '~/components/Chat/Swap/SwapSlipPage/useSwapSlippag
 export const DivSwapPanel = styled(Box)(({ theme }) => ({
   padding: `${calculateRem(2)}rem ${calculateRem(1.7)}rem`,
   background: 'rgba(255, 255, 255, 0)',
+  // display: 'flex',
   boxShadow: '10px 0px 50px 10px rgba(26, 26, 26, 0.90)',
   borderRadius: 16,
   border: '1px #2F333C solid',
   backgroundColor: '#222222',
-  width:'30rem'
+  width: '30rem',
 }));
 export const DivSwapPanelBox = styled(Box)(({ theme }) => ({
   boxSizing: 'border-box',

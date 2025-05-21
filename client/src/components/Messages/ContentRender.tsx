@@ -154,7 +154,7 @@ const ContentRender = memo(
 
         <div
           className={cn(
-            'relative flex w-11/12 flex-col',
+            'relative flex w-full flex-col',
             msg.isCreatedByUser ? 'user-turn' : 'agent-turn',
           )}
           id={'relativeflexw-11/12'}
@@ -200,8 +200,8 @@ const ContentRender = memo(
                 //       "pool_address": "0xb8d7d9e66a60c239e7a60110efcf8de6c705580ed924d0dde141f4a0e2c90105",
                 //       "amount_a": 1000,
                 //       "amount_b": 0,
-                //       "tick_upper": 83069,
-                //       "tick_lower": 82692
+                //       "tick_upper": 55798,
+                //       "tick_lower": 55398
                 //     }
                 //   }
                 // }`,
