@@ -77,87 +77,87 @@ const DepositWrap = ({ data }: ISwapWarp) => {
     return pool;
   };
   const initJettonInfo = async (poolData?: Pool) => {
-    if (!inputJetton || !outputJetton) {
-      const _inputJetton = {} as IServerJetton;
-      const _outputJetton = {} as IServerJetton;
-      const _pool = poolData ?? pool;
+    const _inputJetton = {} as IServerJetton;
+    const _outputJetton = {} as IServerJetton;
+    const _pool = poolData ?? pool;
 
-      //init token info
-      const inputAddress = _pool?.coinTypeA ?? '';
-      const outputAddress = _pool?.coinTypeB ?? '';
+    //init token info
+    const inputAddress = _pool?.coinTypeA ?? '';
+    const outputAddress = _pool?.coinTypeB ?? '';
 
-      const outputDetail = await getTokenDetail({
-        chain_index: 784,
-        token_address: outputAddress ?? '',
-      });
-      if (outputDetail.data.length) {
-        _outputJetton.tokenContractAddress = outputAddress ?? '';
-        _outputJetton.decimals = outputDetail.data[0].decimals.toString();
-        _outputJetton.tokenName = outputDetail.data[0].name;
-        _outputJetton.tokenSymbol = outputDetail.data[0].symbol;
-        _outputJetton.tokenLogoUrl = outputDetail.data[0].logoUrl;
-      }
-      const inputDetail = await getTokenDetail({
-        chain_index: 784,
-        token_address: inputAddress ?? '',
-      });
-      if (inputDetail.data.length) {
-        console.log('inputDetail', inputDetail);
-
-        _inputJetton.tokenContractAddress = inputAddress ?? '';
-        _inputJetton.decimals = inputDetail.data[0].decimals.toString();
-        _inputJetton.tokenName = inputDetail.data[0].name;
-        _inputJetton.tokenSymbol = inputDetail.data[0].symbol;
-        _inputJetton.tokenLogoUrl = inputDetail.data[0].logoUrl;
-      }
-
-      const fromTokenRes: any = await axiosAggregatorQuote({
-        chain_id: 784,
-        amount: 10 ** Number(_inputJetton.decimals),
-        from_token_address: inputAddress,
-        to_token_address:
-          '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN',
-      });
-
-      const toTokenRes: any = await axiosAggregatorQuote({
-        chain_id: 784,
-        amount: 10 ** Number(_outputJetton.decimals),
-        from_token_address: outputAddress,
-        to_token_address:
-          '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN',
-      });
-
-      _inputJetton.tokenPrice = fromTokenRes.data[0]?.fromToken.tokenUnitPrice;
-      _outputJetton.tokenPrice = toTokenRes.data[0]?.fromToken.tokenUnitPrice;
-      const _inputDecimals = _inputJetton.decimals
-        ? Number(_inputJetton.decimals)
-        : inputJetton?.decimals
-          ? Number(inputJetton?.decimals)
-          : 6;
-      const _outputDecimals = _outputJetton.decimals
-        ? Number(_outputJetton.decimals)
-        : outputJetton?.decimals
-          ? Number(outputJetton?.decimals)
-          : 6;
-      // init token balance
-      const inputBalance = await getTokenBalance(inputAddress, _inputDecimals);
-      console.log('inputBalance', inputBalance);
-
-      const outputBalance = await getTokenBalance(outputAddress, _outputDecimals);
-
-      _inputJetton.balance = inputBalance;
-      _outputJetton.balance = outputBalance;
-      console.log('_inputJetton', _inputJetton);
-      console.log('_outputJetton', _outputJetton);
-
-      setInputJetton(_inputJetton);
-      setOutputJetton(_outputJetton);
+    const outputDetail = await getTokenDetail({
+      chain_index: 784,
+      token_address: outputAddress ?? '',
+    });
+    if (outputDetail.data.length) {
+      _outputJetton.tokenContractAddress = outputAddress ?? '';
+      _outputJetton.decimals = outputDetail.data[0].decimals.toString();
+      _outputJetton.tokenName = outputDetail.data[0].name;
+      _outputJetton.tokenSymbol = outputDetail.data[0].symbol;
+      _outputJetton.tokenLogoUrl = outputDetail.data[0].logoUrl;
     }
+    const inputDetail = await getTokenDetail({
+      chain_index: 784,
+      token_address: inputAddress ?? '',
+    });
+    if (inputDetail.data.length) {
+      console.log('inputDetail', inputDetail);
+
+      _inputJetton.tokenContractAddress = inputAddress ?? '';
+      _inputJetton.decimals = inputDetail.data[0].decimals.toString();
+      _inputJetton.tokenName = inputDetail.data[0].name;
+      _inputJetton.tokenSymbol = inputDetail.data[0].symbol;
+      _inputJetton.tokenLogoUrl = inputDetail.data[0].logoUrl;
+    }
+
+    const fromTokenRes: any = await axiosAggregatorQuote({
+      chain_id: 784,
+      amount: 10 ** Number(_inputJetton.decimals),
+      from_token_address: inputAddress,
+      to_token_address:
+        '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN',
+    });
+
+    const toTokenRes: any = await axiosAggregatorQuote({
+      chain_id: 784,
+      amount: 10 ** Number(_outputJetton.decimals),
+      from_token_address: outputAddress,
+      to_token_address:
+        '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN',
+    });
+
+    _inputJetton.tokenPrice = fromTokenRes.data[0]?.fromToken.tokenUnitPrice;
+    _outputJetton.tokenPrice = toTokenRes.data[0]?.fromToken.tokenUnitPrice;
+    const _inputDecimals = _inputJetton.decimals
+      ? Number(_inputJetton.decimals)
+      : inputJetton?.decimals
+        ? Number(inputJetton?.decimals)
+        : 6;
+    const _outputDecimals = _outputJetton.decimals
+      ? Number(_outputJetton.decimals)
+      : outputJetton?.decimals
+        ? Number(outputJetton?.decimals)
+        : 6;
+    // init token balance
+    const inputBalance = await getTokenBalance(inputAddress, _inputDecimals);
+    console.log('inputBalance', inputBalance);
+
+    const outputBalance = await getTokenBalance(outputAddress, _outputDecimals);
+
+    _inputJetton.balance = inputBalance;
+    _outputJetton.balance = outputBalance;
+    console.log('_inputJetton', _inputJetton);
+    console.log('_outputJetton', _outputJetton);
+
+    setInputJetton(_inputJetton);
+    setOutputJetton(_outputJetton);
   };
+
   const initData = async () => {
     const poolData = await initPool();
     await initJettonInfo(poolData);
   };
+
   useEffect(() => {
     initData();
     const timerId = setInterval(() => {
@@ -172,7 +172,7 @@ const DepositWrap = ({ data }: ISwapWarp) => {
     if (pool) {
       initJettonInfo();
     }
-  }, [isConnected, suiWallet, pool]);
+  }, [isConnected, suiWallet]);
 
   const [upperEffAdjPriceAtoB] = tickToPrice(
     upperTick,

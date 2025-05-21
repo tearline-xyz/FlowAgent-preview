@@ -31,7 +31,6 @@ const useCustomWeb3Modal = () => {
     wallet,
     suiBalance,
   } = useSuiWeb3();
-  console.log('outterSuiBalance', suiBalance);
 
   const { connection } = useAppKitConnection();
   const { open, close } = useAppKit();
@@ -109,6 +108,7 @@ const useCustomWeb3Modal = () => {
       if (isMainToken(tokenAddress)) {
         const innerBalance = await fetchSuiBalance();
         balance = innerBalance;
+        console.log('innerBalance', innerBalance);
       } else {
         balance = await getTokenBalanceSimple(tokenAddress, tokenDecimals as number);
         // balance=shiftedBy(balanceToken,6,-1)

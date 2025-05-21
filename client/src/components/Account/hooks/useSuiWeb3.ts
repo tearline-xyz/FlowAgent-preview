@@ -16,11 +16,16 @@ export default function useSuiWeb3() {
     setIsLoading(true);
     let balanceData;
     try {
-      balanceData = await suiClient.getBalance({
+      const balanceObj = await suiClient.getBalance({
         owner: wallet.address,
         coinType: '0x2::sui::SUI',
       });
-      setBalance((Number(balanceData.totalBalance) / 10 ** 9).toString());
+      console.log('balanceObj', balanceObj);
+
+      balanceData = (Number(balanceObj.totalBalance) / 10 ** 9).toString();
+      console.log('balanceData', balanceData);
+
+      setBalance(balanceData);
       cb && cb();
     } catch (e) {
       console.error(e);
@@ -28,7 +33,7 @@ export default function useSuiWeb3() {
     } finally {
       setIsLoading(false);
     }
-    return balanceData.totalBalance;
+    return balanceData;
   };
   async function getTokenBalanceSimple(TOKEN_TYPE: string, decimals: number) {
     console.log('decimals', decimals);
