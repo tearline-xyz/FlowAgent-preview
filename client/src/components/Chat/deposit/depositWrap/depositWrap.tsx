@@ -347,7 +347,7 @@ const DepositWrap = ({ data }: ISwapWarp) => {
           // 已达到最大重试次数
           console.error(`已尝试${maxRetries + 1}次，验证交易最终失败:`, error);
           showToast({
-            message: '开仓交易失败',
+            message: 'The opening transaction failed',
             status: 'error',
           });
           setIsTransacting(false);
@@ -382,7 +382,7 @@ const DepositWrap = ({ data }: ISwapWarp) => {
         if (!position) {
           setIsTransacting(false);
           showToast({
-            message: '无法获取头寸详情',
+            message: 'Position details cannot be obtained',
             status: 'error',
           });
           setIsTransacting(false);
@@ -476,19 +476,19 @@ const DepositWrap = ({ data }: ISwapWarp) => {
           if (isSuccess) {
             showToast({
               status: 'success',
-              message: '流动性添加成功！',
+              message: 'The liquidity addition was successful.',
             });
             setIsTransacting(false);
           } else {
             setIsTransacting(false);
             showToast({
               status: 'error',
-              message: '流动性添加失败，请查看交易详情',
+              message: 'Failure of liquidity addition',
             });
           }
         } catch (walletError) {
           // 捕获钱包特定的错误
-          console.error('钱包交易执行错误:', walletError);
+          console.error('The wallet transaction was executed incorrectly:', walletError);
         }
       } else {
         showToast({
