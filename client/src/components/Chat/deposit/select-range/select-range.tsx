@@ -413,7 +413,9 @@ export default function SelectRange({
             <div className={styles.loadingSpinner} />
           </div>
         ) : liquidityDist.length === 0 ? (
-          <div className="flex translate-y-32 justify-center">No Liquidity Data</div>
+          <div className="flex translate-y-32 justify-center">
+            Cetus Is Currently Not Assessable
+          </div>
         ) : (
           <ReactECharts
             ref={echartsRef}
