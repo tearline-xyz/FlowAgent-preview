@@ -52,7 +52,7 @@ export default function useToast(showDelay = 100) {
 
   return {
     toast,
-    onOpenChange: (open: boolean) => setToast({ ...toast, open }),
+    onOpenChange: (open: boolean) => setToast(() => ({ ...toast, open })),
     showToast,
   };
 }

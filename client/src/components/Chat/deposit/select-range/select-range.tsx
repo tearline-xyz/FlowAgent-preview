@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import ReactECharts from 'echarts-for-react';
 import styles from './select-range.module.css';
-import { initCetusSDK, TickMath } from '@cetusprotocol/cetus-sui-clmm-sdk';
+import { initCetusSDK, Pool, TickMath } from '@cetusprotocol/cetus-sui-clmm-sdk';
 
 /*
 See:
@@ -12,6 +12,12 @@ https://apache.github.io/echarts-handbook/en/concepts/event/
 Options:
 https://echarts.apache.org/en/option.html
 */
+
+interface TickObj {
+  tickIndex: number;
+  liquidity: number;
+  price: number;
+}
 
 function findClosestTickIndex(liquidityDist, targetTickIndex) {
   return liquidityDist.reduce((closest, current, index) => {
@@ -25,7 +31,9 @@ async function fetchTicks(poolAddress) {
   const url = `https://api-sui.cetus.zone/router_v2/ticks?address=${poolAddress}&orderBy=index&limit=1000`;
   const resp = await fetch(url);
   const json = await resp.json();
-  return json.data.list;
+  console.log('json', json);
+
+  return json.data?.list || [];
 }
 
 async function fetchPool(poolAddress) {
@@ -50,12 +58,15 @@ async function fetchPool(poolAddress) {
 
 async function loadPoolAndTicks(poolAddress, setLiquidityDist, setPool) {
   const ticks = await fetchTicks(poolAddress);
+  console.log('ticks', ticks);
+
   const pool = await fetchPool(poolAddress);
+  console.log('pool', pool);
   setPool(pool);
 
   // 累加liquidity_net
   let accLiquidity = 0;
-  const dist = [];
+  const dist: TickObj[] = [];
   for (const tick of ticks) {
     accLiquidity += tick.liquidity_net;
     // 跳过accLiquidity为负数的case
@@ -86,6 +97,14 @@ function formatPriceLabel(price, liquidityDist) {
   }
   return price.toFixed(6);
 }
+interface SelectRangeProps {
+  lowerTick: number;
+  upperTick: number;
+  poolAddress: string;
+  setLowerTick: (tick: number) => void;
+  setUpperTcik: (tick: number) => void;
+  onRangeChanged?: (lowerTick: number, upperTick: number) => void;
+}
 
 export default function SelectRange({
   lowerTick,
@@ -93,19 +112,22 @@ export default function SelectRange({
   poolAddress,
   setLowerTick,
   setUpperTcik,
-}) {
-  const chartRef = useRef();
-  const echartsRef = useRef(null);
+  onRangeChanged,
+}: SelectRangeProps) {
+  const chartRef = useRef<HTMLDivElement>(null);
+  const echartsRef = useRef<ReactECharts>(null);
   console.log('start lowerTic', lowerTick);
+  console.log('poolAddress', poolAddress);
+
   console.log('start upperTick', upperTick);
-  const [pool, setPool] = useState(null);
-  const [liquidityDist, setLiquidityDist] = useState([]);
+  const [pool, setPool] = useState<any>(null);
+  const [liquidityDist, setLiquidityDist] = useState<TickObj[]>([] as TickObj[]);
+  const [isFetchingDist, setIsFetchingDist] = useState(false);
   const [lowerPrice, setLowerPrice] = useState(0);
   const [upperPrice, setUpperPrice] = useState(0);
 
   // 用 useMemo 生成 option，只依赖 liquidityDist
   const option = useMemo(() => {
-    console.log('use memo conduct!!!');
     return {
       tooltip: {
         show: false,
@@ -276,7 +298,7 @@ export default function SelectRange({
   const updateBrushArea = (startIndex, endIndex) => {
     if (echartsRef.current) {
       const echartsInstance = echartsRef.current.getEchartsInstance();
-      const brushComponent = echartsInstance.getModel().getComponent('brush');
+      const brushComponent = (echartsInstance as any).getModel().getComponent('brush');
       const currentRange = brushComponent.areas[0].coordRange;
 
       const newRange = [
@@ -295,11 +317,16 @@ export default function SelectRange({
       });
     }
   };
+  const initLiquidityData = async () => {
+    if (poolAddress) {
+      setIsFetchingDist(true);
+      await loadPoolAndTicks(poolAddress, setLiquidityDist, setPool);
+      setIsFetchingDist(false);
+    }
+  };
 
   useEffect(() => {
-    if (poolAddress) {
-      loadPoolAndTicks(poolAddress, setLiquidityDist, setPool);
-    }
+    initLiquidityData();
   }, [poolAddress]);
 
   // 只在 liquidityDist 变化时初始化 brush/dataZoom，不在 brush/dataZoom 事件里 setState 影响 option
@@ -308,7 +335,7 @@ export default function SelectRange({
       const echartsInstance = echartsRef.current.getEchartsInstance();
 
       echartsInstance.off('brushSelected');
-      echartsInstance.on('brushSelected', (params) => {
+      echartsInstance.on('brushSelected', (params: any) => {
         console.log('brushSelected', params);
 
         if (params.batch && params.batch[0].areas[0]) {
@@ -322,8 +349,13 @@ export default function SelectRange({
             const endPrice = liquidityDist[endIndex].price;
             setLowerPrice(startPrice);
             setUpperPrice(endPrice);
-            setLowerTick(liquidityDist[endIndex].tickIndex ?? lowerTick);
-            setUpperTcik(liquidityDist[startIndex].tickIndex ?? upperTick);
+            setLowerTick(liquidityDist[endIndex].tickIndex);
+            setUpperTcik(liquidityDist[startIndex].tickIndex);
+            onRangeChanged &&
+              onRangeChanged(
+                liquidityDist[endIndex].tickIndex,
+                liquidityDist[startIndex].tickIndex,
+              );
           }
         }
       });
@@ -376,10 +408,12 @@ export default function SelectRange({
     <div className={styles.container}>
       <div className="mb-2">selece deposit liquidity range</div>
       <div ref={chartRef} className={`${styles.chart} ${styles.chartContainer}`}>
-        {liquidityDist.length === 0 ? (
+        {isFetchingDist ? (
           <div className={styles.loading}>
             <div className={styles.loadingSpinner} />
           </div>
+        ) : liquidityDist.length === 0 ? (
+          <div className="flex translate-y-32 justify-center">No Liquidity Data</div>
         ) : (
           <ReactECharts
             ref={echartsRef}

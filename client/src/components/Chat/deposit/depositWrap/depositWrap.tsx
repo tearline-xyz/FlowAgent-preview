@@ -15,7 +15,6 @@ import ConnectWallet from '../../Swap/ConnectWalet';
 import CheckNetwork from '../../Swap/CheckNetwork';
 import { ChainIdEnum } from '~/swap/enum';
 import { useToastContext } from '~/Providers';
-import { info } from 'console';
 import SelectRange from '../select-range/select-range';
 
 function tickToPrice(
@@ -43,7 +42,6 @@ interface ISwapWarp {
 
 const DepositWrap = ({ data }: ISwapWarp) => {
   const d = data.data;
-  console.log('inputPoolAddress', d.pool_address);
 
   const sdk = initCetusSDK({ network: 'mainnet' });
 
@@ -53,11 +51,12 @@ const DepositWrap = ({ data }: ISwapWarp) => {
   const [outputValue, setOutputValue] = useState(d.amount_b?.toString() ?? 0);
   const [lowerTick, setLowerTick] = useState(d.tick_lower);
   const [upperTick, setUpperTick] = useState(d.tick_upper);
-  const { showToast } = useToastContext();
+  const { showToast, onOpenChange } = useToastContext();
   const [isSwitch, setIsSwitch] = useState<boolean>(false);
   const [pool, setPool] = useState<Pool | null>(null);
   const [isTransacting, setIsTransacting] = useState<boolean>(false);
   const [chainNumber, setChainNumber] = useState<number>(-1);
+  const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
   // const [liquidityList, setLiquidityList] = useState<LiquidityInterface[]>([]);
   const { isConnected, suiWallet, getTokenBalance, suiChain, disconnectConnect, chainId } =
     useCustomWeb3Modal();
@@ -174,26 +173,10 @@ const DepositWrap = ({ data }: ISwapWarp) => {
     }
   }, [isConnected, suiWallet]);
 
-  const [upperEffAdjPriceAtoB] = tickToPrice(
-    upperTick,
-    Number(pool?.tickSpacing),
-    Number(inputJetton?.decimals),
-    Number(outputJetton?.decimals),
-  );
-  console.log('upperEffAdjPriceAtoB', upperEffAdjPriceAtoB);
-
-  const [lowerEffAdjPriceAtoB] = tickToPrice(
-    lowerTick,
-    Number(pool?.tickSpacing),
-    Number(inputJetton?.decimals),
-    // open_position  add_
-    Number(outputJetton?.decimals),
-  );
-  console.log('lowerEffAdjPriceAtoB', lowerEffAdjPriceAtoB);
-
   const fromAmountAToAmountB = async (newVal) => {
     console.log('amountAToB lowerTick', lowerTick);
     console.log('amountAToB upperTick', upperTick);
+
     const liquidityInput = ClmmPoolUtil.estLiquidityAndcoinAmountFromOneAmounts(
       lowerTick,
       upperTick,
@@ -506,6 +489,22 @@ const DepositWrap = ({ data }: ISwapWarp) => {
       setIsTransacting(false);
     }
   };
+  // useEffect(() => {
+  //   if (pool) {
+  //     // 检查当前价格是否在范围内
+  //     if (lowerTick > pool.current_tick_index || upperTick < pool.current_tick_index) {
+  //       showToast({
+  //         status: 'error',
+  //         message: 'The current price is not in the range',
+  //       });
+  //       setButtonDisabled(true);
+  //     } else {
+  //       // 价格在范围内，启用按钮并清除错误提示
+  //       // onOpenChange(() => false);
+  //       setButtonDisabled(false);
+  //     }
+  //   }
+  // }, [lowerTick, upperTick]);
 
   const onExchangeInOut = async () => {
     const temp = JSON.parse(JSON.stringify(inputJetton));
@@ -532,7 +531,22 @@ const DepositWrap = ({ data }: ISwapWarp) => {
         poolAddress={d.pool_address}
         setLowerTick={setLowerTick}
         setUpperTcik={setUpperTick}
+        // onRangeChanged={(lower, upper) => {
+        //   if (pool) {
+        //     if (lower > pool.current_tick_index || upper < pool.current_tick_index) {
+        //       showToast({
+        //         status: 'error',
+        //         message: 'The current price is not in the range',
+        //       });
+        //       setButtonDisabled(true);
+        //       return;
+        //     } else {
+        //       setButtonDisabled(false);
+        //     }
+        //   }
+        // }}
       />
+
       <DivSwapPanel className="space-y-6">
         <CurrentChainBox
           currentChainInfo={{
@@ -589,7 +603,8 @@ const DepositWrap = ({ data }: ISwapWarp) => {
             disabled={
               !suiChain
                 ? false
-                : Number(inputJetton?.balance) < Number(inputValue) ||
+                : buttonDisabled ||
+                  Number(inputJetton?.balance) < Number(inputValue) ||
                   Number(outputJetton?.balance) < Number(outputValue) ||
                   Number(inputValue) <= 0 ||
                   inputValue === ''
@@ -601,7 +616,7 @@ const DepositWrap = ({ data }: ISwapWarp) => {
                 ? 'Enter amount'
                 : Number(inputJetton?.balance) < Number(inputValue)
                   ? `Insufficient ${inputJetton?.tokenSymbol} balance`
-                  : Number(outputJetton?.balance) < Number(inputValue)
+                  : Number(outputJetton?.balance) < Number(outputValue)
                     ? `Insufficient ${outputJetton?.tokenSymbol} balance`
                     : 'Deposit'}
           </Button>
@@ -609,8 +624,6 @@ const DepositWrap = ({ data }: ISwapWarp) => {
         <CheckNetwork setChainNumber={setChainNumber} chainNumber={chainNumber} />
       </DivSwapPanel>
     </div>
-
-    // <div>aa</div>
   );
 };
 
