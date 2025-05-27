@@ -1,5 +1,5 @@
 import { Dialog, Box } from '@mui/material';
-import {styled} from '@mui/system';
+import { styled } from '@mui/system';
 
 export const DialogComponents = styled(Dialog)(({ theme }) => ({
   '&.DialogComponents-Root': {

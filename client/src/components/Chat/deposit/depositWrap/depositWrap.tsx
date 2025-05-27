@@ -6,14 +6,13 @@ import { useWallet } from '@suiet/wallet-kit';
 import { initCetusSDK, Pool, ClmmPoolUtil, TickMath } from '@cetusprotocol/cetus-sui-clmm-sdk';
 import { DivExChangeBox, DivSwapPanel, DivSwapPanelBox } from './useDepositWrapStyle';
 import CurrentChainBox from '../../Swap/CurrentChainBox';
-import DepositPanelInputBox from '../depositOanalInput/depositPanalInput';
+import DepositPanelInputBox from '../depositPanalInput/depositPanalInput';
 import { getImageUrl } from '~/swap/util/image-url';
 import Button from '~/components/Mui/Button';
 import { axiosAggregatorQuote, axiosLiquidity, getTokenDetail } from '~/swap/serve';
 import useCustomWeb3Modal from '~/components/Account/hooks/useCustomWeb3Modal';
 import ConnectWallet from '../../Swap/ConnectWalet';
 import CheckNetwork from '../../Swap/CheckNetwork';
-import { ChainIdEnum } from '~/swap/enum';
 import { useToastContext } from '~/Providers';
 import SelectRange from '../select-range/select-range';
 
@@ -51,6 +50,7 @@ const DepositWrap = ({ data }: ISwapWarp) => {
   const [outputValue, setOutputValue] = useState(d.amount_b?.toString() ?? 0);
   const [lowerTick, setLowerTick] = useState(d.tick_lower);
   const [upperTick, setUpperTick] = useState(d.tick_upper);
+  const [inputJettonAddress, setInputJettonAddress] = useState('');
   const { showToast, onOpenChange } = useToastContext();
   const [isSwitch, setIsSwitch] = useState<boolean>(false);
   const [pool, setPool] = useState<Pool | null>(null);
@@ -82,6 +82,7 @@ const DepositWrap = ({ data }: ISwapWarp) => {
 
     //init token info
     const inputAddress = _pool?.coinTypeA ?? '';
+    setInputJettonAddress(inputAddress);
     const outputAddress = _pool?.coinTypeB ?? '';
 
     const outputDetail = await getTokenDetail({
@@ -127,16 +128,8 @@ const DepositWrap = ({ data }: ISwapWarp) => {
 
     _inputJetton.tokenPrice = fromTokenRes.data[0]?.fromToken.tokenUnitPrice;
     _outputJetton.tokenPrice = toTokenRes.data[0]?.fromToken.tokenUnitPrice;
-    const _inputDecimals = _inputJetton.decimals
-      ? Number(_inputJetton.decimals)
-      : inputJetton?.decimals
-        ? Number(inputJetton?.decimals)
-        : 6;
-    const _outputDecimals = _outputJetton.decimals
-      ? Number(_outputJetton.decimals)
-      : outputJetton?.decimals
-        ? Number(outputJetton?.decimals)
-        : 6;
+    const _inputDecimals = _inputJetton.decimals ? Number(_inputJetton.decimals) : 6;
+    const _outputDecimals = _outputJetton.decimals ? Number(_outputJetton.decimals) : 6;
     // init token balance
     const inputBalance = await getTokenBalance(inputAddress, _inputDecimals);
     console.log('inputBalance', inputBalance);
@@ -168,10 +161,13 @@ const DepositWrap = ({ data }: ISwapWarp) => {
   }, []);
 
   useEffect(() => {
+    // 因为balance的计算即依赖于suiChain，又依赖于pool里面的coinType，
     if (pool) {
+      console.log('jajajajaj');
+
       initJettonInfo();
     }
-  }, [isConnected, suiWallet]);
+  }, [isConnected, suiWallet, suiChain, inputJettonAddress]);
 
   const fromAmountAToAmountB = async (newVal) => {
     console.log('amountAToB lowerTick', lowerTick);
@@ -524,7 +520,7 @@ const DepositWrap = ({ data }: ISwapWarp) => {
   };
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-start gap-3">
       <SelectRange
         lowerTick={lowerTick}
         upperTick={upperTick}
@@ -571,7 +567,20 @@ const DepositWrap = ({ data }: ISwapWarp) => {
               }}
             />
             <DivExChangeBox onClick={onExchangeInOut}>
-              <img src={getImageUrl('swap/exchange.png')} alt="" />
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 15 15"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M8 2.75C8 2.47386 7.77614 2.25 7.5 2.25C7.22386 2.25 7 2.47386 7 2.75V7H2.75C2.47386 7 2.25 7.22386 2.25 7.5C2.25 7.77614 2.47386 8 2.75 8H7V12.25C7 12.5261 7.22386 12.75 7.5 12.75C7.77614 12.75 8 12.5261 8 12.25V8H12.25C12.5261 8 12.75 7.77614 12.75 7.5C12.75 7.22386 12.5261 7 12.25 7H8V2.75Z"
+                  fill="currentColor"
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
             </DivExChangeBox>
           </DivSwapPanelBox>
           <DivSwapPanelBox>

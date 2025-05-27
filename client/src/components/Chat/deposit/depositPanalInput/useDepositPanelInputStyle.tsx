@@ -6,7 +6,7 @@ export const SwapPanelInputBoxRoot = styled(Box)(({ theme }) => ({
   width: '100%',
   height: '100%',
   background: '#141619',
-  padding: `0.77rem`,
+  padding: '1rem 0.77rem',
   borderRadius: '12px',
 }));
 export const SwapPanelRow = styled(Box)(({ theme }) => ({
@@ -18,6 +18,7 @@ export const SwapPanelRow = styled(Box)(({ theme }) => ({
 export const SwapPanelFlexCenter = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
+  justifyContent: 'between',
   cursor: 'pointer',
   '& .logo': {
     width: `${calculateRem(1.4)}rem`,

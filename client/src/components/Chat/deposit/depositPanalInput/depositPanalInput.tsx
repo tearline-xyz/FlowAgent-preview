@@ -18,6 +18,7 @@ import { ToFixedPipe } from '~/swap/const/bignumber';
 import { getChainLogo } from '~/swap/const/contract';
 import BigNumber from 'bignumber.js';
 import { axiosAggregatorQuote } from '~/swap/serve';
+import SwapDialog from '../swapDialog/swapDialog';
 
 interface DepositPanelInputBoxProps {
   inputValue: string;
@@ -49,9 +50,6 @@ export default function DepositPanelInputBox({
       const val: string = filterNumberPipe(e.target.value, 12, true);
       onChangeValue && onChangeValue(val);
     }
-  };
-  const openModalClick = () => {
-    setVisible(true);
   };
 
   return (
@@ -86,9 +84,18 @@ export default function DepositPanelInputBox({
             </MaxBox>
           )}
         </SwapPanelFlexCenter>
+        {Number(jettonData?.balance) < Number(inputValue) && (
+          <button
+            onClick={() => {
+              setVisible(true);
+            }}
+          >
+            Swap
+          </button>
+        )}
       </SwapPanelRow>
       <SwapPanelRow>
-        <SwapPanelFlexCenterBg onClick={openModalClick}>
+        <SwapPanelFlexCenterBg>
           <img className={'logoBig'} src={jettonData?.tokenLogoUrl} alt="" />
           <SwapPanelToken>{jettonData?.tokenSymbol}</SwapPanelToken>
         </SwapPanelFlexCenterBg>
@@ -103,6 +110,7 @@ export default function DepositPanelInputBox({
         ≈$
         {inputValue ? ToFixedPipe(Number(inputValue) * Number(jettonData?.tokenPrice)) : ''}
       </RateBox>
+      <SwapDialog toTokenJetton={jettonData} visible={visible} setVisible={setVisible} />
     </SwapPanelInputBoxRoot>
   );
 }
