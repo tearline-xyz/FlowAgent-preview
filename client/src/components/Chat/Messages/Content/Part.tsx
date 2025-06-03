@@ -106,10 +106,6 @@ const Part = memo(
       } else if (isToolCall) {
         console.log('else');
 
-        // 使用更具体的类型而不是通用的 object
-        // const outputObj = JSON.parse(toolCall.output ?? '{}');
-        // console.log('outputObj', outputObj);
-        // console.log('data.acton', outputObj?.data?.action);
 
         return (
           <div>

@@ -94,13 +94,13 @@ export const Api = {
     saveHash:'/api/v1/msg/save_hash'
   },
   swap: {
-    supportedChain: '/okx/api/v1/dex/supported/chain', // 获取支持的链
-    allTokens: '/okx/api/v1/dex/chain/tokens', // 对应链token列表
-    liquidity: '/okx/api/v1/dex/chain/liquidity', // 获取流动性
-    approveTransaction: '/okx/api/v1/dex/approve/transaction', // 授权
-    quote: '/okx/api/v1/dex/aggregator/quote', // 获取价格
-    swap: '/okx/api/v1/dex/aggregator/swap', // swap
-    walletAllTokenBalances: '/okx/api/v1/dex/asset/token_balance_by_address', // 获取所在链所有token余额
+    supportedChain: '/okx/api/v1/dex/supported/chain',
+    allTokens: '/okx/api/v1/dex/chain/tokens',
+    liquidity: '/okx/api/v1/dex/chain/liquidity',
+    approveTransaction: '/okx/api/v1/dex/approve/transaction',
+    quote: '/okx/api/v1/dex/aggregator/quote',
+    swap: '/okx/api/v1/dex/aggregator/swap',
+    walletAllTokenBalances: '/okx/api/v1/dex/asset/token_balance_by_address',
     realTimePrice: '/okx/api/v1/dex/token/real_time_price',
     tokenDetail: '/okx/api/v1/dex/token/token_detail',
     tokenList: '/okx/api/v1/dex/token/list',

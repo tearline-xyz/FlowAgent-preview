@@ -243,7 +243,7 @@ const ContentRender = memo(
                 //   },
                 //   {
                 //     type: 'text',
-                //     text: '当前BNB（币安币）的价格是604.40 USD。使用1000 USD兑换BNB的交易已生成，您需要点击聊天框下方的互动窗口以完成交易。\n\n您将能够在以下两条链上执行交换：\n1. BNB Chain\n2. Ethereum\n\n请确保查看并签署交易。',
+                //     text: 'The current price of BNB (Binance Coin) is 604.40 USD. The transaction for 1000 USD to BNB has been generated, you need to click on the interactive window below the chat box to complete the transaction.\n\nYou will be able to perform the swap on the following two chains:\n1. BNB Chain\n2. Ethereum\n\nPlease make sure to review and sign the transaction',
                 //   },
                 // ]}
               />

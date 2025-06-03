@@ -78,7 +78,7 @@ const ContentParts = memo(
     let swapToolPart;
     let depositToolPart;
 
-    // 检查是否有 okx_swap_v1 与 cetus_deposit_v1 类型的工具调用
+
     content.forEach((p) => {
       if (p?.type === ContentTypes.TOOL_CALL) {
         const toolCall = p[ContentTypes.TOOL_CALL];
@@ -94,7 +94,7 @@ const ContentParts = memo(
               depositToolPart = p;
             }
           } catch (e) {
-            // 解析错误，继续检查下一个
+
           }
         }
       }
@@ -161,7 +161,7 @@ const ContentParts = memo(
               (part?.[ContentTypes.TOOL_CALL] as Agents.ToolCall | undefined)?.id ?? '';
             const attachments = attachmentMap[toolCallId];
 
-            // 如果是 okx_swap_v1 或 cetus_deposit_v1 类型的工具调用，则不渲染
+            //  okx_swap_v1 or cetus_deposit_v1
             if (part?.type === ContentTypes.TOOL_CALL) {
               const toolCall = part[ContentTypes.TOOL_CALL];
               if (toolCall && 'args' in toolCall) {
@@ -180,7 +180,7 @@ const ContentParts = memo(
                     return null;
                   }
                 } catch (e) {
-                  // 解析错误，继续正常渲染
+
                 }
               }
             }

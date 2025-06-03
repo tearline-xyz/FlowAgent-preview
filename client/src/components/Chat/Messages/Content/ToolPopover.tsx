@@ -40,7 +40,7 @@ export default function ToolPopover({
   const MermaidChart = ({ chart }) => {
     useEffect(() => {
       mermaid.initialize({ startOnLoad: true });
-      mermaid.contentLoaded(); // 手动触发渲染
+      mermaid.contentLoaded();
     }, []);
 
     return <div className='mermaid'>{chart}</div>;

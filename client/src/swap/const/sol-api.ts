@@ -31,9 +31,9 @@ export class SolApi {
 
 
   getTokenAccount = async (tokenAddr:string) => {
-    // 你的钱包地址
+
     const walletAddress = new PublicKey(this.from);
-    // 你的代币合约地址
+
     const tokenMintAddress = new PublicKey(tokenAddr);
     try {
       const associatedTokenAddress = await getAssociatedTokenAddress(

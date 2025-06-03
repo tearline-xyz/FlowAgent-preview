@@ -25,19 +25,19 @@ export const polygonMainnet = {
 };
 
 export const solanaMainnet = {
-  chainId: 501, // Solana 的链 ID
+  chainId: 501,
   name: 'Solana',
   currency: 'SOL',
-  explorerUrl: 'https://explorer.solana.com', // Solana 区块浏览器 URL
-  rpcUrl: 'https://api.mainnet-beta.solana.com', // Solana RPC URL
+  explorerUrl: 'https://explorer.solana.com',
+  rpcUrl: 'https://api.mainnet-beta.solana.com',
 };
 
 export const tonMainnet = {
-  chainId: 607, // TON 的链 ID（请确认正确的链 ID）
+  chainId: 607,
   name: 'TON',
   currency: 'TON',
-  explorerUrl: 'https://tonscan.org', // TON 区块浏览器 URL
-  rpcUrl: 'https://toncenter.com/api/v2/jsonRPC', // TON RPC URL（请确认）
+  explorerUrl: 'https://tonscan.org',
+  rpcUrl: 'https://toncenter.com/api/v2/jsonRPC',
 };
 
 export const chains = [
@@ -63,39 +63,39 @@ export const chains = [
     rpcUrl: 'https://polygon-rpc.com/',
   },
   {
-    chainId: 501, // Solana 的链 ID
+    chainId: 501,
     name: 'Solana',
     currency: 'SOL',
-    explorerUrl: 'https://explorer.solana.com', // Solana 区块浏览器 URL
-    rpcUrl: 'https://api.mainnet-beta.solana.com', // Solana RPC URL
+    explorerUrl: 'https://explorer.solana.com',
+    rpcUrl: 'https://api.mainnet-beta.solana.com',
   },
   {
-    chainId: 607, // TON 的链 ID（请确认正确的链 ID）
+    chainId: 607,
     name: 'TON',
     currency: 'TON',
-    explorerUrl: 'https://tonscan.org', // TON 区块浏览器 URL
-    rpcUrl: 'https://toncenter.com/api/v2/jsonRPC', // TON RPC URL（请确认）
+    explorerUrl: 'https://tonscan.org',
+    rpcUrl: 'https://toncenter.com/api/v2/jsonRPC',
   },
   // {
   //   chainId: 8453,
   //   name: 'Blast',
   //   currency: 'BLAST',
-  //   explorerUrl: 'https://blastscan.io', // 请确认是否有合适的区块浏览器
-  //   rpcUrl: 'https://rpc.blast.io' // 请确认 RPC URL
+  //   explorerUrl: 'https://blastscan.io',
+  //   rpcUrl: 'https://rpc.blast.io'
   // },
   {
     chainId: 4200,
     name: 'Merlin',
     currency: 'MERL',
-    explorerUrl: 'https://merlinscan.com', // 请确认是否有合适的区块浏览器
-    rpcUrl: 'https://rpc.merlin.xyz', // 请确认 RPC URL
+    explorerUrl: 'https://merlinscan.com',
+    rpcUrl: 'https://rpc.merlin.xyz',
   },
   {
     chainId: 7000,
     name: 'Zeta',
     currency: 'ZETA',
-    explorerUrl: 'https://zetascan.com', // 请确认是否有合适的区块浏览器
-    rpcUrl: 'https://rpc.zeta.io', // 请确认 RPC URL
+    explorerUrl: 'https://zetascan.com',
+    rpcUrl: 'https://rpc.zeta.io',
   },
   {
     chainId: 1088,
@@ -108,57 +108,56 @@ export const chains = [
     chainId: 169,
     name: 'Manta Pacific',
     currency: 'MANTA',
-    explorerUrl: 'https://manta.network', // 请确认是否有合适的区块浏览器
-    rpcUrl: 'https://rpc.manta.network', // 请确认 RPC URL
+    explorerUrl: 'https://manta.network',
+    rpcUrl: 'https://rpc.manta.network',
   },
   {
     chainId: 196,
     name: 'X Layer',
     currency: 'XLAYER',
-    explorerUrl: 'https://xlayer.com', // 请确认是否有合适的区块浏览器
-    rpcUrl: 'https://rpc.xlayer.com', // 请确认 RPC URL
+    explorerUrl: 'https://xlayer.com',
+    rpcUrl: 'https://rpc.xlayer.com',
   },
   {
     chainId: 534352,
     name: 'Scroll',
     currency: 'SCRL',
-    explorerUrl: 'https://scroll.io', // 请确认是否有合适的区块浏览器
-    rpcUrl: 'https://rpc.scroll.io', // 请确认 RPC URL
+    explorerUrl: 'https://scroll.io',
+    rpcUrl: 'https://rpc.scroll.io',
   },
   {
     chainId: 8453,
     name: 'Base',
     currency: 'BASE',
-    explorerUrl: 'https://basescan.org', // 请确认是否有合适的区块浏览器
-    rpcUrl: 'https://rpc.base.org', // 请确认 RPC URL
+    explorerUrl: 'https://basescan.org',
+    rpcUrl: 'https://rpc.base.org',
   },
   {
     chainId: 5000,
     name: 'Mantle',
     currency: 'MNTL',
-    explorerUrl: 'https://mantlescan.com', // 请确认是否有合适的区块浏览器
-    rpcUrl: 'https://rpc.mantle.xyz', // 请确认 RPC URL
+    rpcUrl: 'https://rpc.mantle.xyz',
   },
   {
     chainId: 59144,
     name: 'Linea',
     currency: 'LINEA',
-    explorerUrl: 'https://lineascan.com', // 请确认是否有合适的区块浏览器
-    rpcUrl: 'https://rpc.linea.network', // 请确认 RPC URL
+    explorerUrl: 'https://lineascan.com',
+    rpcUrl: 'https://rpc.linea.network',
   },
   {
     chainId: 1101,
     name: 'Polygon zkEvm',
     currency: 'zkEVM',
     explorerUrl: 'https://explorer.zkevm.polygondot.com',
-    rpcUrl: 'https://zkevm-rpc.com/', // 请确认 RPC URL
+    rpcUrl: 'https://zkevm-rpc.com/',
   },
   {
     chainId: 784,
     name: 'SUI',
     currency: 'SUI',
-    explorerUrl: '', // SUI 的区块浏览器（请查找）
-    rpcUrl: '', // SUI 的 RPC URL（请查找）
+    explorerUrl: '',
+    rpcUrl: '',
   },
   {
     chainId: 1030,

@@ -54,7 +54,7 @@ export const DexRouterAddress = {
   'X Layer': '0x127a986cE31AA2ea8E1a6a0F0D5b7E5dbaD7b0bE',
 };
 
-// TODO 添加剩余默认代币地址 sui
+
 export const DefaultTokenAddr = {
   SOL: '11111111111111111111111111111111',
   ETH: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',

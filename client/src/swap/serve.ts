@@ -30,12 +30,12 @@ export async function axiosSupportedChain() {
         const indexA = order.indexOf(a.id);
         const indexB = order.indexOf(b.id);
 
-        // 如果找不到 id，则返回较大的值（放在最后）
-        if (indexA === -1 && indexB === -1) return 0;
-        if (indexA === -1) return 1; // a 不在 order 中
-        if (indexB === -1) return -1; // b 不在 order 中
 
-        return indexA - indexB; // 按照 order 的索引排序
+        if (indexA === -1 && indexB === -1) return 0;
+        if (indexA === -1) return 1;
+        if (indexB === -1) return -1;
+
+        return indexA - indexB;
       });
     }
     return Promise.resolve(res);
@@ -167,12 +167,7 @@ export async function getTokenDetail(params: {
   });
 }
 
-/****
- * 查询订单详情
- {
-  "order_id": "123456",
-}
- */
+
 export async function orderInfo(data: { order_id: string }) {
   return request({
     url: Api.swap.orderInfo,
@@ -181,12 +176,7 @@ export async function orderInfo(data: { order_id: string }) {
   });
 }
 
-/****
- * 获取用户订单列表
- {
-  "order_id": "123456",//分页时候传上一个订单的id
-}
- */
+
 export async function orderList(data: {
   order_id?: string;
   order_type: string;

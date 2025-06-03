@@ -16,7 +16,7 @@ export function getAssetsInfo(
       tokenContract === DefaultTokenAddr.BNB
     ) {
       if (d.tokenAddress === '') {
-        return true; // 找到符合条件的对象
+        return true;
       }
     }
     return d.tokenAddress.toLowerCase() === tokenContract?.toLowerCase();
@@ -24,28 +24,28 @@ export function getAssetsInfo(
 }
 
 export function mergeAssetsArrays(arrA, arrB) {
-  // 使用 map 遍历 b 数组
+
   return arrB.map((itemB) => {
-    // 在 a 数组中查找具有相同 age 的项
+
     const matchingItem: any = arrA.find(
       (itemA) =>
         itemA.tokenAddress.toLocaleLowerCase() === itemB.tokenContractAddress.toLocaleLowerCase(),
     );
 
-    // 如果找到匹配项，则合并数据
+
     if (matchingItem) {
       return {
-        ...itemB, // 从 a 中复制属性
-        balance: matchingItem.balance, // 添加 b 中的 page 属性
+        ...itemB,
+        balance: matchingItem.balance,
         tokenPrice: matchingItem.tokenPrice,
         isRiskToken: matchingItem.isRiskToken,
         amountUsdt: matchingItem.balance * matchingItem.tokenPrice,
       };
     }
 
-    // 如果没有找到匹配项，返回原始 b 项（可选）
+
     return itemB;
-  }); // 过滤掉 undefined 项（如果需要）
+  });
 }
 
 export const updateUrlParams = (params: {
@@ -56,31 +56,31 @@ export const updateUrlParams = (params: {
 }) => {
   const url: any = new URL(window.location.href);
 
-  // 更新或添加参数
+
   Object.keys(params).forEach((key) => {
     if (params[key] !== undefined) {
       url.searchParams.set(key, params[key]);
     } else {
-      url.searchParams.delete(key); // 如果参数值为 undefined，则删除该参数
+      url.searchParams.delete(key);
     }
   });
 
-  // 使用 pushState 更新 URL
+
   window.history.pushState({}, '', url);
 };
 export const updateUrlParamsOne = (params: { inputChain: string | number | undefined }) => {
   const url: any = new URL(window.location.href);
 
-  // 更新或添加参数
+
   Object.keys(params).forEach((key) => {
     if (params[key] !== undefined) {
       url.searchParams.set(key, params[key]);
     } else {
-      // url.searchParams.delete(key); // 如果参数值为 undefined，则删除该参数
+
     }
   });
 
-  // 使用 pushState 更新 URL
+
   window.history.pushState({}, '', url);
 };
 export const blockOpen = (chainId: number, hash: string, cb?: Function) => {
@@ -112,24 +112,24 @@ export function getJettonImgUrl(path: string): string {
 }
 
 export function formatNumberString(input) {
-  // 检查输入是否为字符串
+
   if (typeof input !== 'string') {
-    return input; // 如果不是字符串，直接返回
+    return input;
   }
 
-  // // 去除前导空格
+
   input = input.trim();
 
-  // 检查是否以 '0' 开头
+
   if (input.startsWith('0')) {
-    // 检查第二位字符
+
     if (input.length > 1 && input[1] !== '.') {
-      // 替换为 '0.' 开头的格式
+
       return '0.' + input.slice(1);
     }
   }
 
-  return input; // 返回原始输入，如果没有修改
+  return input;
 }
 
 export function filterNumberPipe(
@@ -140,7 +140,7 @@ export function filterNumberPipe(
   event = event.replace(/\。/g, '.');
   event = event.replace(/[^\d\.]/g, '');
 
-  // 先格式化为float，考虑多个点的情况
+
   if (event) {
     const list = event.match(/(\d+\.\d*)/g);
     if (list && list.length) {
@@ -169,7 +169,7 @@ export function filterNumberPipe(
       event = formatNumberString(_split[0]);
     }
   }
-  // 判断小数点后的长度,并做限制
+
   const _float = event.split('.');
   if (_float.length && _float.length === 2) {
     _float[0] === '' ? (_float[0] = '0') : '';

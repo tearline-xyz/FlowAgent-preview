@@ -112,7 +112,7 @@ export default function SolButton({
         console.log('Raw transaction data:', txData);
 
         try {
-          // 直接使用 signAndSendTransaction
+          // signAndSendTransaction
           // setLoading(true)
           // let key:any=walletProvider?.publicKey.toBase58()
           const signature: any = await signAndSendTransaction(
@@ -154,11 +154,11 @@ export default function SolButton({
 
   const signAndSendTransaction = async (callData: string, walletAddress: string) => {
     try {
-      // 解码交易数据
+
       const decodedTx = bs58.decode(callData);
 
       let tx;
-      // 尝试解析交易数据（支持新旧两种格式）
+
       try {
         tx = VersionedTransaction.deserialize(decodedTx);
         // console.log('Parsed as VersionedTransaction');
@@ -168,11 +168,6 @@ export default function SolButton({
       }
       const recentBlockhash: any = (await (connection as any).getLatestBlockhash('confirmed'))
         ?.blockhash;
-      // console.log('a', a);
-      // 获取最新的区块哈希
-      // const {blockhash, lastValidBlockHeight} = await connection.getLatestBlockhash('confirmed');
-
-      // 根据交易类型设置区块哈希和付款人
       if (tx instanceof VersionedTransaction) {
         tx.message.recentBlockhash = recentBlockhash;
       } else {
@@ -185,30 +180,6 @@ export default function SolButton({
         preflightCommitment: 'processed',
         maxRetries: 3,
       });
-      // // 使用钱包适配器发送交易
-      // const signature = await sendTransaction(tx, connection, {
-      //   skipPreflight: true,
-      //   preflightCommitment: 'processed',
-      //   maxRetries: 3
-      // });
-
-      // console.log('Transaction sent:', signature);
-
-      // // 等待交易确认
-      // const status = await connection.confirmTransaction(
-      //   {
-      //     signature,
-      //     blockhash,
-      //     lastValidBlockHeight
-      //   },
-      //   'processed'
-      // );
-      //
-      // console.log('status:', status);
-      // if (status.value.err) {
-      //   throw new Error(`Transaction failed: ${status.value.err.toString()}`);
-      // }
-
       return signature;
     } catch (error) {
       console.error('Transaction failed:', error);

@@ -133,7 +133,7 @@ const useCustomWeb3Modal = () => {
         ? suiChainId
         : chainId === '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
           ? 501
-          : chainId, // TODO sol 501; 其余的按照EVM 后面解决 SUI TON
+          : chainId,
     isConnected: suiConnected ? suiConnected : isConnected,
     state: state.selectedNetworkId?.toString(),
     walletProvider,
