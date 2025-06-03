@@ -50,7 +50,6 @@ const DepositWrap = ({ data }: ISwapWarp) => {
   const [outputValue, setOutputValue] = useState(d.amount_b?.toString() ?? 0);
   const [lowerTick, setLowerTick] = useState(d.tick_lower);
   const [upperTick, setUpperTick] = useState(d.tick_upper);
-  const [inputJettonAddress, setInputJettonAddress] = useState('');
   const { showToast, onOpenChange } = useToastContext();
   const [isSwitch, setIsSwitch] = useState<boolean>(false);
   const [pool, setPool] = useState<Pool | null>(null);
@@ -82,7 +81,6 @@ const DepositWrap = ({ data }: ISwapWarp) => {
 
     //init token info
     const inputAddress = _pool?.coinTypeA ?? '';
-    setInputJettonAddress(inputAddress);
     const outputAddress = _pool?.coinTypeB ?? '';
 
     const outputDetail = await getTokenDetail({
@@ -158,10 +156,12 @@ const DepositWrap = ({ data }: ISwapWarp) => {
   }, []);
 
   useEffect(() => {
+    console.log('yyyyyyuuu');
+
     if (pool) {
       initJettonInfo();
     }
-  }, [isConnected, suiWallet, suiChain, inputJettonAddress]);
+  }, [isConnected, suiWallet, suiChain, pool?.coinTypeA, pool?.coinTypeB]);
 
   const fromAmountAToAmountB = async (newVal) => {
     const liquidityInput = ClmmPoolUtil.estLiquidityAndcoinAmountFromOneAmounts(
