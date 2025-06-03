@@ -132,14 +132,11 @@ const DepositWrap = ({ data }: ISwapWarp) => {
     const _outputDecimals = _outputJetton.decimals ? Number(_outputJetton.decimals) : 6;
     // init token balance
     const inputBalance = await getTokenBalance(inputAddress, _inputDecimals);
-    console.log('inputBalance', inputBalance);
 
     const outputBalance = await getTokenBalance(outputAddress, _outputDecimals);
 
     _inputJetton.balance = inputBalance;
     _outputJetton.balance = outputBalance;
-    console.log('_inputJetton', _inputJetton);
-    console.log('_outputJetton', _outputJetton);
 
     setInputJetton(_inputJetton);
     setOutputJetton(_outputJetton);
@@ -161,18 +158,12 @@ const DepositWrap = ({ data }: ISwapWarp) => {
   }, []);
 
   useEffect(() => {
-    // 因为balance的计算即依赖于suiChain，又依赖于pool里面的coinType，
     if (pool) {
-      console.log('jajajajaj');
-
       initJettonInfo();
     }
   }, [isConnected, suiWallet, suiChain, inputJettonAddress]);
 
   const fromAmountAToAmountB = async (newVal) => {
-    console.log('amountAToB lowerTick', lowerTick);
-    console.log('amountAToB upperTick', upperTick);
-
     const liquidityInput = ClmmPoolUtil.estLiquidityAndcoinAmountFromOneAmounts(
       lowerTick,
       upperTick,
@@ -183,15 +174,12 @@ const DepositWrap = ({ data }: ISwapWarp) => {
       new BN(pool?.current_sqrt_price ?? 0),
     );
 
-    console.log('liquidityInput', liquidityInput);
     const amount_b = liquidityInput.tokenMaxB.toNumber();
-    console.log('amount_b', amount_b);
+
     setOutputValue((amount_b / 10 ** Number(outputJetton?.decimals ?? '6')).toString());
   };
 
   const fromAmountBToAmountA = async (newVal) => {
-    console.log('amountBToA lowerTick', lowerTick);
-    console.log('amountBToA upperTick', upperTick);
     const liquidityInput = ClmmPoolUtil.estLiquidityAndcoinAmountFromOneAmounts(
       lowerTick,
       upperTick,
@@ -202,9 +190,8 @@ const DepositWrap = ({ data }: ISwapWarp) => {
       new BN(pool?.current_sqrt_price ?? 0),
     );
 
-    console.log('liquidityInput', liquidityInput);
     const amount_a = liquidityInput.tokenMaxA.toNumber();
-    console.log('amount_a', amount_a);
+
     setInputValue((amount_a / 10 ** Number(inputJetton?.decimals ?? '6')).toString());
   };
 
@@ -220,7 +207,6 @@ const DepositWrap = ({ data }: ISwapWarp) => {
         timestamp: txnData.timestampMs || null,
       };
 
-      // 从objectChanges中查找Position对象
       const objectChanges = txnData.objectChanges || [];
       const positionObject = objectChanges.find(
         (change) =>
@@ -235,7 +221,6 @@ const DepositWrap = ({ data }: ISwapWarp) => {
         positionInfo.positionId = positionObject.objectId as string;
       }
 
-      // 从events中获取更多详细信息
       if (txnData.events && txnData.events.length > 0) {
         const positionEvent = txnData.events.find(
           (event) => event.type && event.type.includes('OpenPositionEvent') && event.parsedJson,
@@ -254,36 +239,27 @@ const DepositWrap = ({ data }: ISwapWarp) => {
           }
         }
       }
-      console.log('提取的头寸信息:', positionInfo);
+
       return positionInfo;
     } catch (error) {
-      console.error('提取头寸信息时出错:', error);
       return null;
     }
   };
 
-  // 验证交易是否成功
   const verifyTransaction = async (txResponse) => {
     if (!txResponse || !txResponse.digest) {
-      console.error('交易响应无效');
       return null;
     }
 
-    // 定义重试次数和延迟
-    const maxRetries = 2; // 总共尝试3次（初始尝试 + 2次重试）
-    const delays = [1000, 3000]; // 重试延迟时间：1秒和3秒
+    const maxRetries = 2;
+    const delays = [1000, 3000];
     let attempt = 0;
     let lastError: any = null;
 
-    // 定义睡眠函数
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-    // 执行带有重试逻辑的验证
     while (attempt <= maxRetries) {
       try {
-        console.log(`尝试验证交易 (第${attempt + 1}/${maxRetries + 1}次)`);
-
-        // 获取完整的交易数据，包括对象变更
         const txnData = await sdk.fullClient.getTransactionBlock({
           digest: txResponse.digest,
           options: {
@@ -294,37 +270,24 @@ const DepositWrap = ({ data }: ISwapWarp) => {
           },
         });
 
-        console.log(`第${attempt + 1}次尝试 - 获取到交易详情:`, txnData);
-
-        // 检查交易状态
         if (txnData.effects?.status?.status !== 'success') {
-          console.error(`第${attempt + 1}次尝试 - 交易失败:`, txnData.effects?.status);
-          lastError = new Error(`交易执行状态: ${txnData.effects?.status?.status || '未知'}`);
+          lastError = new Error(`status: ${txnData.effects?.status?.status || 'unknown'}`);
           throw lastError;
         }
 
-        // 提取头寸信息
         const positionInfo = await extractPositionInfo(txnData);
 
         if (positionInfo && positionInfo.positionId) {
-          console.log(`第${attempt + 1}次尝试 - 成功提取头寸信息:`, positionInfo);
           return positionInfo;
         }
 
-        // 如果交易成功但没找到Position对象，依然返回成功
-        console.log(`第${attempt + 1}次尝试 - 交易成功，但未找到明确的Position对象。`);
         return true;
       } catch (error) {
         lastError = error;
-        console.error(`第${attempt + 1}次尝试验证交易失败:`, error);
 
         if (attempt < maxRetries) {
-          // 还有重试机会，等待后重试
-          console.log(`将在${delays[attempt] / 1000}秒后进行第${attempt + 2}次尝试`);
           await sleep(delays[attempt]);
         } else {
-          // 已达到最大重试次数
-          console.error(`已尝试${maxRetries + 1}次，验证交易最终失败:`, error);
           showToast({
             message: 'The opening transaction failed',
             status: 'error',
@@ -335,7 +298,6 @@ const DepositWrap = ({ data }: ISwapWarp) => {
 
       attempt++;
     }
-    // 如果所有尝试都失败，返回失败
     return null;
   };
 
@@ -350,7 +312,6 @@ const DepositWrap = ({ data }: ISwapWarp) => {
       pool_id: d.pool_address,
     });
     openPositionTransactionPayload.setGasBudget(100000000);
-    console.log('openPositionTransactionPayload: ', openPositionTransactionPayload);
     try {
       const resData = await suiWallet.signAndExecuteTransaction({
         transaction: openPositionTransactionPayload,
@@ -365,44 +326,28 @@ const DepositWrap = ({ data }: ISwapWarp) => {
             status: 'error',
           });
           setIsTransacting(false);
-          throw new Error('无法获取头寸详情');
+          throw new Error('Position details cannot be obtained.');
         }
         const freshPool = await sdk.Pool.getPool(d.pool_address);
-        console.log('最新池子信息:', freshPool);
 
-        // 获取头寸详情，以确认tick范围
         const positionDetails = await sdk.Position.getPositionById(positionInfo?.positionId);
-        console.log('头寸详情:', positionDetails);
 
         if (!positionDetails) {
-          throw new Error('无法获取头寸详情，请确认头寸ID是否正确');
+          throw new Error('Position details cannot be obtained.');
         }
 
-        // 获取当前的tick索引和流动性
         const currentTickIndex = new BN(freshPool.current_tick_index).toNumber();
         const tickLower = positionDetails.tick_lower_index;
         const tickUpper = positionDetails.tick_upper_index;
         const curSqrtPrice = new BN(freshPool.current_sqrt_price);
 
-        console.log('当前价格信息:', {
-          currentTickIndex,
-          tickLower,
-          tickUpper,
-          inRange: tickLower <= currentTickIndex && currentTickIndex <= tickUpper,
-        });
-
-        console.log('here is inputValue', inputValue);
-
-        // 使用ClmmPoolUtil计算合适的流动性和币种数量
         const coinAmount = new BN(
           Number(inputValue) * Math.pow(10, Number(inputJetton?.decimals ?? '6')),
         );
         console.log('here is coinAmount', coinAmount, coinAmount.toString());
 
-        const fix_amount_a = true; // 固定币种A的数量
+        const fix_amount_a = true;
 
-        // 计算流动性和代币数量
-        console.log('计算流动性和代币数量...');
         const liquidityInput = await ClmmPoolUtil.estLiquidityAndcoinAmountFromOneAmounts(
           tickLower,
           tickUpper,
@@ -413,9 +358,6 @@ const DepositWrap = ({ data }: ISwapWarp) => {
           curSqrtPrice,
         );
 
-        console.log('流动性计算结果:', liquidityInput);
-
-        // 准备新的流动性参数
         const updatedParams = {
           coinTypeA: freshPool.coinTypeA,
           coinTypeB: freshPool.coinTypeB,
@@ -432,24 +374,17 @@ const DepositWrap = ({ data }: ISwapWarp) => {
           collect_fee: true,
         };
         sdk.senderAddress = suiWallet.address ?? '';
-        console.log('sdk.senderAddress', sdk.senderAddress);
-
-        console.log('更新后的流动性参数:', updatedParams);
         const payload = await sdk.Position.createAddLiquidityFixTokenPayload(updatedParams, {
           slippage,
           curSqrtPrice,
         });
-        payload.setGasBudget(100000000); // 增加gasBudget
+        payload.setGasBudget(100000000);
 
-        console.log('添加流动性交易载荷:', payload);
         try {
           const resData = await suiWallet.signAndExecuteTransaction({
             transaction: payload,
           });
 
-          console.log('添加流动性交易响应:', resData);
-
-          // 使用相同的验证逻辑验证交易
           const isSuccess = await verifyTransaction(resData);
 
           if (isSuccess) {
@@ -466,7 +401,6 @@ const DepositWrap = ({ data }: ISwapWarp) => {
             });
           }
         } catch (walletError) {
-          // 捕获钱包特定的错误
           console.error('The wallet transaction was executed incorrectly:', walletError);
         }
       } else {
@@ -485,29 +419,12 @@ const DepositWrap = ({ data }: ISwapWarp) => {
       setIsTransacting(false);
     }
   };
-  // useEffect(() => {
-  //   if (pool) {
-  //     // 检查当前价格是否在范围内
-  //     if (lowerTick > pool.current_tick_index || upperTick < pool.current_tick_index) {
-  //       showToast({
-  //         status: 'error',
-  //         message: 'The current price is not in the range',
-  //       });
-  //       setButtonDisabled(true);
-  //     } else {
-  //       // 价格在范围内，启用按钮并清除错误提示
-  //       // onOpenChange(() => false);
-  //       setButtonDisabled(false);
-  //     }
-  //   }
-  // }, [lowerTick, upperTick]);
 
   const onExchangeInOut = async () => {
     const temp = JSON.parse(JSON.stringify(inputJetton));
 
     setInputJetton(outputJetton);
     setOutputJetton(temp);
-    // setInputValue('')
   };
 
   const buttonClick = async () => {
