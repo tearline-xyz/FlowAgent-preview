@@ -50,3 +50,12 @@ Supports multiple chains, allowing users to take advantage of arbitrage opportun
 ### MCP based
 
 Based on the MCP (Monitor-Compute-Prove) architecture and the concept of user sovereignty first, we create the most transparent and secure AI strategy execution engine in the DeFi field.
+
+## Acknowledgments
+
+FlowAgent builds on top of other awesome open-source projects:
+
+- [LibreChat](https://github.com/danny-avila/LibreChat)
+- [FastMCP](https://github.com/jlowin/fastmcp)
+
+Huge thanks to their creators and contributors!
