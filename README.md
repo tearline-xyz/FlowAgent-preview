@@ -49,7 +49,7 @@ Supports multiple chains, allowing users to take advantage of arbitrage opportun
 
 #### MCP based
 
-Based on the MCP (Monitor-Compute-Prove) architecture and the concept of user sovereignty first, we create the most transparent and secure AI strategy execution engine in the DeFi field.
+Based on the MCP (Model Context Protocol) server cluster and the concept of user sovereignty first, we create the most transparent and secure AI strategy execution engine in the DeFi field.
 
 ## Acknowledgments
 
