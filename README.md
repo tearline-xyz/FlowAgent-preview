@@ -2,23 +2,12 @@
     <a href="https://www.tearline.io/flowagent">
         <img src="client/public/assets/tearline-logo.svg" height="200">
     </a>
-    <div align="center">
-        <h1>
-            FlowAgent
-            <sup style="
-                font-size: 0.5em;
-                background: #f3f4f6;
-                color: #555;
-                border-radius: 0.4em;
-                padding: 0.1em 0.6em;
-                font-weight: 600;
-                letter-spacing: 0.05em;
-                border: 1px solid #e5e7eb;
-                margin-left: 0em;
-            ">Preview</sup>
-        </h1>
-        <h2>Turn your DeFi goals into action — fast, smart, and simple.</h2>
-    </div>
+    <h1 align="center">
+        <a href="https://www.tearline.io/flowagent" style="text-decoration: none; color: inherit;">
+        FlowAgent <img src="client/public/assets/preview-logo.svg" alt="Preview" height="20"/>
+        </a>
+    </h1>
+    <h3 align="center">Turn your DeFi goals into action — fast, smart, and simple.</h3>
 </p>
 
 ## Features
