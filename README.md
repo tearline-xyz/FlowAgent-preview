@@ -12,7 +12,7 @@
 
 ## Features
 
-### LP pledge arbitrage
+#### LP pledge arbitrage
 
 Users leverage AI to analyze yield differences across identical liquidity pools on various DEXs and automatically migrate their positions to the most profitable option.
 
@@ -20,7 +20,7 @@ Users leverage AI to analyze yield differences across identical liquidity pools 
 - Batch processing of migration transactions.
 - Pre-calculate the balance point between hedging costs and benefits.
 
-### Revolving loan
+#### Revolving loan
 
 Users pledge assets to borrow stablecoins, while AI dynamically optimizes the collateral ratio and allocates funds to high-yield farming pools to generate leveraged returns.
 
@@ -28,7 +28,7 @@ Users pledge assets to borrow stablecoins, while AI dynamically optimizes the co
 - Interest rate differential comparison engine (borrowing cost vs mining income).
 - Cross-chain Gas Optimization.
 
-### Cross-DEX Arbitrage
+#### Cross-DEX Arbitrage
 
 The system captures price discrepancies of the same asset across DEXs on different chains and executes risk-free arbitrage using MEV-protected strategies.
 
@@ -39,15 +39,15 @@ The system captures price discrepancies of the same asset across DEXs on differe
 
 ## Technical Highlights
 
-### AI-Driven Decision Making
+#### AI-Driven Decision Making
 
 AI algorithms analyze real-time data to make informed decisions, optimizing yield and minimizing risks.
 
-### Cross-Chain Compatibility
+#### Cross-Chain Compatibility
 
 Supports multiple chains, allowing users to take advantage of arbitrage opportunities across different ecosystems.
 
-### MCP based
+#### MCP based
 
 Based on the MCP (Monitor-Compute-Prove) architecture and the concept of user sovereignty first, we create the most transparent and secure AI strategy execution engine in the DeFi field.
 
