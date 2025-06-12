@@ -64,12 +64,11 @@ async function loadPoolAndTicks(poolAddress, setLiquidityDist, setPool) {
   console.log('pool', pool);
   setPool(pool);
 
-  // 累加liquidity_net
   let accLiquidity = 0;
   const dist: TickObj[] = [];
   for (const tick of ticks) {
     accLiquidity += tick.liquidity_net;
-    // 跳过accLiquidity为负数的case
+
     if (accLiquidity < 0) {
       continue;
     }
@@ -81,9 +80,8 @@ async function loadPoolAndTicks(poolAddress, setLiquidityDist, setPool) {
     });
   }
 
-  // 按price排序
   dist.sort((a, b) => a.price - b.price);
-  console.log('liquidityDist', dist);
+
   setLiquidityDist(dist);
 }
 
@@ -116,17 +114,13 @@ export default function SelectRange({
 }: SelectRangeProps) {
   const chartRef = useRef<HTMLDivElement>(null);
   const echartsRef = useRef<ReactECharts>(null);
-  console.log('start lowerTic', lowerTick);
-  console.log('poolAddress', poolAddress);
 
-  console.log('start upperTick', upperTick);
   const [pool, setPool] = useState<any>(null);
   const [liquidityDist, setLiquidityDist] = useState<TickObj[]>([] as TickObj[]);
   const [isFetchingDist, setIsFetchingDist] = useState(false);
   const [lowerPrice, setLowerPrice] = useState(0);
   const [upperPrice, setUpperPrice] = useState(0);
 
-  // 用 useMemo 生成 option，只依赖 liquidityDist
   const option = useMemo(() => {
     return {
       tooltip: {
@@ -329,7 +323,6 @@ export default function SelectRange({
     initLiquidityData();
   }, [poolAddress]);
 
-  // 只在 liquidityDist 变化时初始化 brush/dataZoom，不在 brush/dataZoom 事件里 setState 影响 option
   useEffect(() => {
     if (echartsRef.current && liquidityDist.length > 0) {
       const echartsInstance = echartsRef.current.getEchartsInstance();
@@ -360,7 +353,6 @@ export default function SelectRange({
         }
       });
 
-      // 初始化 brush 区域
       const length = liquidityDist.length;
       const endIdx = findClosestTickIndex(liquidityDist, lowerTick);
 
@@ -383,26 +375,6 @@ export default function SelectRange({
       }
     }
   }, [liquidityDist]);
-
-  // useEffect(() => {
-  //   if (typeof onPriceGetter === 'function') {
-  //     onPriceGetter(() => {
-  //       // 找到最接近 lowerPrice 的节点
-  //       const upperNode = liquidityDist.reduce(
-  //         (prev, curr) =>
-  //           Math.abs(curr.price - lowerPrice) < Math.abs(prev.price - lowerPrice) ? curr : prev,
-  //         liquidityDist[0],
-  //       );
-  //       // 找到最接近 upperPrice 的节点
-  //       const lowerNode = liquidityDist.reduce(
-  //         (prev, curr) =>
-  //           Math.abs(curr.price - upperPrice) < Math.abs(prev.price - upperPrice) ? curr : prev,
-  //         liquidityDist[0],
-  //       );
-  //       return { lowerNode, upperNode };
-  //     });
-  //   }
-  // }, [lowerPrice, upperPrice, onPriceGetter, liquidityDist]);
 
   return (
     <div className={styles.container}>
