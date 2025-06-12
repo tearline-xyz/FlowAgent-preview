@@ -84,7 +84,10 @@ export async function axiosApproveTransaction(params: {
   return request({
     url: Api.swap.approveTransaction,
     method: 'get',
-    params: params,
+    params: {
+      ...params,
+      chain_index: params.chain_id,
+    },
   });
 }
 
@@ -100,7 +103,11 @@ export async function axiosAggregatorQuote(params: {
   return request({
     url: Api.swap.quote,
     method: 'get',
-    params: params,
+    params: {
+      ...params,
+      chain_index: params.chain_id,
+      swap_mode: 'exactIn',
+    },
   });
 }
 
@@ -111,7 +118,11 @@ export async function axiosSwap(params: any) {
   return request({
     url: url,
     method: 'post',
-    data: params,
+    data: {
+      ...params,
+      chain_index: params.chain_id,
+      swap_mode: 'exactIn',
+    },
   });
 }
 
