@@ -33,6 +33,7 @@ import EditBadges from './EditBadges';
 import BadgeRow from './BadgeRow';
 import Mention from './Mention';
 import store from '~/store';
+import { HiddenClick } from '~/swap/const/const';
 
 const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
@@ -290,16 +291,20 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
               )}
             >
               <div className={`${isRTL ? 'mr-2' : 'ml-2'}`}>
-                <AttachFileChat disableInputs={disableInputs} />
+                {HiddenClick &&  <AttachFileChat disableInputs={disableInputs} />}
+
               </div>
-              <BadgeRow
-                showEphemeralBadges={!isAgentsEndpoint(endpoint) && !isAssistantsEndpoint(endpoint)}
-                conversationId={conversationId}
-                onChange={setBadges}
-                isInChat={
-                  Array.isArray(conversation?.messages) && conversation.messages.length >= 1
-                }
-              />
+              {
+                HiddenClick &&  <BadgeRow
+                  showEphemeralBadges={!isAgentsEndpoint(endpoint) && !isAssistantsEndpoint(endpoint)}
+                  conversationId={conversationId}
+                  onChange={setBadges}
+                  isInChat={
+                    Array.isArray(conversation?.messages) && conversation.messages.length >= 1
+                  }
+                />
+              }
+
               <div className="mx-auto flex" />
               {SpeechToText && (
                 <AudioRecorder

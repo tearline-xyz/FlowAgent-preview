@@ -1,0 +1,1 @@
+export const HiddenClick = false;
