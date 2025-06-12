@@ -11,6 +11,8 @@ import BookmarkMenu from './Menus/BookmarkMenu';
 import { TemporaryChat } from './TemporaryChat';
 import AddMultiConvo from './AddMultiConvo';
 import ConnectHeader from '~/components/Chat/Swap/ConnectHeader';
+import { HiddenClick } from '~/swap/const/const';
+
 const defaultInterface = getConfigDefaults().interface;
 
 export default function Header() {
@@ -37,9 +39,10 @@ export default function Header() {
     <div className="sticky top-0 z-10 flex h-14 w-full items-center justify-between bg-white font-semibold text-text-primary dark:bg-gray-800">
       <div className="hide-scrollbar h-[calc(100%)] flex w-full items-center justify-between gap-2 overflow-x-auto">
         <div className="mx-1 flex items-center gap-2">
+
           {!navVisible && <OpenSidebar setNavVisible={setNavVisible} />}
           {!navVisible && <HeaderNewChat />}
-          {<ModelSelector startupConfig={startupConfig} />}
+          {HiddenClick && <ModelSelector startupConfig={startupConfig} />}
           {interfaceConfig.presets === true && interfaceConfig.modelSelect && <PresetsMenu />}
           {hasAccessToBookmarks === true && <BookmarkMenu />}
           {hasAccessToMultiConvo === true && <AddMultiConvo />}

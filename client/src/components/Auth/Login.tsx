@@ -8,6 +8,7 @@ import { useLocalize } from '~/hooks';
 import LoginForm from './LoginForm';
 import SocialButton from '~/components/Auth/SocialButton';
 import { OpenIDIcon } from '~/components';
+import { HiddenClick } from '~/swap/const/const';
 
 function Login() {
   const localize = useLocalize();
@@ -85,7 +86,7 @@ function Login() {
         />
       )}
       {startupConfig?.registrationEnabled === true && (
-        <p className="my-4 text-center text-sm font-light text-gray-700 dark:text-white">
+        HiddenClick &&  <p className="my-4 text-center text-sm font-light text-gray-700 dark:text-white">
           {' '}
           {localize('com_auth_no_account')}{' '}
           <a
@@ -95,6 +96,7 @@ function Login() {
             {localize('com_auth_sign_up')}
           </a>
         </p>
+
       )}
     </>
   );

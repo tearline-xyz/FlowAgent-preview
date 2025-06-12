@@ -9,6 +9,7 @@ import { normalizeLayout } from '~/utils';
 import { useMediaQuery } from '~/hooks';
 import SidePanel from './SidePanel';
 import store from '~/store';
+import { HiddenClick } from '~/swap/const/const';
 
 interface SidePanelProps {
   defaultLayout?: number[] | undefined;
@@ -114,7 +115,7 @@ const SidePanelGroup = ({
             </ResizablePanel>
           </>
         )}
-        {!hideSidePanel && interfaceConfig.sidePanel === true && (
+        {HiddenClick && !hideSidePanel && interfaceConfig.sidePanel === true && (
           <SidePanel
             panelRef={panelRef}
             minSize={minSize}

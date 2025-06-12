@@ -460,7 +460,11 @@ const DepositWrap = ({ data }: ISwapWarp) => {
         // }}
       />
 
-      <DivSwapPanel className="space-y-6">
+      <DivSwapPanel id={'DivSwapPanel'} className="space-y-6" style={
+        {
+          marginTop:'40px'
+        }
+      }>
         <CurrentChainBox
           currentChainInfo={{
             chainId: 784,

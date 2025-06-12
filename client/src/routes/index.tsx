@@ -31,23 +31,24 @@ export const router = createBrowserRouter([
     element: <ShareRoute />,
     errorElement: <RouteErrorBoundary />,
   },
+  // TODO HiddenClick
   {
     path: '/',
     element: <StartupLayout />,
     errorElement: <RouteErrorBoundary />,
     children: [
-      {
-        path: 'register',
-        element: <Registration />,
-      },
-      {
-        path: 'forgot-password',
-        element: <RequestPasswordReset />,
-      },
-      {
-        path: 'reset-password',
-        element: <ResetPassword />,
-      },
+      // {
+      //   path: 'register',
+      //   element: <Registration />,
+      // },
+      // {
+      //   path: 'forgot-password',
+      //   element: <RequestPasswordReset />,
+      // },
+      // {
+      //   path: 'reset-password',
+      //   element: <ResetPassword />,
+      // },
     ],
   },
   {
