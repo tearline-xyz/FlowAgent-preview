@@ -28,7 +28,6 @@ function ModelSelectorContent() {
     onOpenChange,
     keyDialogEndpoint,
   } = useModelSelectorContext();
-
   const selectedIcon = useMemo(
     () =>
       getSelectedIcon({
@@ -76,13 +75,14 @@ function ModelSelectorContent() {
           });
         }}
         onSearch={(value) => setSearchValue(value)}
-        combobox={<input placeholder={localize('com_endpoint_search_models')} />}
+        combobox={<input placeholder={localize('com_endpoint_search_models')} style={{display:'none'}}/>}
         trigger={trigger}
       >
         {searchResults ? (
           renderSearchResults(searchResults, localize, searchValue)
         ) : (
           <>
+
             {renderModelSpecs(modelSpecs, selectedValues.modelSpec || '')}
             {renderEndpoints(mappedEndpoints ?? [])}
           </>

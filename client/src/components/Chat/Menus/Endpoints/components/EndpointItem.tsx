@@ -121,7 +121,9 @@ export function EndpointItem({ endpoint }: EndpointItemProps) {
         defaultOpen={endpoint.value === selectedEndpoint}
         searchValue={searchValue}
         onSearch={(value) => setEndpointSearchValue(endpoint.value, value)}
-        combobox={<input placeholder={placeholder} />}
+        combobox={<input placeholder={placeholder} style={{
+          opacity:0,height:0
+        }}/>}
         label={
           <div
             onClick={() => handleSelectEndpoint(endpoint)}
@@ -185,6 +187,6 @@ export function EndpointItem({ endpoint }: EndpointItemProps) {
 
 export function renderEndpoints(mappedEndpoints: Endpoint[]) {
   return mappedEndpoints.map((endpoint) => (
-    <EndpointItem endpoint={endpoint} key={`endpoint-${endpoint.value}-item`} />
+    endpoint.value ==='agents' &&  <EndpointItem endpoint={endpoint} key={`endpoint-${endpoint.value}-item`} />
   ));
 }
