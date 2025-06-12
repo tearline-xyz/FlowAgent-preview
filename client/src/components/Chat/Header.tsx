@@ -11,7 +11,7 @@ import BookmarkMenu from './Menus/BookmarkMenu';
 import { TemporaryChat } from './TemporaryChat';
 import AddMultiConvo from './AddMultiConvo';
 import ConnectHeader from '~/components/Chat/Swap/ConnectHeader';
-import { HiddenClick } from '~/swap/const/const';
+
 
 const defaultInterface = getConfigDefaults().interface;
 
@@ -42,7 +42,7 @@ export default function Header() {
 
           {!navVisible && <OpenSidebar setNavVisible={setNavVisible} />}
           {!navVisible && <HeaderNewChat />}
-          {HiddenClick && <ModelSelector startupConfig={startupConfig} />}
+          {<ModelSelector startupConfig={startupConfig} />}
           {interfaceConfig.presets === true && interfaceConfig.modelSelect && <PresetsMenu />}
           {hasAccessToBookmarks === true && <BookmarkMenu />}
           {hasAccessToMultiConvo === true && <AddMultiConvo />}
