@@ -112,17 +112,18 @@ export async function axiosAggregatorQuote(params: {
 }
 
 export async function axiosSwap(params: any) {
-  console.log('params', params);
+  // console.log('params', params);
+  params={
+    ...params,
+    chain_index: params.chain_id,
+    swap_mode: 'exactIn',
+  }
   const searchParams: any = new URLSearchParams(params);
   const url = `${Api.swap.swap}?${searchParams.toString()}`;
   return request({
     url: url,
     method: 'post',
-    data: {
-      ...params,
-      chain_index: params.chain_id,
-      swap_mode: 'exactIn',
-    },
+    data: params,
   });
 }
 
