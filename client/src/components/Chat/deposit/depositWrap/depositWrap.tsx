@@ -71,7 +71,6 @@ const DepositWrap = ({ data }: ISwapWarp) => {
   const initPool = async () => {
     const pool = await sdk.Pool.getPool(data.data.pool_address);
     setPool(() => pool);
-    console.log('pool', pool);
     return pool;
   };
   const initJettonInfo = async (poolData?: Pool) => {
@@ -156,47 +155,54 @@ const DepositWrap = ({ data }: ISwapWarp) => {
   }, []);
 
   useEffect(() => {
-    console.log('yyyyyyuuu');
-
     if (pool) {
       initJettonInfo();
     }
   }, [isConnected, suiWallet, suiChain, pool?.coinTypeA, pool?.coinTypeB]);
 
   const fromAmountAToAmountB = async (newVal) => {
+    const isInputTokenA = inputJetton?.tokenContractAddress === pool?.coinTypeA;
+
     const liquidityInput = ClmmPoolUtil.estLiquidityAndcoinAmountFromOneAmounts(
       lowerTick,
       upperTick,
       new BN(Number(newVal) * Math.pow(10, Number(inputJetton?.decimals ?? '6'))),
-      true,
+      isInputTokenA,
       true,
       slippage,
       new BN(pool?.current_sqrt_price ?? 0),
     );
 
-    const amount_b = liquidityInput.tokenMaxB.toNumber();
+    const outputAmount = isInputTokenA
+      ? liquidityInput.tokenMaxB.toNumber()
+      : liquidityInput.tokenMaxA.toNumber();
 
-    setOutputValue((amount_b / 10 ** Number(outputJetton?.decimals ?? '6')).toString());
+    setOutputValue((outputAmount / 10 ** Number(outputJetton?.decimals ?? '6')).toString());
   };
 
   const fromAmountBToAmountA = async (newVal) => {
+    const isInputTokenA = outputJetton?.tokenContractAddress === pool?.coinTypeA;
     const liquidityInput = ClmmPoolUtil.estLiquidityAndcoinAmountFromOneAmounts(
       lowerTick,
       upperTick,
       new BN(Number(newVal) * Math.pow(10, Number(outputJetton?.decimals ?? '6'))),
-      false,
+      isInputTokenA,
       true,
       slippage,
       new BN(pool?.current_sqrt_price ?? 0),
     );
 
-    const amount_a = liquidityInput.tokenMaxA.toNumber();
+    const outputAmount = isInputTokenA
+      ? liquidityInput.tokenMaxB.toNumber()
+      : liquidityInput.tokenMaxA.toNumber();
 
-    setInputValue((amount_a / 10 ** Number(inputJetton?.decimals ?? '6')).toString());
+    setInputValue((outputAmount / 10 ** Number(inputJetton?.decimals ?? '6')).toString());
   };
 
   const extractPositionInfo = async (txnData) => {
-    if (!txnData) return null;
+    if (!txnData) {
+      return null;
+    }
 
     try {
       const positionInfo = {
@@ -460,11 +466,7 @@ const DepositWrap = ({ data }: ISwapWarp) => {
         // }}
       />
 
-      <DivSwapPanel id={'DivSwapPanel'} className="space-y-6" style={
-        {
-          marginTop:'40px'
-        }
-      }>
+      <DivSwapPanel className="mt-10 space-y-6">
         <CurrentChainBox
           currentChainInfo={{
             chainId: 784,
