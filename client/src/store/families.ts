@@ -73,7 +73,22 @@ const conversationByIndex = atomFamily<TConversation | null, string | number>({
   default: null,
   effects: [
     ({ onSet, node }) => {
-      onSet(async (newValue) => {
+      onSet(async (newValue1) => {
+        // console.log('newValue', newValue);
+        // TODO
+        const newValue: any = {
+          // agent_id: 'agent_xuVXLN8TkRWi7kGVIMxbV',
+          agent_id: 'agent_VJz9WWyyBjc2tJMqMUSdk',
+          endpoint: 'agents',
+          conversationId: 'new',
+          createdAt: '',
+          endpointType: undefined,
+          model: '',
+          title: 'New Chat',
+          tools: [],
+          updatedAt: '',
+        };
+        // newValue?.agent_id='agent_VJz9WWyyBjc2tJMqMUSdk';
         const index = Number(node.key.split('__')[1]);
         logger.log('conversation', 'Setting conversation:', { index, newValue });
         if (newValue?.assistant_id != null && newValue.assistant_id) {
@@ -98,6 +113,7 @@ const conversationByIndex = atomFamily<TConversation | null, string | number>({
         if (!newValue) {
           return;
         }
+
 
         storeEndpointSettings(newValue);
         localStorage.setItem(
@@ -245,13 +261,26 @@ function useCreateConversationAtom(key: string | number) {
   const setConversation = useSetRecoilState(conversationByIndex(key));
   const conversation = useRecoilValue(conversationByIndex(key));
 
+  // TODO
+  const conversation1 = {
+    agent_id: 'agent_xuVXLN8TkRWi7kGVIMxbV',
+    // agent_id: 'agent_VJz9WWyyBjc2tJMqMUSdk',
+    endpoint: 'agents',
+    conversationId: 'new',
+    createdAt: '',
+    endpointType: undefined,
+    model: '',
+    title: 'New Chat',
+    tools: [],
+    updatedAt: '',
+  };
   useEffect(() => {
     if (!keys.includes(key)) {
       setKeys([...keys, key]);
     }
   }, [key, keys, setKeys]);
 
-  return { hasSetConversation, conversation, setConversation };
+  return { hasSetConversation, conversation: conversation1, setConversation };
 }
 
 function useClearConvoState() {

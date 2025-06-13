@@ -20,10 +20,10 @@ export default function useSuiWeb3() {
         owner: wallet.address,
         coinType: '0x2::sui::SUI',
       });
-      console.log('balanceObj', balanceObj);
+      // console.log('balanceObj', balanceObj);
 
       balanceData = (Number(balanceObj.totalBalance) / 10 ** 9).toString();
-      console.log('balanceData', balanceData);
+      // console.log('balanceData', balanceData);
 
       setBalance(balanceData);
       cb && cb();

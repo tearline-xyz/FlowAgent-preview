@@ -75,7 +75,7 @@ function ModelSelectorContent() {
           });
         }}
         onSearch={(value) => setSearchValue(value)}
-        combobox={<input placeholder={localize('com_endpoint_search_models')} style={{display:'none'}}/>}
+        combobox={<input placeholder={localize('com_endpoint_search_models')} style={{ opacity: 0, height: 0 }} />}
         trigger={trigger}
       >
         {searchResults ? (
