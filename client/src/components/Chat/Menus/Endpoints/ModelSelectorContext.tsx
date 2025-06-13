@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce';
-import React, { createContext, useContext, useState, useMemo } from 'react';
+import React, { createContext, useContext, useState, useMemo, useEffect } from 'react';
 import { isAgentsEndpoint, isAssistantsEndpoint } from 'librechat-data-provider';
 import type * as t from 'librechat-data-provider';
 import type { Endpoint, SelectedValues } from '~/common';
@@ -51,6 +51,7 @@ export function ModelSelectorProvider({ children, startupConfig }: ModelSelector
   const agentsMap = useAgentsMapContext();
   const assistantsMap = useAssistantsMapContext();
   const { data: endpointsConfig } = useGetEndpointsQuery();
+  // console.log('endpointsConfig', endpointsConfig);
   const { conversation, newConversation } = useChatContext();
   const modelSpecs = useMemo(() => startupConfig?.modelSpecs?.list ?? [], [startupConfig]);
   const { mappedEndpoints, endpointRequiresUserKey } = useEndpoints({
@@ -67,6 +68,21 @@ export function ModelSelectorProvider({ children, startupConfig }: ModelSelector
     newConversation,
     returnHandlers: true,
   });
+  useEffect(()=>{
+    console.log('mappedEndpoints::::', mappedEndpoints);
+    const agentsModels=mappedEndpoints.find(d=>d.value==='agents')
+    console.log('agentsModels', agentsModels);
+    if (agentsModels && agentsModels.models && agentsModels.models.length){
+      newConversation({
+        template:{
+          // agent_id: 'agent_xuVXLN8TkRWi7kGVIMxbV',
+          agent_id: agentsModels.models[0].name,
+          endpoint: 'agents',
+        }
+      })
+    }
+
+  },[mappedEndpoints])
 
   // State
   const [selectedValues, setSelectedValues] = useState<SelectedValues>({
