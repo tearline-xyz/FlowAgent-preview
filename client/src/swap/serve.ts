@@ -144,6 +144,7 @@ export async function getChainAssets(params: { address: any; chains: any }) {
   }).then((res: any) => {
     if (res.code === 0 && res.data.length) {
       res.data[0].tokenAssets.forEach((d: any) => {
+        d.tokenAddress=d.tokenContractAddress;
         // if (d.tokenAddress === '') {
         //   d.tokenAddress = DefaultTokenAddr.ETH
         // }
