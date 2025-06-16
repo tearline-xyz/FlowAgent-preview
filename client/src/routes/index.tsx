@@ -37,18 +37,18 @@ export const router = createBrowserRouter([
     element: <StartupLayout />,
     errorElement: <RouteErrorBoundary />,
     children: [
-      {
-        path: 'register',
-        element: <Registration />,
-      },
-      {
-        path: 'forgot-password',
-        element: <RequestPasswordReset />,
-      },
-      {
-        path: 'reset-password',
-        element: <ResetPassword />,
-      },
+      // {
+      //   path: 'register',
+      //   element: <Registration />,
+      // },
+      // {
+      //   path: 'forgot-password',
+      //   element: <RequestPasswordReset />,
+      // },
+      // {
+      //   path: 'reset-password',
+      //   element: <ResetPassword />,
+      // },
     ],
   },
   {
