@@ -190,7 +190,7 @@ const useNewConvo = (index = 0) => {
       keepLatestMessage = false,
       keepAddedConvos = false,
     }: {
-      template?: Partial<TConversation>;
+      template?: Partial<TConversation>|any;
       preset?: Partial<TPreset>;
       modelsData?: TModelsConfig;
       buildDefault?: boolean;
@@ -211,7 +211,7 @@ const useNewConvo = (index = 0) => {
         paramEndpoint === true && templateConvoId && templateConvoId === Constants.NEW_CONVO
           ? { endpoint: _template.endpoint }
           : _template;
-
+        // TODO
       const conversation = {
         conversationId: Constants.NEW_CONVO as string,
         title: 'New Chat',
@@ -219,6 +219,9 @@ const useNewConvo = (index = 0) => {
         ...template,
         createdAt: '',
         updatedAt: '',
+        // agent_id: 'agent_xuVXLN8TkRWi7kGVIMxbV',
+        // agent_id: 'agent_VJz9WWyyBjc2tJMqMUSdk',
+        // endpoint: 'agents',
       };
 
       let preset = _preset;

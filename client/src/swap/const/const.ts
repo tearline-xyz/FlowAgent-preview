@@ -1,1 +1,1 @@
-export const HiddenClick = true;
+export const HiddenClick = false;

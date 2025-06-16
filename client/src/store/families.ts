@@ -99,6 +99,7 @@ const conversationByIndex = atomFamily<TConversation | null, string | number>({
           return;
         }
 
+
         storeEndpointSettings(newValue);
         localStorage.setItem(
           `${LocalStorageKeys.LAST_CONVO_SETUP}_${index}`,
