@@ -46,7 +46,7 @@ export class EtherInitApi {
   }
 
   getContractAddr = async (contractName: string) => {
-    return import.meta.env.VITE_APP_BASE_ENV === 'production'
+    return import.meta.env.MODE !== 'development'
       ? ContractAddr['56'][contractName]
       : ContractAddr['97'][contractName];
   };
@@ -170,7 +170,7 @@ export class EtherInitApi {
       const provider: any = new ethers.BrowserProvider(this.providerInstance);
       const signer = await provider.getSigner();
       const tokenContractAddr =
-        import.meta.env.VITE_APP_BASE_ENV === 'production'
+        import.meta.env.MODE !== 'development'
           ? ContractAddr['56'].recharge
           : ContractAddr['97'].recharge;
       const contract: any = new Contract(tokenContractAddr, ABI.BidContract, signer);
@@ -200,7 +200,7 @@ export class EtherInitApi {
       const provider: any = new ethers.BrowserProvider(this.providerInstance);
       const signer = await provider.getSigner();
       const tokenContractAddr =
-        import.meta.env.VITE_APP_BASE_ENV === 'production'
+        import.meta.env.MODE !== 'development'
           ? ContractAddr['56'].recharge
           : ContractAddr['97'].recharge;
       const contract: any = new Contract(tokenContractAddr, ABI.BidContract, signer);
