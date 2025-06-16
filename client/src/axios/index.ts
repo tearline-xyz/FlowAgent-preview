@@ -58,10 +58,11 @@ request.interceptors.request.use(
       }
     }
     // console.log('config.url', config.url);
-    if (process.env.NODE_ENV !== 'development') {
+    // if (process.env.NODE_ENV !== 'development') {
       // config.url = 'https://www1.test.tearline.io' + config.url.replace('/okx/api','/api'); // import.meta.env.VITE_APP_BASE_API + config.url;
-      config.url = 'https://tlib.test.tearline.io' + config.url.replace('/okx/api','/tapi'); // import.meta.env.VITE_APP_BASE_API + config.url;
-    }
+      // config.url = 'https://tlib.test.tearline.io' + config.url.replace('/okx/api','/tapi'); // import.meta.env.VITE_APP_BASE_API + config.url;
+      config.url = 'https://flowagent.v1.tearline.io' + config.url.replace('/okx/api','/tapi'); // import.meta.env.VITE_APP_BASE_API + config.url;
+    // }
     // const localAuth: AuthInfo | undefined = getLocalAuthState();
     // if (
     //   localAuth &&
@@ -115,7 +116,7 @@ request.interceptors.response.use(
       error.toString() === 'AxiosError: Network Error'
     ) {
       // store.dispatch(userSlice.actions.logout());
-      if (import.meta.env.VITE_APP_BASE_ENV === 'production') {
+      if (import.meta.env.MODE !== 'development') {
         // store.dispatch(userSlice.actions.logout());
         // Cookies.set('auth_id', '', {
         //   expires: 7,
