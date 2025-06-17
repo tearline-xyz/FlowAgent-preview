@@ -60,7 +60,7 @@ const DepositWrap = ({ data }: ISwapWarp) => {
   const { isConnected, suiWallet, getTokenBalance, suiChain, disconnectConnect, chainId } =
     useCustomWeb3Modal();
 
-  const slippage = 0.05;
+  const slippage = 0.005;
 
   const currentChainInfo = {
     chainId: 784,
@@ -322,9 +322,15 @@ const DepositWrap = ({ data }: ISwapWarp) => {
       const resData = await suiWallet.signAndExecuteTransaction({
         transaction: openPositionTransactionPayload,
       });
+      console.log('resData', resData);
+
       const positionInfo = await verifyTransaction(resData);
+      console.log('here is positionInfo', positionInfo);
+
       if (positionInfo?.positionId) {
         const position = await sdk.Position.getPositionById(positionInfo?.positionId);
+        console.log('here is position', position);
+
         if (!position) {
           setIsTransacting(false);
           showToast({
