@@ -46,7 +46,7 @@ export const SwapPanelFlexCenterBg = styled(SwapPanelFlexCenter)(({ theme }) => 
     transform: 'translateY(-50%)',
     width: '9px',
     height: '5px',
-    backgroundImage: `url(${getImageUrl('/swap/select-swap.png')})`,
+    backgroundImage: `url(${getImageUrl('swap/select-swap.png')})`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: '100% 100%',
   },

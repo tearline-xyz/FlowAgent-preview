@@ -30,7 +30,7 @@
   "dependencies": {
     "@ariakit/react": "^0.4.15",
     "@ariakit/react-core": "^0.4.17",
-    "@cetusprotocol/cetus-sui-clmm-sdk": "^5.3.4",
+    "@cetusprotocol/cetus-sui-clmm-sdk": "^5.4.0",
     "@codesandbox/sandpack-react": "^2.19.10",
     "@dicebear/collection": "^9.2.2",
     "@dicebear/core": "^9.2.2",
